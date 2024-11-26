@@ -34,7 +34,7 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
             ),
         );
         parent::__construct();
-        add_action('init', array($this, 'init_tables'), 3);
+        $this->init_tables();
         add_action('admin_footer', array($this, 'init_tables'), 3);
         add_filter('brfr_ajax_filters_purge_additional_tables', array($this, 'section_purge_additional_tables'), 10, 3);
         add_action( "wp_ajax_brapf_regenerate_additional_tables", array ( $this, 'regenerate_additional_tables' ) );

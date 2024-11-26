@@ -106,26 +106,25 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
         'can_be_disabled' => true
     );
     function __construct() {
-        add_action('ajax_filters_framework_construct', array($this, 'init_conditions'));
         $this->post_name = 'br_product_filter';
         $this->post_settings = array(
-            'label' => __( 'Product Filter', 'BeRocket_AJAX_domain' ),
+            'label' => 'Product Filter',
             'labels' => array(
-                'name'               => __( 'Product Filter', 'BeRocket_AJAX_domain' ),
-                'singular_name'      => __( 'Product Filter', 'BeRocket_AJAX_domain' ),
-                'menu_name'          => _x( 'Filters', 'Admin menu name', 'BeRocket_AJAX_domain' ),
-                'add_new'            => __( 'Add Filter', 'BeRocket_AJAX_domain' ),
-                'add_new_item'       => __( 'Add New Filter', 'BeRocket_AJAX_domain' ),
-                'edit'               => __( 'Edit', 'BeRocket_AJAX_domain' ),
-                'edit_item'          => __( 'Edit Filter', 'BeRocket_AJAX_domain' ),
-                'new_item'           => __( 'New Filter', 'BeRocket_AJAX_domain' ),
-                'view'               => __( 'View Filters', 'BeRocket_AJAX_domain' ),
-                'view_item'          => __( 'View Filter', 'BeRocket_AJAX_domain' ),
-                'search_items'       => __( 'Search Product Filters', 'BeRocket_AJAX_domain' ),
-                'not_found'          => __( 'No Product Filters found', 'BeRocket_AJAX_domain' ),
-                'not_found_in_trash' => __( 'No Product Filters found in trash', 'BeRocket_AJAX_domain' ),
+                'name'               => 'Product Filter',
+                'singular_name'      => 'Product Filter',
+                'menu_name'          => 'Filters',
+                'add_new'            => 'Add Filter',
+                'add_new_item'       => 'Add New Filter',
+                'edit'               => 'Edit',
+                'edit_item'          => 'Edit Filter',
+                'new_item'           => 'New Filter',
+                'view'               => 'View Filters',
+                'view_item'          => 'View Filter',
+                'search_items'       => 'Search Product Filters',
+                'not_found'          => 'No Product Filters found',
+                'not_found_in_trash' => 'No Product Filters found in trash',
             ),
-            'description'     => __( 'This is where you can add Product Filters.', 'BeRocket_AJAX_domain' ),
+            'description'     => 'This is where you can add Product Filters.',
             'public'          => true,
             'show_ui'         => true,
             'capability_type' => 'single_filter',
@@ -194,20 +193,43 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
             'attribute_count'               => '',
             'clrimg_use_attrval'            => '',
         );
+        parent::__construct();
+        add_shortcode( 'br_filter_single', array( $this, 'shortcode' ) );
+        add_action('admin_head', array($this, 'admin_head'), 20);
+        add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts'), 20);
+        add_filter( 'berocket_admin_filter_types_by_attr', array($this, 'admin_filter_types_by_attr'), 10, 2 );
+    }
+    public function init_translation() {
+        $this->conditions = new BeRocket_conditions_AAPF($this->post_name.'[data]', $this->hook_name, array(
+            'condition_page',
+            'condition_page_woo_category'
+        ));
         $this->add_meta_box('conditions', __( 'Conditions', 'BeRocket_AJAX_domain' ));
         $this->add_meta_box('settings', __( 'Product Filter Settings', 'BeRocket_AJAX_domain' ));
         $this->add_meta_box('meta_box_shortcode', __( 'Shortcode', 'BeRocket_AJAX_domain' ), false, 'side');
         $this->add_meta_box('information_faq', __( 'FAQ', 'BeRocket_AJAX_domain' ), false, 'side');
-        parent::__construct();
-        add_shortcode( 'br_filter_single', array( $this, 'shortcode' ) );
         $setup_wizard = get_option('berocket_aapf_filters_setup_wizard_list');
         $single_filter_wizard = br_get_value_from_array($setup_wizard, 'single_filter');
         if( $single_filter_wizard > 0 ) {
             $this->add_meta_box('setup_widget', __( 'Setup Widget', 'BeRocket_AJAX_domain' ));
         }
-        add_action('admin_head', array($this, 'admin_head'), 20);
-        add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts'), 20);
-        add_filter( 'berocket_admin_filter_types_by_attr', array($this, 'admin_filter_types_by_attr'), 10, 2 );
+        $this->post_settings['label'] = __( 'Product Filter', 'BeRocket_AJAX_domain' );
+        $this->post_settings['labels'] = array(
+            'name'               => __( 'Product Filter', 'BeRocket_AJAX_domain' ),
+            'singular_name'      => __( 'Product Filter', 'BeRocket_AJAX_domain' ),
+            'menu_name'          => _x( 'Filters', 'Admin menu name', 'BeRocket_AJAX_domain' ),
+            'add_new'            => __( 'Add Filter', 'BeRocket_AJAX_domain' ),
+            'add_new_item'       => __( 'Add New Filter', 'BeRocket_AJAX_domain' ),
+            'edit'               => __( 'Edit', 'BeRocket_AJAX_domain' ),
+            'edit_item'          => __( 'Edit Filter', 'BeRocket_AJAX_domain' ),
+            'new_item'           => __( 'New Filter', 'BeRocket_AJAX_domain' ),
+            'view'               => __( 'View Filters', 'BeRocket_AJAX_domain' ),
+            'view_item'          => __( 'View Filter', 'BeRocket_AJAX_domain' ),
+            'search_items'       => __( 'Search Product Filters', 'BeRocket_AJAX_domain' ),
+            'not_found'          => __( 'No Product Filters found', 'BeRocket_AJAX_domain' ),
+            'not_found_in_trash' => __( 'No Product Filters found in trash', 'BeRocket_AJAX_domain' ),
+        );
+        $this->post_settings['description'] = __( 'This is where you can add Product Filters.', 'BeRocket_AJAX_domain' );
     }
     public function admin_enqueue_scripts() {
         $current_screen = get_current_screen();
@@ -331,12 +353,6 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
             </script>
             <?php
         }
-    }
-    public function init_conditions() {
-        $this->conditions = new BeRocket_conditions_AAPF($this->post_name.'[data]', $this->hook_name, array(
-            'condition_page',
-            'condition_page_woo_category'
-        ));
     }
     public function conditions($post) {
         $options = $this->get_option( $post->ID );
@@ -585,26 +601,25 @@ class BeRocket_AAPF_group_filters extends BeRocket_custom_post_class {
         'can_be_disabled' => true
     );
     function __construct() {
-        add_action('ajax_filters_framework_construct', array($this, 'init_conditions'));
         $this->post_name = 'br_filters_group';
         $this->post_settings = array(
-            'label' => __( 'Product Filter Group', 'BeRocket_AJAX_domain' ),
+            'label' => 'Product Filter Group',
             'labels' => array(
-                'name'               => __( 'Product Filter Group', 'BeRocket_AJAX_domain' ),
-                'singular_name'      => __( 'Product Filter Group', 'BeRocket_AJAX_domain' ),
-                'menu_name'          => _x( 'Groups', 'Admin menu name', 'BeRocket_AJAX_domain' ),
-                'add_new'            => __( 'Add Filter Group', 'BeRocket_AJAX_domain' ),
-                'add_new_item'       => __( 'Add New Filter Group', 'BeRocket_AJAX_domain' ),
-                'edit'               => __( 'Edit', 'BeRocket_AJAX_domain' ),
-                'edit_item'          => __( 'Edit Filter Group', 'BeRocket_AJAX_domain' ),
-                'new_item'           => __( 'New Filter Group', 'BeRocket_AJAX_domain' ),
-                'view'               => __( 'View Filter Groups', 'BeRocket_AJAX_domain' ),
-                'view_item'          => __( 'View Filter Group', 'BeRocket_AJAX_domain' ),
-                'search_items'       => __( 'Search Product Filter Groups', 'BeRocket_AJAX_domain' ),
-                'not_found'          => __( 'No Product Filter Groups found', 'BeRocket_AJAX_domain' ),
-                'not_found_in_trash' => __( 'No Product Filter Groups found in trash', 'BeRocket_AJAX_domain' ),
+                'name'               => 'Product Filter Group',
+                'singular_name'      => 'Product Filter Group',
+                'menu_name'          => 'Groups', 'Admin menu name',
+                'add_new'            => 'Add Filter Group',
+                'add_new_item'       => 'Add New Filter Group',
+                'edit'               => 'Edit',
+                'edit_item'          => 'Edit Filter Group',
+                'new_item'           => 'New Filter Group',
+                'view'               => 'View Filter Groups',
+                'view_item'          => 'View Filter Group',
+                'search_items'       => 'Search Product Filter Groups',
+                'not_found'          => 'No Product Filter Groups found',
+                'not_found_in_trash' => 'No Product Filter Groups found in trash',
             ),
-                'description'     => __( 'This is where you can add Product Filter Groups.', 'BeRocket_AJAX_domain' ),
+            'description'     => 'This is where you can add Product Filter Groups.',
             'public'          => true,
             'show_ui'         => true,
             'capability_type' => 'group_filters',
@@ -636,18 +651,35 @@ class BeRocket_AAPF_group_filters extends BeRocket_custom_post_class {
                 'text_color_over'            => '000000',
             ),
         );
-        $this->add_meta_box('conditions', __( 'Conditions', 'BeRocket_AJAX_domain' ));
-        $this->add_meta_box('settings', __( 'Group Settings', 'BeRocket_AJAX_domain' ));
-        $this->add_meta_box('meta_box_shortcode', __( 'Shortcode', 'BeRocket_AJAX_domain' ), false, 'side');
-        $this->add_meta_box('information_faq', __( 'Information', 'BeRocket_AJAX_domain' ), false, 'side');
         parent::__construct();
         add_shortcode( 'br_filters_group', array( $this, 'shortcode' ) );
     }
-    public function init_conditions() {
+    public function init_translation() {
         $this->conditions = new BeRocket_conditions_AAPF($this->post_name.'[data]', $this->hook_name, array(
             'condition_page',
             'condition_page_woo_category'
         ));
+        $this->add_meta_box('conditions', __( 'Conditions', 'BeRocket_AJAX_domain' ));
+        $this->add_meta_box('settings', __( 'Group Settings', 'BeRocket_AJAX_domain' ));
+        $this->add_meta_box('meta_box_shortcode', __( 'Shortcode', 'BeRocket_AJAX_domain' ), false, 'side');
+        $this->add_meta_box('information_faq', __( 'Information', 'BeRocket_AJAX_domain' ), false, 'side');
+        $this->post_settings['label'] = __( 'Product Filter Group', 'BeRocket_AJAX_domain' );
+        $this->post_settings['labels'] = array(
+            'name'               => __( 'Product Filter Group', 'BeRocket_AJAX_domain' ),
+            'singular_name'      => __( 'Product Filter Group', 'BeRocket_AJAX_domain' ),
+            'menu_name'          => _x( 'Groups', 'Admin menu name', 'BeRocket_AJAX_domain' ),
+            'add_new'            => __( 'Add Filter Group', 'BeRocket_AJAX_domain' ),
+            'add_new_item'       => __( 'Add New Filter Group', 'BeRocket_AJAX_domain' ),
+            'edit'               => __( 'Edit', 'BeRocket_AJAX_domain' ),
+            'edit_item'          => __( 'Edit Filter Group', 'BeRocket_AJAX_domain' ),
+            'new_item'           => __( 'New Filter Group', 'BeRocket_AJAX_domain' ),
+            'view'               => __( 'View Filter Groups', 'BeRocket_AJAX_domain' ),
+            'view_item'          => __( 'View Filter Group', 'BeRocket_AJAX_domain' ),
+            'search_items'       => __( 'Search Product Filter Groups', 'BeRocket_AJAX_domain' ),
+            'not_found'          => __( 'No Product Filter Groups found', 'BeRocket_AJAX_domain' ),
+            'not_found_in_trash' => __( 'No Product Filter Groups found in trash', 'BeRocket_AJAX_domain' ),
+        );
+        $this->post_settings['description'] = __( 'This is where you can add Product Filter Groups.', 'BeRocket_AJAX_domain' );
     }
     public function conditions($post) {
         $options = $this->get_option( $post->ID );

@@ -7,7 +7,7 @@ class BeRocket_AAPF_display_filters_additional_type {
     function __construct() {
         if( ! empty(static::$type_slug) && empty(self::$custom_type_list[static::$type_slug]) ) {
             self::$custom_type_list[static::$type_slug] = $this;
-            $this->init();
+            add_action('init', array($this, 'init'), 1);
         }
     }
     function init() {

@@ -73,8 +73,8 @@ class BeRocket_AAPF extends BeRocket_Framework {
             'key'               => '',
             'name'              => '',
             'plugin_name'       => 'ajax_filters',
-            'full_name'         => __('WooCommerce AJAX Products Filter', 'BeRocket_AJAX_domain'),
-            'norm_name'         => __('Product Filters', 'BeRocket_AJAX_domain'),
+            'full_name'         => 'WooCommerce AJAX Products Filter',
+            'norm_name'         => 'Product Filters',
             'price'             => '',
             'domain'            => 'BeRocket_AJAX_domain',
             'templates'         => AAPF_TEMPLATE_PATH,
@@ -309,6 +309,10 @@ class BeRocket_AAPF extends BeRocket_Framework {
             }
             add_filter('BRaapf_cache_check_md5', array($this, 'BRaapf_cache_check_md5'));
         }
+    }
+    public function init_translation() {
+        $this->info['full_name'] = __('WooCommerce AJAX Products Filter', 'BeRocket_AJAX_domain');
+        $this->info['norm_name'] = __('Product Filters', 'BeRocket_AJAX_domain');
     }
     public function br_get_template_part( $name = '' ) {
         $template = '';
