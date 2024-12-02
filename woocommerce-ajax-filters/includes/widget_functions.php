@@ -223,7 +223,9 @@ class BeRocket_AAPF_Widget_functions {
             $result        = br_get_cache(apply_filters('berocket_recount_cache_key', md5(json_encode($query_imploded)), $taxonomy_data), 'berocket_recount');
         }
         if( empty($result) ) {
+            do_action('brapf_before_query', 'get_price_ranges', $query_imploded);
             $result        = $wpdb->get_results( $query_imploded );
+            do_action('brapf_after_query', 'get_price_ranges', $query_imploded);
             if($use_price_cache) {
                 br_set_cache(md5(json_encode($query_imploded)), $result, 'berocket_recount', DAY_IN_SECONDS);
             }

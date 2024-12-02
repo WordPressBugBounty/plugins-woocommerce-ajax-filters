@@ -228,7 +228,9 @@ GROUP BY meta_value ORDER BY meta_value");
             $result        = br_get_cache(apply_filters('berocket_recount_cache_key', md5(json_encode($query_imploded)), $taxonomy_data), 'berocket_recount');
         }
         if( empty($result) ) {
+            do_action('brapf_before_query', 'postmeta', $query_imploded);
             $result        = $wpdb->get_results( $query_imploded );
+            do_action('brapf_after_query', 'postmeta', $query_imploded);
             if($use_price_cache) {
                 br_set_cache(md5(json_encode($query_imploded)), $result, 'berocket_recount', DAY_IN_SECONDS);
             }

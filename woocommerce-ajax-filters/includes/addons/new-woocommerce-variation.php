@@ -230,7 +230,9 @@ class BeRocket_AAPF_compat_woocommerce_variation_new {
                 array( $wpdb->posts,    $wpdb->postmeta,    $wpdb->term_relationships,  $current_attributes,    $current_terms ),
                 $query
             );
+            do_action('brapf_before_query', 'out_of_stock_variable', $query);
             $out_of_stock_variable = $wpdb->get_results( $query, ARRAY_N );
+            do_action('brapf_after_query', 'out_of_stock_variable', $query);
             br_set_cache(apply_filters('berocket_variation_cache_key', md5($current_terms.$current_attributes)), $out_of_stock_variable, 'berocket_variation', HOUR_IN_SECONDS);
         }
         if( BeRocket_AAPF::$debug_mode ) {

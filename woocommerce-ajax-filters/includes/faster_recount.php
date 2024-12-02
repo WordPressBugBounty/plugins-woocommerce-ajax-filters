@@ -88,7 +88,9 @@ class BeRocket_AAPF_faster_attribute_recount {
             $terms_cache = br_get_cache(apply_filters('berocket_recount_cache_key', md5(json_encode($query_imploded)), $taxonomy_data), 'berocket_recount');
         }
         if( empty($terms_cache) ) {
+            do_action('brapf_before_query', 'faster_recount', $query_imploded);
             $result            = $wpdb->get_results( $query_imploded );
+            do_action('brapf_after_query', 'faster_recount', $query_imploded);
             $result            = apply_filters('berocket_query_result_recount', $result, $query, $terms);
             $result            = wp_list_pluck($result, 'term_count', 'term_count_id');
             foreach($terms as &$term) {

@@ -124,6 +124,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
             'out_of_stock_variable_reload'    => '',
             'page_same_as_filter'             => '',
             'styles_in_footer'                => '',
+            'mysql_derived_merge'             => '1',
             
             'styles_input'                    => array(
                 'checkbox'               => array( 'bcolor' => '', 'bwidth' => '', 'bradius' => '', 'fcolor' => '', 'backcolor' => '', 'icon' => '', 'fontsize' => '', 'theme' => '' ),
@@ -283,6 +284,9 @@ class BeRocket_AAPF extends BeRocket_Framework {
                     }
                     if( ! empty($option['pagination_fix']) ) {
                         include_once( dirname( __FILE__ ) . '/includes/fixes/pagination.php' );
+                    }
+                    if( ! empty($option['mysql_derived_merge']) ) {
+                        include_once( dirname( __FILE__ ) . '/fixes/mysql_derived.php' );
                     }
                     $plugin_base_slug = plugin_basename( __FILE__ );
                     add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
@@ -1061,6 +1065,14 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "name"      => "styles_in_footer",
                         "value"     => '1',
                         'label_for' => __('On some sites it can cause visual problems on page load', 'BeRocket_AJAX_domain'),
+                    ),
+                    'mysql_derived_merge' => array(
+                        "tr_class"  => "bapf_incompatibility_fixes bapf_incompatibility_fixes_hide",
+                        "label"     => __( 'Disable MySQL derived merge', "BeRocket_AJAX_domain" ),
+                        "type"      => "checkbox",
+                        "name"      => "mysql_derived_merge",
+                        "value"     => '1',
+                        'label_for' => __('Disable MySQL optimization option derived merge for filters query', 'BeRocket_AJAX_domain'),
                     ),
                     'ajax_site' => array(
                         "tr_class"  => "bapf_incompatibility_fixes bapf_incompatibility_fixes_hide",
