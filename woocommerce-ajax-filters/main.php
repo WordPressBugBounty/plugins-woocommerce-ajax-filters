@@ -201,6 +201,10 @@ class BeRocket_AAPF extends BeRocket_Framework {
             new BeRocket_AAPF_compat_JetSmartFilter();
             add_action('vc_before_init', 'berocket_filter_vc_before_init', 100000);
             //----------------------
+
+	        if( is_admin() ) {
+		        require_once dirname( __FILE__ ) . '/includes/wizard.php';
+	        }
         }
         parent::__construct( $this );
 
@@ -346,6 +350,8 @@ class BeRocket_AAPF extends BeRocket_Framework {
     }
     function include_once_files() {
         parent::include_once_files();
+
+		include_once "includes/admin/docs.php";
     }
     function init_validation() {
         return parent::init_validation() && ( ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_plugin_active_for_network( 'woocommerce/woocommerce.php' ) ) &&
@@ -419,13 +425,6 @@ class BeRocket_AAPF extends BeRocket_Framework {
         wp_register_style( 'braapf-single-filter-edit',
             plugins_url( '/assets/admin/css/single_filter_edit.css', BeRocket_AJAX_filters_file ));
         
-        wp_register_script( 'berocket_wizard_autoselect',
-            plugins_url( 'wizard/wizard.js', __FILE__ ),
-            array( 'jquery' ) );
-        wp_register_style( 'berocket_wizard_autoselect',
-            plugins_url( 'wizard/wizard.css', __FILE__ ) );
-        wp_register_style( 'wizard-setup',
-            plugins_url( 'wizard/admin.css', __FILE__ ) );
         
         BeRocket_AAPF::wp_enqueue_style( 'berocket_aapf_widget-admin-style' );
     }
@@ -1421,7 +1420,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                     <li>' . __('Wait until end <strong style="color:red;">do not close this page</strong>', 'BeRocket_AJAX_domain') . '</li>
                     <li>' . __('Save settings with new selectors', 'BeRocket_AJAX_domain') . '</li>
                 </ol>
-                ' . BeRocket_wizard_generate_autoselectors(array('products' => '.berocket_aapf_products_selector', 'pagination' => '.berocket_aapf_pagination_selector', 'result_count' => '.berocket_aapf_product_count_selector'), array(), $output_text) . '
+                ' . BeRocket_wizard_generate_autoselectors_v2(array('products' => '.berocket_aapf_products_selector', 'pagination' => '.berocket_aapf_pagination_selector', 'result_count' => '.berocket_aapf_product_count_selector'), array(), $output_text) . '
             </td>
         </tr>';
         return $html;
@@ -2659,7 +2658,9 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
         do_action('bapf_wp_footer');
     }
     public function divi_extensions_init() {
-        include_once dirname( __FILE__ ) . '/divi/includes/FiltersExtension.php';
+        if( class_exists('DiviExtension') ) {
+            include_once dirname( __FILE__ ) . '/divi/includes/FiltersExtension.php';
+        }
     }
 }
 

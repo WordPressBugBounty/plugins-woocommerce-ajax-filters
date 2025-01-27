@@ -26,8 +26,8 @@ class BeRocket_aapf_add_custom_postmeta extends BeRocket_framework_addon_lib {
     function get_addon_data() {
         $data = parent::get_addon_data();
         return array_merge($data, array(
-            'addon_name'    => __('Custom Post Meta Filtering (BETA)', 'BeRocket_AJAX_domain'),
-            'tooltip'       => __('Option to filter products by custom post meta fields. Can slow down filtering.', 'BeRocket_AJAX_domain')
+            'addon_name'    => __('Custom Post Meta Filtering', 'BeRocket_AJAX_domain'),
+            'tooltip'       => __('Option allows you to filter by the post\'s meta(weight, length, etc.).', 'BeRocket_AJAX_domain')
         ));
     }
     function deactivate() {

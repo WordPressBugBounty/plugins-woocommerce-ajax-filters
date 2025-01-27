@@ -6,8 +6,8 @@ class BeRocket_aapf_custom_slug_addon extends BeRocket_framework_addon_lib {
     function get_addon_data() {
         $data = parent::get_addon_data();
         return array_merge($data, array(
-            'addon_name'    => __('Custom Slug (BETA)', 'BeRocket_AJAX_domain'),
-            'tooltip'       => '<a href="https://docs.berocket.com/docs_section/custom-slug">DOCUMENTATION</a><br>'.__('Setup specific slug for each filter.<br>Provide possibility to use multiple filters for same attribute/taxonomy', 'BeRocket_AJAX_domain'),
+            'addon_name'    => __('Custom Slug', 'BeRocket_AJAX_domain'),
+            'tooltip'       => '<a target="_blank" href="https://docs.berocket.com/docs_section/custom-slug">DOCUMENTATION</a><br>'.__('Replaces attribute/taxonomy slug in filtered URL.<br>Provide the possibility to use multiple filters for the same attribute/taxonomy.', 'BeRocket_AJAX_domain'),
             'paid'          => true
         ));
     }

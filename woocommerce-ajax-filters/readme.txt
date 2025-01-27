@@ -5,7 +5,7 @@ Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=w
 Tags: filters, product filters, ajax product filters, ajax filter, ajax filter widget, color filter, size filter, product onsale filter, product preview, product category filter, product reset filter, product sort by filter, stock filter, product tag filter, price range filter, price box filter, advanced product filters, woocommerce filters, woocommerce product filters, woocommerce products filter, woocommerce ajax product filters, widget, plugin, woocommerce item filters, filters plugin, ajax filters plugin, filter woocommerce products, filter woocommerce products plugin, wc filters, wc filters products, wc products filters, wc ajax products filters, wc product filters, wc advanced product filters, woocommerce layered nav, woocommerce layered navigation, ajax filtered nav, ajax filtered navigation, price filter, ajax price filter, woocommerce product sorting, sidebar filter, sidebar ajax filter, taxonomy filter, category filter, attribute filter, attributes filter, woocommerce product sort, ajax products filter plugin for woocommerce, rocket, berocket, berocket woocommerce ajax products filter
 Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 1.6.7.1
+Stable tag: 1.6.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -188,6 +188,13 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Changelog ==
+
+= 1.6.8 =
+* Enhancement - Compatibility version: WooCommerce 9.6
+* Enhancement - Setup wizard
+* Fix - JavaScript error for pagination when multiple selectors used
+* Fix - Divi module script on some themes
+* Fix - Initialize additional tables
 
 = 1.6.7.1 =
 * Enhancement - Option to disable MySQL derived merge for filter queries

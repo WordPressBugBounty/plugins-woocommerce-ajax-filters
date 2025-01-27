@@ -18,9 +18,10 @@
             echo $color_term_selector;
             continue;
         }
+	    $color_meta = berocket_term_get_metadata($term, 'color');
+
         $color_term_selector = '<tr class="element-depth-'.(empty($term->depth) ? '0' : $term->depth).'">';
-        $color_term_selector .= '<td>'.berocket_isset($term, 'name').'</td>';
-        $color_meta = berocket_term_get_metadata($term, 'color');
+        $color_term_selector .= '<td class="br_colorpicker_field_name"><div>'.berocket_isset($term, 'name').'</div></td>';
         $color_term_selector .= '<td class="br_colorpicker_field" data-color="' . br_get_value_from_array($color_meta, 0, 'ffffff') . '">
         </td>
         <input class="br_colorpicker_field_input" type="hidden" value="' . br_get_value_from_array($color_meta, 0) . '"

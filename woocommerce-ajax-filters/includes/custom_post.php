@@ -590,6 +590,13 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
             $_SESSION['braapf_widget_wizard'] = true;
         }
     }
+
+    public function fix_multiple_post_meta($i, $options) {
+        if( is_array($options) && ! empty($options['widget_type']) ) {
+            return true;
+        }
+        return $i == 0;
+    }
 }
 
 
@@ -800,6 +807,13 @@ class BeRocket_AAPF_group_filters extends BeRocket_custom_post_class {
         }
         $options['elements_above_products'] = $elements_above_products;
         update_option('br_filters_options', $options);
+    }
+
+    public function fix_multiple_post_meta($i, $options) {
+        if( is_array($options) && isset($options['filters']) && is_array($options['filters']) && count($options['filters']) > 0 ) {
+            return true;
+        }
+        return $i == 0;
     }
 }
 

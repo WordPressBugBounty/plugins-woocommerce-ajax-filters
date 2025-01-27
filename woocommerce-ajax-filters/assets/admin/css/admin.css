@@ -4,7 +4,18 @@
 .berocket_aapf_advanced_settings_subcategory{float: right;position: relative;top: 3px;}
 .berocket_aapf_output_limitations{display: none;}
 
-.br_colorpicker_field{width: 30px; height: 30px; margin: 0 auto; border: 1px solid black; position: relative!important;}
+.br_colorpicker_field{
+    width: 30px;
+    height: 30px;
+    margin: 0 auto;
+    border: 1px solid black;
+    position: relative!important;
+}
+.br_colorpicker_field_name > div {
+    height: 32px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
 
 .br_colorpicker_field .fa-times {
     position: absolute;
@@ -404,7 +415,7 @@ td.br_colorpicker_field.colorpicker_removed:after {
     top: 0;
 }
 .berocket_simple_filter_creation .berocket_add_filter_to_group,
-.berocket_simple_filter_creation .berocket_create_new, {
+.berocket_simple_filter_creation .berocket_create_new {
     margin-bottom: 5px;
     margin-top: 5px;
 }
@@ -633,6 +644,13 @@ td.br_colorpicker_field.colorpicker_removed:after {
     display: inline-block;
 }
 /*Conditions*/
+#conditions #submitpost {
+    display: flex;
+    flex-direction: row-reverse;
+}
+#conditions #submitpost .berocket_conditions_block {
+    width: calc(100% - 250px);
+}
 #conditions .section_conditions_hide_this_on {
     margin-left: -13px;
     margin-right: -13px;
@@ -726,4 +744,273 @@ td.br_colorpicker_field.colorpicker_removed:after {
 .braapf_widget_color_pick tr.element-depth-6 td:first-child:before,
 .braapf_include_exclude_list .element-depth-6:before {
     content: "- - - - - - ";
+}
+
+
+
+/* NEW DESIGN FOR ADMIN SIDE (WITHOUT SETTINGS PAGE) */
+
+/* CONDITIONS (GROUP AND FILTER) */
+#conditions,
+#filtering_conditions {
+    background-color: #f7f7f7;
+}
+#conditions .postbox-header,
+#filtering_conditions .postbox-header{
+    background-color: white;
+}
+#conditions .br_cond_type,
+#filtering_conditions .br_cond_type {
+    margin-bottom: 10px;
+}
+#conditions #submitpost .berocket_conditions_block_docs {
+    width: 250px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+#conditions #submitpost .berocket_conditions_block_docs_content {
+    padding-left: 10px;
+    border-left: 2px solid #999;
+    line-height: 1.4;
+    color: #6c6c6c;
+}
+#conditions #submitpost .berocket_conditions_block_docs_content p + p {
+    margin: 0;
+}
+#conditions #submitpost .berocket_conditions_block_docs_content p.docs_title {
+    font-weight: bold;
+    margin: 10px 0 1px;
+}
+#conditions .section_conditions_hide_this_on {
+    background-color: white;
+    padding-bottom: 6px;
+    margin-left: 0;
+    margin-right: 0;
+}
+#poststuff #conditions .inside {
+    padding: 0;
+}
+#poststuff #conditions .berocket_conditions_block {
+    padding: 0 12px;
+}
+.br_conditions {
+    padding: 6px 0 4px;
+    text-align: center;
+}
+.br_conditions .button.br_add_group,
+.br_conditions .button.br_remove_group,
+.br_conditions .button.berocket_add_condition,
+.br_conditions .button.berocket_remove_condition {
+    background-color: #f16542;
+    border: 0 none;
+    color: white;
+    min-height: auto;
+    height: 30px;
+    width: 30px;
+    position: relative;
+    display: inline-block;
+    line-height: 0;
+    border-radius: 5px;
+}
+.br_conditions .button.br_add_group:after,
+.br_conditions .button.br_remove_group:after,
+.br_conditions .button.berocket_add_condition:after,
+.br_conditions .button.berocket_remove_condition:after {
+    content: "+";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    right: 0;
+    text-align: center;
+    display: block;
+    line-height: 0;
+    font-size: 24px;
+    margin: -3px;
+}
+.br_conditions .button.br_remove_group:after,
+.br_conditions .button.berocket_remove_condition:after {
+    content: "-";
+}
+.br_conditions .button.br_add_group i,
+.br_conditions .button.br_remove_group i,
+.br_conditions .button.berocket_add_condition i,
+.br_conditions .button.berocket_remove_condition i {
+    display: none;
+}
+.br_conditions .button.berocket_remove_condition {
+    position: absolute !important;
+    top: -16px;
+    right: -9px;
+}
+
+.section_conditions_hide_this_on th {
+    color: #000;
+    font-weight: 600;
+}
+.section_conditions_hide_this_on label {
+    color: #000;
+    cursor: pointer;
+}
+.section_conditions_hide_this_on label input,
+.br_current_cond label input {
+    margin-right: 1px;
+    margin-left: 5px;
+    width: 14px;
+    min-width: 14px;
+    height: 14px;
+    min-height: 14px;
+    border-radius: 3px;
+    border: 1px solid #d1d3d7;
+}
+.br_current_cond label input {
+    margin-right: 5px;
+    margin-left: 0;
+    width: 16px;
+    min-width: 16px;
+    height: 16px;
+    min-height: 16px;
+}
+.br_current_cond label {
+    cursor: pointer;
+}
+.section_conditions_hide_this_on label input[type="checkbox"]:focus,
+.br_current_cond label input[type="checkbox"]:focus{
+    border-color: #d1d3d7;
+    box-shadow: 0 0 0 1px #d1d3d7;
+}
+.section_conditions_hide_this_on label input[type="checkbox"]:checked,
+.br_current_cond label input[type="checkbox"]:checked {
+    border-color: #f16542;
+    box-shadow: 0 0 0 1px #f16542;
+}
+.section_conditions_hide_this_on label input[type="checkbox"]:checked:before,
+.br_current_cond label input[type="checkbox"]:checked:before {
+    height: 4px;
+    width: 9px;
+    margin: .1075rem 0 0 .07rem;
+    border-bottom: 2px solid #f16542;
+    border-left: 2px solid #f16542;
+    rotate: -45deg;
+    content: "";
+}
+.br_current_cond label input[type="checkbox"]:checked:before {
+    margin: .2rem 0 0 .15rem;
+}
+
+.br_conditions .br_html_condition {
+    border: 0 none;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 20px 16px 12px 8px;
+    box-shadow: 1px 1px 6px 0 #f0f0f0;
+    text-align: left;
+}
+.br_conditions .br_html_condition .br_cond_select {
+    border: 0 none;
+    border-bottom: 1px solid #efefef;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    padding: 16px 8px 16px 12px;
+}
+.br_conditions .br_html_condition .br_cond_select:before,
+.br_conditions .br_html_condition:before{
+    font-size: 17px !important;
+    font-weight: 600;
+}
+.br_conditions .br_html_condition .br_cond_select > span,
+.br_conditions .br_html_condition .br_cond_select .br_current_cond {
+    display: inline-flex;
+    max-width: 100%;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond  {
+    display: flex;
+    align-items: start;
+    flex-wrap: wrap;
+}
+.br_conditions .br_html_condition .br_cond_select select,
+.br_conditions .br_html_condition .br_cond_select select:hover {
+    color: #3c3c3c;
+    border: 1px solid #dcdfe3;
+    border-radius: 5px;
+    padding: 3px 24px 3px 14px;
+}
+.br_conditions .br_html_condition .br_current_cond {
+    margin-top: 0;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond p {
+    margin: 0;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond_user_role select,
+.br_conditions .br_html_condition .br_cond_select .br_cond_page select,
+.br_conditions .br_html_condition .br_cond_select .br_cond_woo_attribute label + select,
+.br_conditions .br_html_condition .br_cond_select .br_cond_woo_category select {
+    margin-right: 5px;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond_page select + div,
+.br_conditions .br_html_condition .br_cond_select .br_cond_woo_category label + div {
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #dcdfe3 !important;
+    max-width: 100%;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond_page select + div > div + div,
+.br_conditions .br_html_condition .br_cond_select .br_cond_woo_category label + div > div + div {
+    margin-top: 5px;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_woo_category {
+    display: flex;
+    align-items: baseline;
+    max-width: 100%;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond_woo_category label {
+    display: block;
+    margin-bottom: 10px;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond_woo_attribute,
+.br_conditions .br_html_condition .br_cond_select .br_cond_user_status,
+.br_conditions .br_html_condition .br_cond_select .br_cond_attribute_filtering {
+    align-items: baseline;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond_user_status {
+    padding-left: 15px;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond_woo_attribute label,
+.br_conditions .br_html_condition .br_cond_select .br_cond_attribute_filtering label {
+    margin-left: 15px;
+    margin-right: 5px;
+}
+
+/* CONDITIONS (GROUP AND FILTER) - SMALLER DEVICES */
+.br_cond > select,
+.br_cond > div,
+.br_cond > p {
+    margin-bottom: 10px;
+}
+@media screen and (max-width: 1250px) {
+    .br_conditions .br_html_condition .br_cond_select .br_current_cond,
+    .br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_page,
+    .br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_user_role,
+    .br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_user_status label,
+    .br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_woo_attribute label,
+    .br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_woo_attribute,
+    .br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_woo_category {
+        display: block;
+    }
+    .br_conditions .br_html_condition .br_cond_select .br_cond_user_status {
+        padding-left: 0;
+    }
+    .br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_user_status label {
+        margin-bottom: 6px;
+    }
+    .br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_woo_attribute label {
+        margin: 10px 0 0 2px;
+    }
+}
+@media screen and (max-width: 500px) {
+    #conditions #submitpost .berocket_conditions_block_docs {
+        display: none;
+    }
+    #conditions #submitpost .berocket_conditions_block {
+        width: 100%;
+    }
 }

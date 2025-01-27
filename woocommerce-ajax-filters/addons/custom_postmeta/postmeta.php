@@ -41,6 +41,11 @@ class BeRocket_aapf_add_postmeta_filters {
     function filter_type_additional($settings_name, $braapf_filter_settings) {
         $custom_postmeta_list = $this->get_custom_postmeta();
         $custom_postmeta = br_get_value_from_array($braapf_filter_settings, 'custom_postmeta', '');
+        if( ! empty($custom_postmeta) && empty($custom_postmeta_list) ) {
+            $custom_postmeta_list = array(
+                'postmeta' => array($custom_postmeta => array('name' => $custom_postmeta))
+            );
+        }
         echo '<div class="braapf_custom_postmeta braapf_half_select_full">';
             echo '<label for="braapf_custom_postmeta">' . __('Custom Post Meta', 'BeRocket_AJAX_domain') . '</label>';
             echo '<select id="braapf_custom_postmeta" name="'.$settings_name.'[custom_postmeta]">';
@@ -307,7 +312,7 @@ GROUP BY meta_value ORDER BY meta_value");
             $text_field = maybe_unserialize($text);
         }
         if( is_array($text_field) ) {
-            $text_field = implode(', ', $text_field);
+            $text_field = self::r_implode(', ', $text_field);
         }
         $text_field = str_replace(array('_'), array(' '), $text_field);
         $text_field = trim($text_field);
@@ -528,5 +533,18 @@ GROUP BY meta_value ORDER BY meta_value");
         }
         return $template_content;
     }
+
+	function r_implode( $glue, $array ) {
+        if ( ! is_array( $array ) )
+            return $array;
+
+		$result = array_shift( $array );
+
+		foreach ( $array as $item ) {
+			$result .= $glue . self::r_implode( $glue, $item );
+		}
+
+		return $result;
+	}
 }
 new BeRocket_aapf_add_postmeta_filters();

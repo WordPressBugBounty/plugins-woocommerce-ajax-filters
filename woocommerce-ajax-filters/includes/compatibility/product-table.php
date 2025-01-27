@@ -2,17 +2,32 @@
 class BeRocket_AAPF_compat_product_table {
     function __construct() {
         add_action( 'plugins_loaded', array( __CLASS__, 'plugins_loaded' ), 1 );
-        add_action('bapf_class_ready', array($this, 'init'), 10, 1);
+        add_action('wp_ajax_wcpt_load_products', array($this, 'init'), 1);
+        add_action('wp_ajax_nopriv_wcpt_load_products', array($this, 'init'), 1);
     }
-    public function init($BeRocket_AAPF) {
-        $filter_nn_name = apply_filters('berocket_aapf_filter_variable_name_nn', 'filters');
+    public function init() {
         if(defined('DOING_AJAX') && DOING_AJAX && !empty($_POST['action']) && $_POST['action'] == 'wcpt_load_products') {
-            if( ! empty($_POST[$filter_nn_name]) ) {
-                $options = $BeRocket_AAPF->get_option();
-                if( empty($options['seo_uri_decode']) ) {
-                    $_GET[$filter_nn_name] = $_POST[$filter_nn_name];
-                } else {
-                    $_GET[$filter_nn_name] = urldecode($_POST[$filter_nn_name]);
+            $BeRocket_AAPF = BeRocket_AAPF::getInstance();
+            $options = $BeRocket_AAPF->get_option();
+            if( $options['nice_urls'] ) {
+                $filter_name = apply_filters('berocket_aapf_filter_variable_name', 'filters');
+                if( ! empty($_POST[$filter_name]) ) {
+                    if( empty($options['seo_uri_decode']) ) {
+                        $_GET[$filter_name] = $_POST[$filter_name];
+                    } else {
+                        $_GET[$filter_name] = urldecode($_POST[$filter_name]);
+                    }
+                    global $wp_query;
+                    $wp_query->set($filter_name, $_GET[$filter_name]);
+                }
+            } else {
+                $filter_nn_name = apply_filters('berocket_aapf_filter_variable_name_nn', 'filters');
+                if( ! empty($_POST[$filter_nn_name]) ) {
+                    if( empty($options['seo_uri_decode']) ) {
+                        $_GET[$filter_nn_name] = $_POST[$filter_nn_name];
+                    } else {
+                        $_GET[$filter_nn_name] = urldecode($_POST[$filter_nn_name]);
+                    }
                 }
             }
             $table_id = filter_input( INPUT_POST, 'table_id', FILTER_SANITIZE_STRING );

@@ -391,8 +391,24 @@ var BeRocket_autoselector_stop = false;
 var BeRocket_current_autoselector_block = jQuery('<div></div>');
 jQuery(document).on('click', '.berocket_autoselector', function(event) {
     event.preventDefault();
+    if( jQuery('.berocket_wizard_autoselectors_popup').length > 0 ) {
+        jQuery('.berocket_wizard_autoselectors_popup').show();
+    } else {
+        BeRocket_run_autoselector(jQuery(this));
+    }
+});
+jQuery(document).on('click', '.berocket_wizard_popup_close', function() {
+    jQuery('.berocket_wizard_autoselectors_popup').hide();
+});
+jQuery(document).on('click', '.berocket_wizard_popup_next', function() {
+    jQuery('.berocket_wizard_autoselectors_popup').hide();
+    BeRocket_run_autoselector(jQuery(this));
+});
+function BeRocket_run_autoselector($element) {
+    jQuery(document).trigger('brwiz_autoselector_start');
     BeRocket_autoselector_stop = false;
-    BeRocket_current_autoselector_block = jQuery(this).parents('.berocket_wizard_autoselectors');
+    BeRocket_current_autoselector_block = $element.parents('.berocket_wizard_autoselectors');
+    jQuery('.berocket_wizard_autoselectors ol li').find('.with-fa').removeClass('with-fa');
     BeRocket_init_autoselectors();
     jQuery.get(berocket_wizard_autoselect.ajaxurl, {action:"berocket_wizard_selector_start"}, function(url) {
         if( BeRocket_autoselector_stop ) {
@@ -409,7 +425,7 @@ jQuery(document).on('click', '.berocket_autoselector', function(event) {
             BeRocket_wizard_check(url, data, berocket_wizard_autoselector);
         }).error(function() {berocket_wizard_autoselector_end(berocket_wizard_autoselector_end_error);});
     }).error(function() {berocket_wizard_autoselector_end(berocket_wizard_autoselector_end_error);});
-});
+}
 jQuery(document).on('click', '.berocket_autoselector_seo', function(event) {
     event.preventDefault();
     jQuery(this).removeClass('berocket_autoselector_seo').addClass('berocket_autoselector');
@@ -424,6 +440,7 @@ jQuery(document).on('click', '.berocket_autoselector_stop', function(event) {
     if( jQuery('.berocket_selectors_was_runned').length ) {
         jQuery('.berocket_selectors_was_runned').remove();
         berocket_wizard_autoselector(false);
+        jQuery('.berocket_wizard_autoselectors ol li').find('.with-fa').removeClass('with-fa');
     }
 });
 function BeRocket_set_autoselector_load_position(position, position_name, next_position) {
@@ -431,7 +448,7 @@ function BeRocket_set_autoselector_load_position(position, position_name, next_p
         jQuery('.berocket_wizard_autoselectors ol li .fa-spin').removeClass('fa-spinner').addClass('fa-check').removeClass('fa-spin');
     }
     if( position_name ) {
-        jQuery('.berocket_wizard_autoselectors ol li span:contains('+position_name+')').parent().find('.fa').addClass('fa-spinner').addClass('fa-spin');
+        jQuery('.berocket_wizard_autoselectors ol li span:contains('+position_name+')').parent().addClass('with-fa').find('.fa').addClass('fa-spinner').addClass('fa-spin');
     }
     var functions = BeRocket_current_autoselector_block.data('functions');
     if( typeof(functions) != 'undefined' && functions.percent != '' && typeof window[functions.percent] == 'function' ) {
@@ -493,6 +510,7 @@ function berocket_wizard_autoselector_end(function_after_end) {
     });
 }
 function berocket_wizard_autoselector_end_success() {
+    jQuery(document).trigger('brwiz_autoselector_end');
     var functions = BeRocket_current_autoselector_block.data('functions');
     if( functions.any != '' && typeof window[functions.any] == 'function' ) {
         window[functions.any]();
@@ -501,11 +519,12 @@ function berocket_wizard_autoselector_end_success() {
         window[functions.success]();
     }
     jQuery('.berocket_autoselector').prop('disabled', false);
-    BeRocket_set_autoselector_load_position(100, '');
+    BeRocket_set_autoselector_load_position(100, jQuery('.berocket_autoselector_load .berocket_autoselector_action').data('text'));
     jQuery('.berocket_autoselect_spin').hide();
     jQuery('.berocket_autoselect_ready').show();
 }
 function berocket_wizard_autoselector_end_error() {
+    jQuery(document).trigger('brwiz_autoselector_end');
     var functions = BeRocket_current_autoselector_block.data('functions');
     if( typeof(functions) != 'undefined' && functions.any != '' && typeof window[functions.any] == 'function' ) {
         window[functions.any]();
@@ -523,3 +542,161 @@ function berocket_wizard_autoselector_end_error() {
         jQuery('.berocket_wizard_autoselectors ol li .fa-check').last().removeClass('fa-spinner').addClass('fa-times').removeClass('fa-spin').removeClass('fa-check');
     }
 }
+function berocket_submit_form() {
+    berocket_enable_all_links();
+    jQuery('.br_framework_submit_form').addClass('form_submit_ready');
+    jQuery('.br_framework_submit_form').submit();
+}
+//Wizard Plugin install
+jQuery(document).on('submit', '.wizard_plugins_install .br_framework_submit_form', function (event) {
+    if( ! jQuery(this).is('.form_submit_ready') ) {
+        berocket_disable_all_links();
+        event.preventDefault();
+        berocket_install_next_plugin(jQuery('.berocket_install_plugins_from_framework_td').first().parent());
+    }
+});
+var brwiz_plugin_delay_error = false;
+function berocket_move_next_plugin($plugin_element, result) {
+    $plugin_element.find('.fa').removeClass('fa-spinner').removeClass('fa-spin');
+    if( typeof(result) === 'object' ) {
+        if( result.status == false ) {
+            $plugin_element.find('.fa').addClass('fa-times');
+            $plugin_element.find('.button_container').after('<div class="brwiz_plugin_error">'+result.error+'</div>');
+            brwiz_plugin_delay_error = true;
+        } else {
+            $plugin_element.find('.fa').addClass('fa-check');
+        }
+    } else if( result != 'disabled' ) {
+        if( result == 'false' ) {
+            $plugin_element.find('.fa').addClass('fa-times');
+        } else {
+            $plugin_element.find('.fa').addClass('fa-check');
+        }
+    }
+    
+    var $next_element = $plugin_element.next();
+    if( $next_element.find('.berocket_install_plugins_from_framework_td').length ) {
+        berocket_install_next_plugin($next_element);
+    } else {
+        if( brwiz_plugin_delay_error ) {
+            setTimeout(berocket_submit_form, 3000);
+        } else {
+            berocket_submit_form();
+        }
+    }
+}
+function berocket_install_next_plugin($plugin_element) {
+    $plugin_element.find('.fa').removeClass('fa-check').removeClass('fa-times').addClass('fa-spinner').addClass('fa-spin');
+    var nonce = jQuery('#_wpnonce').val();
+    var plugin = jQuery($plugin_element).find('.berocket_install_plugins_from_framework').data('plugin');
+    var checked = jQuery($plugin_element).find('.berocket_install_plugins_from_framework').prop('checked');
+    var disabled = jQuery($plugin_element).find('.berocket_install_plugins_from_framework').prop('disabled');
+    if( checked && ! disabled ) {
+        jQuery.post(brwiz_admin_ajax_url, {action:'brapf_wizard_install_plugin', nonce: nonce, plugin: plugin}, function(result) {
+            berocket_move_next_plugin($plugin_element, result);
+        }, 'json');
+    } else {
+        berocket_move_next_plugin($plugin_element, 'disabled');
+    }
+}
+//Wizard Filters create
+jQuery(document).on('submit', '.wizard_filters_create .br_framework_submit_form', function (event) {
+    if( ! jQuery(this).is('.form_submit_ready') ) {
+        berocket_disable_all_links();
+        event.preventDefault();
+        berocket_create_next_filter(jQuery('.brwizard_create_filters_td').first().parent());
+    }
+});
+function berocket_add_loader_elem($plugin_element) {
+    $plugin_element.find('.fa').removeClass('fa-check').removeClass('fa-times').addClass('fa-spinner').addClass('fa-spin');
+}
+function berocket_add_result_elem($plugin_element, result) {
+    $plugin_element.find('.fa').removeClass('fa-spinner').removeClass('fa-spin');
+    if( result != 'disabled' ) {
+        if( result == 'false' ) {
+            $plugin_element.find('.fa').addClass('fa-times');
+        } else {
+            $plugin_element.find('.fa').addClass('fa-check');
+        }
+    }
+}
+function berocket_insert_sidebar() {
+    $plugin_element = jQuery('.brwizard_add_to_sidebar_td');
+    var nonce = jQuery('#_wpnonce').val();
+    var value = jQuery($plugin_element).find('.brwizard_create_filters').val();
+    
+    var checked = $plugin_element.find('.brwizard_create_filters_enabled').prop('checked');
+    if( checked ) {
+        berocket_add_loader_elem($plugin_element);
+        jQuery.post(brwiz_admin_ajax_url, {action:'brapf_wizard_create_filter', nonce: nonce, filter: 'add_to_sidebar', value: value}, function(result) {
+            berocket_add_result_elem($plugin_element, result);
+            berocket_submit_form();
+        });
+    } else {
+        berocket_submit_form();
+    }
+}
+function berocket_generate_group() {
+    $plugin_element = jQuery('.brwizard_create_group_td');
+    berocket_add_loader_elem($plugin_element);
+    var nonce = jQuery('#_wpnonce').val();
+    var filters = [];
+    jQuery('.brwizard_create_filters_td').each(function() {
+        var checked = jQuery(this).find('.brwizard_create_filters_enabled').prop('checked');
+        if( checked ) {
+            var filter = jQuery(this).find('.brwizard_create_filters').data('filter');
+            var value = jQuery(this).find('.brwizard_create_filters').val();
+            filters.push({name: filter, val: value});
+        }
+    });
+    jQuery.post(brwiz_admin_ajax_url, {action:'brapf_wizard_create_filter', nonce: nonce, filter: 'create_group', filters: filters}, function(result) {
+        berocket_add_result_elem($plugin_element, result);
+        berocket_insert_sidebar();
+    });
+}
+function berocket_move_next_filter($plugin_element, result) {
+    berocket_add_result_elem($plugin_element, result);
+    var $next_element = $plugin_element.next();
+    if( $next_element.find('.brwizard_create_filters').length ) {
+        berocket_create_next_filter($next_element);
+    } else {
+        berocket_generate_group();
+    }
+}
+function berocket_create_next_filter($plugin_element) {
+    berocket_add_loader_elem($plugin_element);
+    var nonce = jQuery('#_wpnonce').val();
+    var filter = jQuery($plugin_element).find('.brwizard_create_filters').data('filter');
+    var value = jQuery($plugin_element).find('.brwizard_create_filters').val();
+    var checked = jQuery($plugin_element).find('.brwizard_create_filters_enabled').prop('checked');
+    var disabled = jQuery($plugin_element).find('.brwizard_create_filters_enabled').prop('disabled');
+    if( checked && ! disabled ) {
+        jQuery.post(brwiz_admin_ajax_url, {action:'brapf_wizard_create_filter', nonce: nonce, filter: filter, value: value}, function(result) {
+            berocket_move_next_filter($plugin_element, result);
+        });
+    } else {
+        berocket_move_next_filter($plugin_element, 'disabled');
+    }
+}
+function berocket_disable_all_links() {
+    jQuery('.br_setup_wizard form').addClass('brwiz_disabled_links');
+    jQuery('.br_setup_wizard .header .side a').addClass('brwiz_disabled_links');
+    jQuery('.br_setup_wizard .br_setup_wizard_bottom_links a').addClass('brwiz_disabled_links');
+    jQuery('.br_setup_wizard .next-step a').addClass('brwiz_disabled_links');
+    jQuery('.br_setup_wizard .next-step .button').prop('disabled', true);
+}
+function berocket_enable_all_links() {
+    jQuery('.br_setup_wizard form').removeClass('brwiz_disabled_links');
+    jQuery('.br_setup_wizard .header .side a').removeClass('brwiz_disabled_links');
+    jQuery('.br_setup_wizard .br_setup_wizard_bottom_links a').removeClass('brwiz_disabled_links');
+    jQuery('.br_setup_wizard .next-step a').removeClass('brwiz_disabled_links');
+    jQuery('.br_setup_wizard .next-step .button').prop('disabled', false);
+}
+jQuery(document).on('click', 'a.brwiz_disabled_links', function(event) {
+    event.preventDefault();
+});
+jQuery(document).on('submit', 'form.brwiz_disabled_links', function(event) {
+    event.preventDefault();
+});
+jQuery(document).on('brwiz_autoselector_start', berocket_disable_all_links);
+jQuery(document).on('brwiz_autoselector_end', berocket_enable_all_links);

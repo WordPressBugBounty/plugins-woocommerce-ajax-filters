@@ -5,17 +5,6 @@
 .post-type-br_product_filter #settings .inside .berocket_sbs {
     margin-left: 0;
 }
-/*Conditions*/
-#conditions .section_conditions_hide_this_on {
-    margin-left: -13px;
-    margin-right: -13px;
-    border-top: 1px solid #ccc;
-    padding: 5px 12px 1px;
-    margin-top: 8px;
-}
-#poststuff #conditions .inside {
-    padding-bottom: 6px;
-}
 /*Settings styles*/
 .berocket_sbs .berocket_sbs_header {
     margin-bottom: 20px;

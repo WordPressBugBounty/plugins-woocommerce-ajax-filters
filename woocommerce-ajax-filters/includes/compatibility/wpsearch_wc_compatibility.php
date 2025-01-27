@@ -8,7 +8,9 @@ if( ! class_exists('BeRocket_AAPF_compat_wpsearch_woocommerce') ) {
             add_filter('berocket_widget_attribute_type_terms', array($this, 'add_hook'), 999999);
         }
         function save_instance($instance) {
-            $this->instance = $instance;
+            if( method_exists($instance, 'get_price_min_amount') ) {
+                $this->instance = $instance;
+            }
         }
         function remove_hook($filtered) {
             if( $this->instance != false ) {

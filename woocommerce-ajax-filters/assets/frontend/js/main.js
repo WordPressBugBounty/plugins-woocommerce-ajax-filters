@@ -236,7 +236,7 @@ function braapf_filtered_filters_set() {
     //Pagination page
     jQuery(document).ready( function() {
         var pagination_links = the_ajax_script.pagination_class;
-        pagination_links = pagination_links.replace(',', ' a,');
+        pagination_links = pagination_links.replaceAll(',', ' a,');
         pagination_links = berocket_apply_filters('pagination_links_a_tags', pagination_links+' a', the_ajax_script.pagination_class);
         if( !the_ajax_script.disable_ajax_loading && the_ajax_script.pagination_ajax && $(the_ajax_script.products_holder_id).length ) {
             $(document).on('click', pagination_links, function(event) {
@@ -293,11 +293,15 @@ function braapf_filtered_filters_set() {
     });
     
     //default update products
-    braapf_get_url_with_filters_selected = function() {
+    braapf_get_filters_selected = function() {
         braapf_grab_all();
         var compat_filters = braapf_compact_filters();
         var filter_mask = berocket_apply_filters('braapf_filters_mask', the_ajax_script.url_mask);
         var filter_string = braapf_compat_filters_to_string(compat_filters, filter_mask, the_ajax_script.url_split);
+        return filter_string;
+    }
+    braapf_get_url_with_filters_selected = function() {
+        var filter_string = braapf_get_filters_selected();
         var current_url_data = braapf_get_current_url_data();
         current_url_data.filter = filter_string;
         current_url_data = braapf_remove_pages_from_url_data(current_url_data);
@@ -971,6 +975,11 @@ function braapf_filtered_filters_set() {
         }
         return data;
     }
+    jQuery(document).on('preInit.dt', '.berocket_product_table_compat .wc-product-table', function (e, settings, data) {
+        if( the_ajax_script.nice_urls ) {
+            settings.ajax.data[the_ajax_script.nice_url_variable] = braapf_get_filters_selected();
+        }
+    });
     berocket_add_filter('ajax_load_from_url_always_after', bapf_universal_theme_compatibility, 2500);
     $(document).ready(function(){
         if( berocket_apply_filters('remove_shortcode_fix_filters', $('.berocket_wc_shortcode_fix').length) ) {

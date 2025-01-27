@@ -23,7 +23,6 @@ if( ! class_exists('berocket_aapf_pagination_not_displayed_fix') ) {
             ?>
 <script>
 berocket_aapf_pagination_not_displayed_fix = function(args) {
-    console.log(args);
     if( typeof(args.type) != 'undefined' && args.type == 'pagination' ) {
         args.replace = true;
     }

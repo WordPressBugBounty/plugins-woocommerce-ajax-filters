@@ -72,10 +72,11 @@ if( ! class_exists('BeRocket_aapf_admin_bar_debug') ) {
 				}
 			}
 			if( empty($html) ) {
-				$html = '<h2>'.__('Filters not detected on page', 'BeRocket_AJAX_domain').'</h2>';
+				$html = '<h2>'.__('Filters not detected on page. Please add filter or group as shortcode or widget to display it on page', 'BeRocket_AJAX_domain').'</h2>';
 			}
 			$html .= '<div class="bapf_adminbar_status">';
 			$html .= '</div>';
+            $html = apply_filters('BeRocket_aapf_admin_bar_debug_html', $html);
 			$html .= '<div class="bapf_adminbar_errors">';
 			$html .= '</div>';
 			return $html;
@@ -190,21 +191,23 @@ if( ! class_exists('BeRocket_aapf_admin_bar_debug') ) {
 					jQuery(".bapf_adminbar_status").html(html);
 				}
 			});</script>';
-			return $html;
+			return apply_filters('BeRocket_aapf_admin_bar_debug_js', $html);
 		}
 		function get_css() {
 			$html = '<style>#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item {height:initial!important;line-height:1em;}
-			#wp-admin-bar-bapf_debug_bar .ab-item {display: flex!important;align-items: center;flex-direction: column;}
+			#wp-admin-bar-bapf_debug_bar .ab-item {display: flex!important;align-items: center;flex-direction: row;}
+			#wp-admin-bar-bapf_debug_bar #wp-admin-bar-bapf_debug_bar_content .ab-item {display: flex!important;align-items: center;flex-direction: column;}
 			#wp-admin-bar-bapf_debug_bar.brapf_admin_error_alert .ab-item .dashicons.dashicons-info-outline {margin-left: 5px;font-family: dashicons;font-size: 24px;line-height:32px;cursor:pointer;color: red; transform: rotate(180deg);}
 			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item *{line-height:1em;color:#ccc;}
 			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item h2{color:white;font-size: 1.5em;text-align:center;}
 			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item h3{font-weight:bold;color:#0085ba;font-size: 1.25em;text-align:center;}
 			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item ul li {display:inline-block!important;}
 			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item ul li a {height:initial;margin:0;padding:2px;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_status {text-align:center;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_status .dashicons {font-family: dashicons;font-size: 34px;line-height: 26px;display: block;cursor:pointer;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_status .dashicons-yes {color:green;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_status .dashicons-no {color:red;}
+			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_status,
+            #wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_custom_sidebar{text-align:center;}
+			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .dashicons {font-family: dashicons;font-size: 34px;line-height: 26px;display: block;cursor:pointer;}
+			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .dashicons-yes {color:green;}
+			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .dashicons-no {color:red;}
 			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_status_element {display:inline-block;text-align:center; padding:3px;}
 			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_errors {text-align:center; max-height: 200px; overflow: auto; margin-left: -10px; margin-right: -10px;}
             #wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_errors > div {display: flex; border-top: 1px solid #555;text-align:left;align-items: center;}

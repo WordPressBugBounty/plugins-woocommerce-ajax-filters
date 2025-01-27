@@ -1,12 +1,12 @@
 <?php
-if( ! class_exists('BeRocket_Setup_Wizard') ) {
-    class BeRocket_Setup_Wizard {
+if( ! class_exists('BeRocket_Setup_Wizard_v2') ) {
+    class BeRocket_Setup_Wizard_v2 {
         public $step   = '';
         public $steps  = array();
         public $page_id = '';
         public $options = '';
-        public function __construct($page_id, $options = array()) {
-            if( empty($page_id) ) {
+        public function __construct($page_id='', $options = array()) {
+            if( ! $page_id ) {
                 $page_id = 'berocket-setup';
             }
             $this->options = array_merge(array(
@@ -52,9 +52,10 @@ if( ! class_exists('BeRocket_Setup_Wizard') ) {
             BeRocket_Framework::register_font_awesome('fa5');
             wp_enqueue_style( 'font-awesome-5' );
 
+            $this->remove_deprecated();
+
             ob_start();
             $this->setup_wizard_header();
-            $this->setup_wizard_steps();
             $this->setup_wizard_content();
             $this->setup_wizard_footer();
             exit;
@@ -71,7 +72,10 @@ if( ! class_exists('BeRocket_Setup_Wizard') ) {
             if ( false === $step_index ) {
                 return '';
             }
-            return esc_url_raw(add_query_arg( 'step', $keys[ $step_index + 1 ], remove_query_arg( 'activate_error' ) ));
+            return esc_url_raw(add_query_arg(
+                    'step',
+                    $keys[ $step_index + 1 ],
+                    remove_query_arg( 'activate_error' ) ) );
         }
         public function redirect_to_next_step() {
             wp_redirect( esc_url_raw( $this->get_next_step_link() ) );
@@ -87,10 +91,11 @@ if( ! class_exists('BeRocket_Setup_Wizard') ) {
             <head>
                 <meta name="viewport" content="width=device-width" />
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-                <title><?php esc_html_e( 'WooCommerce &rsaquo; Setup Wizard', 'woocommerce' ); ?></title>
-                <?php do_action( 'admin_print_scripts' ); ?>
-                <?php do_action( 'admin_print_styles' ); ?>
-                <?php //do_action( 'admin_head' ); ?>
+                <title><?php esc_html_e( 'BeRocket &rsaquo; Setup Wizard', 'BeRocket_domain' ); ?></title>
+                <?php wp_head(); ?>
+                <script>
+                var brwiz_admin_ajax_url = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
+                </script>
             </head>
             <body class="wp-admin wp-core-ui js">
                 <div class="br_framework_settings br_setup_wizard">
@@ -103,11 +108,23 @@ if( ! class_exists('BeRocket_Setup_Wizard') ) {
          */
         public function setup_wizard_footer() {
             ?>
+                        <div class="br_setup_wizard_bottom_links"><?php
+                            if ( $this->step != 'wizard_end' ) {
+                                ?>
+                            <a class="wc-return-to-dashboard" href="<?php echo esc_url( $this->get_next_step_link() ); ?>"><?php
+                                esc_html_e( 'Skip this step', 'BeRocket_domain' ); ?></a>
+                             |
+                                <?php
+                            }
+                            ?><a class="wc-return-to-dashboard" href="<?php echo esc_url( admin_url() ); ?>"><?php
+		                        esc_html_e( 'Return to your dashboard', 'BeRocket_domain' ); ?></a>
+                        </div>
                     </div>
-                    <div class="br_setup_wizard_bottom_links">
-                        <a class="wc-return-to-dashboard" href="<?php echo esc_url( admin_url() ); ?>"><?php esc_html_e( 'Return to your dashboard', 'woocommerce' ); ?></a>
-                        <a class="wc-return-to-dashboard" href="<?php echo esc_url( $this->get_next_step_link() ); ?>"><?php esc_html_e( 'Skip this step', 'woocommerce' ); ?></a>
-                    </div>
+                </div>
+                <div style="display:none!important;">
+                <?php 
+                wp_footer();
+                ?>
                 </div>
                 </body>
             </html>
@@ -128,21 +145,19 @@ if( ! class_exists('BeRocket_Setup_Wizard') ) {
                         } elseif ( array_search( $this->step, array_keys( $this->steps ) ) < array_search( $step_key, array_keys( $this->steps ) ) ) {
                             echo 'close';
                         }
-                    ?>" href="<?php
-                        if ( array_search( $this->step, array_keys( $this->steps ) ) > array_search( $step_key, array_keys( $this->steps ) ) ) {
-                            echo esc_url_raw(add_query_arg( 'step', $step_key, remove_query_arg( 'activate_error' ) ));
-                        } else {
-                            echo '#'.$step_key;
-                        }
-                    ?>"><?php if( ! empty($step['fa_icon']) ) echo '<span class="fa '.$step['fa_icon'].'"></span>'; ?><?php echo esc_html( $step['name'] ); ?></a></li>
+                    ?>" href="<?=esc_url_raw(add_query_arg( 'step', $step_key, remove_query_arg( 'activate_error' ) )); ?>"><?php if( ! empty($step['fa_icon']) ) echo '<span class="fa '.$step['fa_icon'].'"></span>'; ?><?php echo esc_html( $step['name'] ); ?></a></li>
                 <?php endforeach; ?>
             </ul>
             <?php
         }
         public function setup_wizard_content() {
-            echo '<div class="content">';
-            echo '<div class="title">'.(! empty($this->steps[ $this->step ]['fa_icon']) ? '<span class="fa '.$this->steps[ $this->step ]['fa_icon'].'"></span>' : '').$this->steps[ $this->step ]['name'].'</div>';
-            call_user_func( $this->steps[ $this->step ]['view'], $this, $this->step, $this->steps );
+            echo '<div class="header">';
+                echo '<div class="logo-image"><img src="https://e8e3g4v6.delivery.rocketcdn.me/wp-content/uploads/2024/10/logo-with-text-1028x304-1.png" alt="BeRocket logo" /></div>';
+	            $this->setup_wizard_steps();
+	        echo '</div>';
+
+            echo '<div class="content ' . $this->step . '">';
+                call_user_func( $this->steps[ $this->step ]['view'], $this, $this->step, $this->steps );
             echo '</div>';
         }
         public function start_step() {
@@ -152,7 +167,7 @@ if( ! class_exists('BeRocket_Setup_Wizard') ) {
                 </div>
                 <?php wp_nonce_field( 'br-ajax-filters-setup' ); ?>
                 <p class="wc-setup-actions step">
-                    <input type="submit" class="button-primary button button-large button-next" value="<?php esc_attr_e( "Let's go!", 'woocommerce' ); ?>" name="save_step" />
+                    <input type="submit" class="button-primary button button-large button-next" value="<?php esc_attr_e( "Let's go!", 'BeRocket_domain' ); ?>" name="save_step" />
                 </p>
             </form>
             <?php
@@ -164,8 +179,42 @@ if( ! class_exists('BeRocket_Setup_Wizard') ) {
         }
         public function end_step() {
         }
+        function remove_deprecated() {
+            $has_emoji_styles = has_action( 'wp_print_styles', 'print_emoji_styles' );
+            if ( $has_emoji_styles ) {
+                remove_action( 'wp_print_styles', 'print_emoji_styles' );
+            }
+            $has_emoji_styles = has_action( 'wp_head', 'wp_admin_bar_header' );
+            if ( $has_emoji_styles ) {
+                remove_action( 'wp_head', 'wp_admin_bar_header' );
+            }
+        }
     }
-    function berocket_add_setup_wizard($page_id, $options = array()) {
-        new BeRocket_Setup_Wizard($page_id, $options);
+    function berocket_add_setup_wizard_v2($page_id, $options = array()) {
+        new BeRocket_Setup_Wizard_v2($page_id, $options);
     }
+}
+
+if ( ! function_exists( 'BeRocket_Setup_Wizard_get_prev_step_link' ) ) {
+	function BeRocket_Setup_Wizard_get_prev_step_link( $step = '' ) {
+        $steps = (new BeRocket_Setup_Wizard_v2('br-aapf-setup'))->steps;
+		if ( ! $step ) {
+			$step = isset( $_GET['step'] ) ? sanitize_key( $_GET['step'] ) : current( array_keys( $steps ) );
+		}
+
+		$keys = array_keys( $steps );
+		if ( reset( $keys ) === $step ) {
+			return '#';
+		}
+
+		$step_index = array_search( $step, $keys );
+		if ( false === $step_index ) {
+			return '#';
+		}
+
+		return esc_url_raw( add_query_arg(
+			'step',
+			$keys[ $step_index - 1 ],
+			remove_query_arg( 'activate_error' ) ) );
+	}
 }

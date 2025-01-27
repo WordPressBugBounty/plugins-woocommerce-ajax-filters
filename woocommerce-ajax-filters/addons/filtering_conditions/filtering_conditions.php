@@ -7,7 +7,7 @@ class BeRocket_aapf_filtering_conditions_addon extends BeRocket_framework_addon_
         $data = parent::get_addon_data();
         return array_merge($data, array(
             'addon_name'    => __('Nested Filters', 'BeRocket_AJAX_domain'),
-            'tooltip'       => __('The ability to set conditions for the filters based on other filters status', 'BeRocket_AJAX_domain')
+            'tooltip'       => __('The ability to set conditions to output the selected filter only after another filtering.', 'BeRocket_AJAX_domain')
             
         ));
     }

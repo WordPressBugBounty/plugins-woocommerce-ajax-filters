@@ -140,7 +140,7 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
     function get_addon_data() {
         $data = parent::get_addon_data();
         return array_merge($data, array(
-            'addon_name'    => __('Additional Tables (BETA)', 'BeRocket_AJAX_domain'),
+            'addon_name'    => __('Additional Tables', 'BeRocket_AJAX_domain'),
             'tooltip'       => __('Create 4 additional tables.<ul><li>Table to speed up hierarchical taxonomies recount: <strong>Product categories</strong>, <strong>Brands</strong> etc</li><li>3 tables to speed up functions for variation filtering</li></ul>', 'BeRocket_AJAX_domain'),
         ));
     }
@@ -171,7 +171,7 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
         update_option('BeRocket_aapf_additional_tables_addon_position_data', $data);
     }
     function activate($current_position = -1, $brajax = false) {
-        if( function_exists('wc_update_product_lookup_tables_is_running')  && wc_update_product_lookup_tables_is_running() ) {
+        if( $this->product_lookup_tables_is_running() ) {
             return;
         }
         if( $current_position == -1 ) {
@@ -213,7 +213,7 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
         update_option( 'br_filters_options', $options );
     }
     function activate_hooks() {
-        if( function_exists('wc_update_product_lookup_tables_is_running') && ! wc_update_product_lookup_tables_is_running() ) {
+        if( ! $this->product_lookup_tables_is_running() ) {
             //Notices
             add_action( "wp_ajax_braapf_additional_table_status", array( $this, 'get_global_status_ajax' ) );
             add_action( "wp_footer", array( $this, 'script_update' ) );
@@ -224,7 +224,7 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
     function status_notice($notices) {
         if( ! function_exists('wc_update_product_lookup_tables_is_running') ) {
             $text = __('WooCommerce do not have needed table for Additional Table add-on. Add-on required WooCommerce 3.6 or newer', 'BeRocket_AJAX_domain');
-        } elseif( wc_update_product_lookup_tables_is_running() ) { 
+        } elseif( $this->product_lookup_tables_is_running() ) { 
             $text = __('WooCommerce <strong>Product lookup tables</strong> right now regenerating', 'BeRocket_AJAX_domain');
         } else {
             $current_status = $this->get_current_global_status();
@@ -744,7 +744,7 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
         do_action('BeRocket_aapf_variations_tables_addon_destroy_table', $this);
     }
     function destroy_table_wc_regeneration() {
-        if ( apply_filters( 'br-filters/addon/add-table/wc-regenerate-destroy', function_exists('wc_update_product_lookup_tables_is_running') && wc_update_product_lookup_tables_is_running() ) ) {
+        if ( apply_filters( 'br-filters/addon/add-table/wc-regenerate-destroy', $this->product_lookup_tables_is_running() ) ) {
             $this->reset_all_table();
         }
     }
@@ -798,6 +798,17 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
             wp_die();
         }
         $this->reset_all_table();
+    }
+    public function product_lookup_tables_is_running() {
+        $status = apply_filters('braapf_product_lookup_tables_is_running', get_transient('braapf_product_lookup_tables_is_running'), $this);
+        if( $status === false ) {
+            $status = 1;
+            if( class_exists('ActionScheduler') && ! ActionScheduler::is_initialized( FALSE ) || function_exists('wc_update_product_lookup_tables_is_running') && wc_update_product_lookup_tables_is_running() ) {
+                $status = 2;
+            }
+            set_transient('braapf_product_lookup_tables_is_running', $status, 300);
+        }
+        return $status === 2;
     }
 }
 new BeRocket_aapf_variations_tables_addon();
