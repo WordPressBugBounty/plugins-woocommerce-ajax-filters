@@ -1,9 +1,4 @@
 <?php
-function test_it_to_back() {
-    echo '<pre>', debug_print_backtrace(), '</pre>';
-}
-add_action('deprecated_function_run', 'test_it_to_back');
-
 class BeRocket_AAPF_Wizard {
 	function __construct() {
         add_action('wp_loaded', array($this, 'init_wizard'));
