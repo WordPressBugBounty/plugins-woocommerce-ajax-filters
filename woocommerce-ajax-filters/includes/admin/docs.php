@@ -11,28 +11,29 @@ if ( ! class_exists('BAPF_filters_docs') ) {
             <div class='berocket_conditions_block_docs'>
                 <div class='berocket_conditions_block_docs_content'>
                 	<div class='block_docs_init'>
-	                    <p>Click '+' to add a condition</p>
+	                    <p>".__("Click '+' to add a condition", 'BeRocket_AJAX_domain')."</p>
                 	</div>
                 	<div class='block_docs_main' style='display: none;'>
-	                    <p class='docs_title'>Page ID</p>
-	                    <p>Manage which pages display filter(s).</p>
+	                    <p class='docs_title'>".__("Page ID", 'BeRocket_AJAX_domain')."</p>
+	                    <p>".__("Manage which pages display filter(s).", 'BeRocket_AJAX_domain')."</p>
 	                    
-	                    <p class='docs_title'>Product Category</p>
-	                    <p>Manage which category pages display filter(s).</p>
+	                    <p class='docs_title'>".__("Product Category", 'BeRocket_AJAX_domain')."</p>
+	                    <p>".__("Manage which category pages display filter(s).", 'BeRocket_AJAX_domain')."</p>
 	                    
-	                    <p class='docs_title'>Product Attribute</p>
-	                    <p>Manage which attribute, tag, and brand pages display filter(s).</p>
+	                    <p class='docs_title'>".__("Product Attribute", 'BeRocket_AJAX_domain')."</p>
+	                    <p>".__("Manage which attribute, tag, and brand pages display filter(s).", 'BeRocket_AJAX_domain')."</p>
 	                    
-	                    <p class='docs_title'>Product Search Page</p>
-	                    <p>Show filter(s) if the current page is equal/not equal to a search page.</p>
+	                    <p class='docs_title'>".__("Product Search Page", 'BeRocket_AJAX_domain')."</p>
+	                    <p>".__("Show filter(s) if the current page is equal/not equal to a search page.", 'BeRocket_AJAX_domain')."</p>
 	                    
-	                    <p class='docs_title'>User Role</p>
-	                    <p>Show filter(s) based on user role.</p>
+	                    <p class='docs_title'>".__("User Role", 'BeRocket_AJAX_domain')."</p>
+	                    <p>".__("Show filter(s) based on user role.", 'BeRocket_AJAX_domain')."</p>
 	                    
-	                    <p class='docs_title'>User Status</p>
-	                    <p>Show filter widget(s) based on user status: logged in, customer.</p>
+	                    <p class='docs_title'>".__("User Status", 'BeRocket_AJAX_domain')."</p>
+	                    <p>".__("Show filter widget(s) based on user status: logged in, customer.", 'BeRocket_AJAX_domain')."</p>
 	                    
-	                    <p class='docs_title'><a href='https://docs.berocket.com/plugin/woocommerce-ajax-products-filter#conditions' target='_blank'>Conditions docs</a></p>
+	                    <p class='docs_title'><a href='https://docs.berocket.com/plugin/woocommerce-ajax-products-filter#conditions' 
+	                    						 target='_blank'>".__("Conditions docs", 'BeRocket_AJAX_domain')."</a></p>
                 	</div>
                 </div>
 				<script>

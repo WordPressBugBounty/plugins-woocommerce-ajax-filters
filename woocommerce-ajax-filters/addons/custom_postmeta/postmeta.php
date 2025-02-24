@@ -295,7 +295,7 @@ GROUP BY meta_value ORDER BY meta_value");
         return $terms;
     }
     function style_meta_name($name, $slug, $postname = false) {
-        if( ! empty($postname) && function_exists('get_field') ) {
+        if( ! empty($postname) && function_exists('acf_get_field') ) {
             $text_field = $this->acf_field_detect($postname, $name);
         } else {
             $text_field = maybe_unserialize($slug);
@@ -306,7 +306,7 @@ GROUP BY meta_value ORDER BY meta_value");
         return $text_field;
     }
     function style_name($text, $postname = false) {
-        if( ! empty($postname) && function_exists('get_field') ) {
+        if( ! empty($postname) && function_exists('acf_get_field') ) {
             $text_field = $this->acf_field_detect($postname, $text);
         } else {
             $text_field = maybe_unserialize($text);
@@ -325,6 +325,13 @@ GROUP BY meta_value ORDER BY meta_value");
         }
         $field = $this->acf_fields[$postname];
         $value = maybe_unserialize($text);
+        if( empty($field) || empty($field['type']) ) {
+            if( is_array($value) ) {
+                return implode(', ', $value);
+            } else {
+                return $value;
+            }
+        }
         switch($field['type']) {
             case 'image':
                 return wp_get_attachment_url($value);
@@ -412,7 +419,7 @@ GROUP BY meta_value ORDER BY meta_value");
         return $args;
     }
     function taxonomy_from_post_before($result, $post_data) {
-        if( $post_data['filter_type'] == 'custom_postmeta' ) {
+        if( isset( $post_data['filter_type'] ) and $post_data['filter_type'] == 'custom_postmeta' ) {
             $result = 'cpm_'.sanitize_text_field($post_data['custom_postmeta']);
         }
         return $result;

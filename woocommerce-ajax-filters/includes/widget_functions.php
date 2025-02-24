@@ -40,7 +40,7 @@ class BeRocket_AAPF_Widget_functions {
     public static function apply_price_slider($set_query_var_title, $type, $instance, $args = false, $terms = false) {
         if($args === false || $terms === false) {
             return $set_query_var_title;
-        } 
+        }
         extract($instance);
         extract($args);
         $slider_with_string = false;

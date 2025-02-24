@@ -181,6 +181,13 @@ var berocket_admin_filter_types_by_attr = {
                 $(this).find('.fa').addClass('fa-chevron-down');
             }
         });
+        $(document).on('click', 'a.turn_on_advanced', function(event) {
+            event.preventDefault();
+            $parent = $(this).parents('.berocket_sbs_step');
+            $parent.find('.show_on_advanced').slideDown(300);
+            //$("html, body").stop().animate({scrollTop:$parent.offset().top-20}, 300);
+            $(this).hide(300);
+        });
     })
 })(jQuery);
 function berocket_change_seo_friendly_urls() {
@@ -294,19 +301,31 @@ function br_widget_set() {
         jQuery(document).on('click', '.berocket_add_filter_to_group', function(event) {
             event.preventDefault();
             if( ! jQuery('.berocket_filter_added_'+jQuery('.berocket_filter_list').val()).length ) {
-                var html = '<li class="berocket_filter_added_'+jQuery('.berocket_filter_list').val()+'"><i class="fa fa-bars"></i> ';
-                html += '<input type="hidden" name="'+jQuery('.berocket_filter_added_list').data('name')+'" value="'+jQuery('.berocket_filter_list').val()+'">';
-                html += jQuery('.berocket_filter_list').find(':selected').data('name');
-                html += ' <small>ID:'+jQuery('.berocket_filter_list').val()+'</small>';
-                html += '<i class="fa fa-times"></i>';
-                html += ' <a class="berocket_edit_filter fas fa-pencil-alt" target="_blank" href="'+jQuery('.berocket_filter_added_list').data('url')+'?post='+jQuery('.berocket_filter_list').val()+'&action=edit"></a>';
-                html += '<div class="berocket_hidden_clickable_options">';
-                html += 'Width<input type="text" name="br_filters_group[filters_data]['+jQuery('.berocket_filter_list').val()+'][width]" placeholder="100%" value="">';
-                html += '</div>';
-                html += '</li>';
+                var html = ''+
+                '<li class="berocket_filter_added_'+jQuery('.berocket_filter_list').val()+'">'+
+                    '<fa class="fa fa-bars"></fa>'+
+                    '<input type="hidden" name="'+jQuery('.berocket_filter_added_list').data('name')+'" '+
+                            'value="'+jQuery('.berocket_filter_list').val()+'">'+
+                        '<div class="filter_name">'+
+                            jQuery('.berocket_filter_list').find(':selected').data('name')+
+                            ' <small>ID:'+jQuery('.berocket_filter_list').val()+'</small>'+
+                        '</div>'+
+                        '<div class="berocket_filter_added_list_actions">'+
+                            '<div class="berocket_hidden_clickable_options">'+
+                                '<label for="filters_data_'+jQuery('.berocket_filter_list').val()+'_width">Width</label> '+
+                                '<input id="filters_data_'+jQuery('.berocket_filter_list').val()+'_width" type="text"'+
+                                    ' name="br_filters_group[filters_data]['+jQuery('.berocket_filter_list').val()+'][width]"'+
+                                    ' value="" placeholder="100%"/>'+
+                            '</div>'+
+                        '<a class="berocket_edit_filter fas fa-pencil-alt" target="_blank"'+
+                            ' href="'+jQuery('.berocket_filter_added_list').data('url')+'?post='+
+                                    jQuery('.berocket_filter_list').val()+'&action=edit"></a>'+
+                            '<i class="fa fa-times"></i>'+
+                    '</div>'+
+                '</li>';
                 jQuery('.berocket_filter_added_list').append(jQuery(html));
             } else {
-                jQuery('.berocket_filter_added_'+jQuery('.berocket_filter_list').val()).css('background-color', '#ee3333').clearQueue().animate({backgroundColor:'#eeeeee'}, 1000);
+                jQuery('.berocket_filter_added_'+jQuery('.berocket_filter_list').val()).css('background-color', '#ee3333').clearQueue().animate({backgroundColor:'#f7f7f7'}, 1000);
             }
         });
         jQuery(document).on('click', '.berocket_filter_added_list .fa-times', function(event) {

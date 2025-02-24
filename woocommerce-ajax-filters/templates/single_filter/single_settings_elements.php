@@ -3,15 +3,19 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
     class braapf_single_filter_edit_elements {
         function __construct() {
             //Attribute setup elements
+            add_action('braapf_single_filter_attribute_setup', array(__CLASS__, 'filter_type_description'), 100, 2);
             add_action('braapf_single_filter_attribute_setup', array(__CLASS__, 'filter_type'), 100, 2);
             add_action('braapf_single_filter_attribute_setup', array(__CLASS__, 'order_values'), 200, 2);
-            add_action('braapf_advanced_single_filter_attribute_setup', array(__CLASS__, 'cat_value_limit'), 400, 2);
+            add_action('braapf_advanced_single_filter_attribute_setup', array(__CLASS__, 'cat_value_limit'), 300, 2);
             //STYLES
+            add_action('braapf_single_filter_style', array(__CLASS__, 'styles_template_description'), 100, 2);
             add_action('braapf_single_filter_style', array(__CLASS__, 'styles_template'), 100, 2);
             //REQUIRED
+            add_action('braapf_single_filter_required', array(__CLASS__, 'required_description'), 100, 2);
             add_action('braapf_single_filter_required', array(__CLASS__, 'color_image_pick'), 100, 2);
             //ADDITIONAL
             //FOR ALL FILTERS
+            add_action('braapf_single_filter_additional', array(__CLASS__, 'additional_description'), 50, 2);
             add_action('braapf_single_filter_additional', array(__CLASS__, 'hierarhical_sort'), 50, 2);
             add_action('braapf_single_filter_additional', array(__CLASS__, 'collapse_option'), 100, 2);
             add_action('braapf_single_filter_additional', array(__CLASS__, 'single_selection'), 200, 2);
@@ -36,6 +40,9 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
             add_action('braapf_single_filter_additional', array(__CLASS__, 'reset_button_hide'), 500, 2);
             //SAVE SETTING
             add_action('braapf_single_filter_save', array(__CLASS__, 'save_button'), 5000, 2);
+        }
+        static function filter_type_description( $settings_name, $braapf_filter_settings ) {
+            echo '<p>' . __('Set how to filter products and the order of values.', 'BeRocket_AJAX_domain') . '</p>';
         }
         //Attribute setup elements
         static function filter_type($settings_name, $braapf_filter_settings) {
@@ -170,8 +177,9 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                         'disable_recount'   => true,
                         'hierarchical'      => true
                     ));
-                    echo '<label for="braapf_cat_value_limit">' . __('Limit filter values by products from the selected category', 'BeRocket_AJAX_domain')
-                    . '<span id="braapf_sinfo_cat_value_limit" class="dashicons dashicons-editor-help"></span>' . '</label>';
+                    echo '<label for="braapf_cat_value_limit">'
+                         . __('Limit filter values by products from the selected category', 'BeRocket_AJAX_domain')
+                         . '</label>';
                     echo '<select id="braapf_cat_value_limit" name="'.$settings_name.'[cat_value_limit]">';
                         echo '<option value="">' . __('Use all attribute values', 'BeRocket_AJAX_domain') . '</option>';
                         echo '<optgroup label="'.__('Limit by category:', 'BeRocket_AJAX_domain').'">';
@@ -186,58 +194,15 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                     echo '</select>';
                 echo '</div>';
             echo '</div>';
-            $tooltip_text = '<strong>' . __('Option does not hide filters on pages.', 'BeRocket_AJAX_domain') . '</strong>'
-            . '<p>' . __('Filter will be displayed on same pages, but values that is displayed in filter will be limited by products that is inside selected category.', 'BeRocket_AJAX_domain') . '</p>'
-            . '<p>' . __('To limit pages where filters are displayed use "Conditions" meta box.', 'BeRocket_AJAX_domain') . '</p>';
-            BeRocket_AAPF::add_tooltip('#braapf_sinfo_cat_value_limit', $tooltip_text);
         }
         //STYLES
+        static function styles_template_description( $settings_name, $braapf_filter_settings ) {
+            echo '<p>' . __('Choose filter value\'s type and style.', 'BeRocket_AJAX_domain') . '</p>';
+        }
         static function styles_template($settings_name, $braapf_filter_settings) {
             $styles = apply_filters('BeRocket_AAPF_getall_Template_Styles', array());
             $style_setting = br_get_value_from_array($braapf_filter_settings, 'style', '');
-            $templates = array();
-            foreach($styles as $style_id => $style_data) {
-                $JQdata = '';
-                if( empty($style_data['image']) || ! file_exists(plugin_dir_path($style_data['file']) . str_replace(plugin_dir_url($style_data['file']), '', $style_data['image'])) ) {
-                    $style_data['image'] = plugin_dir_url( BeRocket_AJAX_filters_file ) . 'images/without-preview.png';
-                }
-                foreach($style_data as $data_name => $data_value) {
-                    if( (is_string($data_value) || is_numeric($data_value)) && ! in_array($data_name, array('this', 'file', 'style_file', 'script_file')) ) {
-                        $JQdata_ok = true;
-                        if( in_array($data_name, array('image_price', 'image')) ) {
-                            $JQdata_ok = false;
-                            $path = plugin_dir_path($style_data['file']) . str_replace(plugin_dir_url($style_data['file']), '', $data_value);
-                            if( file_exists($path) ) {
-                                $JQdata_ok = true;
-                            }
-                        }
-                        if($JQdata_ok) {
-                            $JQdata .= ' data-'. $data_name.'="'.$data_value.'"';
-                        }
-                    }
-                }
-                if( ! isset($templates[$style_data['template'].'+'.$style_data['specific']]) ) {
-                    $templates[$style_data['template'].'+'.$style_data['specific']] = array(
-                        'template' => $style_data['template'],
-                        'specific' => $style_data['specific'],
-                        'html'     => array()
-                    );
-                }
-                $style_html = '<div class="braapf_style_'.$style_id.'"'.$JQdata.'>';
-                    $style_html .= '<input id="braapf_style_'.$style_id.'" type="radio" name="'.$settings_name.'[style]" value="'.$style_id.'"'.($style_setting == $style_id ? ' checked' : '') . $JQdata . '>';
-                    $style_html .= '<label for="braapf_style_'.$style_id.'">';
-                        $style_html .= '<img alt="'.$style_data['name'].'" src="'.$style_data['image'].'">';
-                        $style_html .= '<h3>'.$style_data['name'].'</h3>';
-                        $style_html .= '<span class="braapf_active"><i class="fa fa-check"></i></span>';
-                    $style_html .= '</label>';
-                $style_html .= '</div>';
-                if( isset($style_data['sort_pos']) && $style_data['sort_pos'] == 1 ) {
-                    $templates[$style_data['template'].'+'.$style_data['specific']]['html'] = 
-                        array($style_id => $style_html) + $templates[$style_data['template'].'+'.$style_data['specific']]['html'];
-                } else {
-                    $templates[$style_data['template'].'+'.$style_data['specific']]['html'][$style_id] = $style_html;
-                }
-            }
+            $templates = braapf_convert_filter_styles_to_templates($styles, $settings_name.'[style]', $style_setting);
             $templates_data = self::get_all_style_template_data();
             echo '<div class="braapf_templates_list">';
             foreach($templates as $template_slug => $template_data) {
@@ -268,6 +233,9 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
             echo '});</script>';
         }
         //REQUIRED
+        static function required_description($settings_name, $braapf_filter_settings) {
+            echo '<p>' . __('To make the filter look properly, please fill in all the values in this section.', 'BeRocket_AJAX_domain') . '</p>';
+        }
         static function color_image_pick($settings_name, $braapf_filter_settings) {
             $taxonomy_name = self::get_curent_taxonomy_name($braapf_filter_settings);
             $styles = apply_filters('BeRocket_AAPF_getall_Template_Styles', array());
@@ -280,6 +248,9 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
         }
         //ADDITIONAL
         //FOR ALL FILTERS
+        static function additional_description( $settings_name, $braapf_filter_settings ) {
+            echo '<p>' . __('If you want to show product count per attribute value or enable filter minimization, it is the right spot.', 'BeRocket_AJAX_domain') . '</p>';
+        }
         static function hierarhical_sort($settings_name, $braapf_filter_settings) {
             echo '<div class="braapf_attribute_setup_flex">';
                 $hide_child_attributes = br_get_value_from_array($braapf_filter_settings, 'hide_child_attributes', '');
@@ -364,7 +335,7 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                 echo '<div class="braapf_description braapf_full_select_full">';
                     $description = br_get_value_from_array($braapf_filter_settings, 'description', '');
                     echo '<label for="braapf_description">' . __('Description', 'BeRocket_AJAX_domain') . '</label>';
-                    echo '<textarea id="braapf_description" type="text" name="' . $settings_name . '[description]" placeholder="'.__('Description do not displayed', 'BeRocket_AJAX_domain').'">'.$description.'</textarea>';
+                    echo '<textarea id="braapf_description" type="text" name="' . $settings_name . '[description]" placeholder="'.__('The description is not displayed', 'BeRocket_AJAX_domain').'">'.$description.'</textarea>';
                 echo '</div>';
             echo '</div>';
         }
@@ -486,7 +457,7 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                     echo '<div class="braapf_color_image_block_size_custom">';
                         $color_image_block_size_height = br_get_value_from_array($braapf_filter_settings, 'color_image_block_size_height', '');
                         echo '<input min="0" id="braapf_color_image_block_size_height" type="number" name="' . $settings_name . '[color_image_block_size_height]" value="'.$color_image_block_size_height.'" placeholder="50">';
-                        echo 'px x';
+                        echo 'px <span>x</span>';
                         $color_image_block_size_width = br_get_value_from_array($braapf_filter_settings, 'color_image_block_size_width', '');
                         echo '<input min="0" id="braapf_color_image_block_size_width" type="number" name="' . $settings_name . '[color_image_block_size_width]" value="'.$color_image_block_size_width.'" placeholder="50">';
                         echo 'px';
@@ -551,40 +522,16 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                 echo '<div class="braapf_text_before_price braapf_half_select_full">';
                     $text_before_price = br_get_value_from_array($braapf_filter_settings, 'text_before_price', '');
                     echo '<label for="braapf_text_before_price">'.__('Text before Slider value', 'BeRocket_AJAX_domain').'
-                    <span id="braapf_text_before_price_info" class="dashicons dashicons-editor-help"></span></label>';
+                    </label>';
                     echo '<input id="braapf_text_before_price" type="text" name="' . $settings_name . '[text_before_price]" value="'.$text_before_price.'">';
                 echo '</div>';
                 echo '<div class="braapf_text_after_price braapf_half_select_full">';
                     $text_after_price = br_get_value_from_array($braapf_filter_settings, 'text_after_price', '');
                     echo '<label for="braapf_text_after_price">'.__('Text after Slider value', 'BeRocket_AJAX_domain').'
-                    <span id="braapf_text_after_price_info" class="dashicons dashicons-editor-help"></span></label>';
+                    </label>';
                     echo '<input id="braapf_text_after_price" type="text" name="' . $settings_name . '[text_after_price]" value="'.$text_after_price.'">';
                 echo '</div>';
             echo '</div>';
-            
-            $tooltip_text = '<strong>' . __('You can use some replacements', 'BeRocket_AJAX_domain') . '</strong>'
-            . '<ul><li><i>%cur_symbol%</i> - ' . __('currency symbol($)', 'BeRocket_AJAX_domain') . '</li>'
-            . '<li><i>%cur_slug%</i> - ' . __('currency code(USD)', 'BeRocket_AJAX_domain') . '</li></ul>';
-            BeRocket_tooltip_display::add_tooltip(
-                array(
-                    'appendTo'      => 'document.body',
-                    'arrow'         => true,
-                    'interactive'   => true, 
-                    'placement'     => 'top'
-                ),
-                $tooltip_text,
-                '#braapf_text_after_price_info'
-            );
-            BeRocket_tooltip_display::add_tooltip(
-                array(
-                    'appendTo'      => 'document.body',
-                    'arrow'         => true,
-                    'interactive'   => true, 
-                    'placement'     => 'top'
-                ),
-                $tooltip_text,
-                '#braapf_text_before_price_info'
-            );
         }
         static function specific_number_styles($settings_name, $braapf_filter_settings) {
             echo '<div class="braapf_attribute_setup_flex">';
@@ -650,7 +597,7 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
             echo '</div>';
         }
         static function save_button($settings_name, $braapf_filter_settings) {
-            echo '<input type="submit" name="publish" class="button button-primary" value="'.__('SAVE FILTER', 'BeRocket_AJAX_domain').'">';
+            echo '<input type="submit" name="publish" class="button button-primary" value="'.__('Save Filter', 'BeRocket_AJAX_domain').'">';
         }
         //Helper functions
         static function get_custom_taxonomies() {

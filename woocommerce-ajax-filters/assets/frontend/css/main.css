@@ -848,6 +848,8 @@ body .berocket_ajax_filters_sidebar_back.brapf_sidefl_linegrey {
     margin: 0;
     font-size: inherit!important;
     color:inherit!important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 #berocket-ajax-filters-sidebar .berocket_single_filter_widget.berocket_hidden_clickable .bapf_sfilter,
 .berocket_single_filter_widget.berocket_hidden_clickable .bapf_sfilter {
@@ -879,6 +881,10 @@ body .berocket_ajax_filters_sidebar_back.brapf_sidefl_linegrey {
 #berocket-ajax-filters-sidebar .berocket_single_filter_widget.berocket_hidden_clickable.berocket_hidden_clickable_right .bapf_sfilter.bapf_ccolaps .bapf_body,
 .berocket_single_filter_widget.berocket_hidden_clickable.berocket_hidden_clickable_right .bapf_sfilter.bapf_ccolaps .bapf_body {
     right: 0!important;
+}
+#berocket-ajax-filters-sidebar .berocket_single_filter_widget.berocket_hidden_clickable .bapf_sfilter .bapf_body > ul,
+.berocket_single_filter_widget.berocket_hidden_clickable .bapf_sfilter .bapf_body > ul {
+    padding-bottom: 1px !important;
 }
 @media screen and (max-width: 767px){
     #berocket-ajax-filters-sidebar .berocket_single_filter_widget.berocket_hidden_clickable.berocket_single_filter_visible,
@@ -917,6 +923,112 @@ body .berocket_ajax_filters_sidebar_back.brapf_sidefl_linegrey {
         z-index: 9000000009!important;
     }
 }
+/* theme 1 */
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-1 .bapf_sfilter .bapf_head,
+.berocket_hidden_clickable.theme-1 .bapf_sfilter .bapf_head {
+    border: 0 !important;
+    background-color: transparent !important;
+    color: #222 !important;
+    padding: 0 0 15px 0 !important;
+    border-radius: 0 !important;
+}
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-1 .bapf_sfilter.bapf_ccolaps .bapf_head,
+.berocket_single_filter_widget.theme-1 .bapf_sfilter.bapf_ccolaps .bapf_head {
+    border: 0!important;
+    color: black!important;
+    background-color: transparent!important;
+    border-radius: 0!important;
+    padding-bottom: 15px !important;
+}
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-1 .bapf_sfilter .bapf_body,
+.berocket_hidden_clickable.theme-1 .bapf_sfilter .bapf_body {
+    position: absolute !important;
+    top: 100% !important;
+    width: 100% !important;
+    background-color: white !important;
+    z-index: 800 !important;
+    margin: 0 !important;
+    border: 0 solid #ccc !important;
+    padding: 8px 15px !important;
+    box-shadow: 0 3px 8px 1px #00000038;
+    border-radius: 9px !important;
+}
+
+/* theme 2 */
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-2 .bapf_sfilter .bapf_head,
+.berocket_hidden_clickable.theme-2 .bapf_sfilter .bapf_head {
+    border: 2px solid #ececec !important;
+    background-color: white !important;
+    color: #222 !important;
+    padding: 14px !important;
+    border-radius: 10px !important;
+}
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-2 .bapf_sfilter .bapf_head .bapf_colaps_smb,
+.berocket_hidden_clickable.theme-2 .bapf_sfilter .bapf_head .bapf_colaps_smb {
+    color: #dbdbdb;
+}
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-2 .bapf_sfilter.bapf_ccolaps .bapf_head,
+.berocket_single_filter_widget.theme-2 .bapf_sfilter.bapf_ccolaps .bapf_head {
+    color: black!important;
+    background-color: white !important;
+    padding-bottom: 14px !important;
+    border: 2px solid #ececec !important;
+    border-radius: 10px !important;
+}
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-2 .bapf_sfilter .bapf_body,
+.berocket_hidden_clickable.theme-2 .bapf_sfilter .bapf_body {
+    position: absolute !important;
+    top: 100% !important;
+    width: 100% !important;
+    background-color: white !important;
+    z-index: 800 !important;
+    margin: -2px 0 0 !important;
+    border: 2px solid #ececec !important;
+    padding: 8px 15px !important;
+    border-radius: 9px !important;
+}
+
+/* theme 3 */
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-3 .bapf_sfilter .bapf_head,
+.berocket_hidden_clickable.theme-3 .bapf_sfilter .bapf_head {
+    border: 2px solid #eaeaea !important;
+    background-color: white !important;
+    color: #595962 !important;
+    padding: 14px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 0 4px #eeeeee91;
+}
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-3 .bapf_sfilter .bapf_head h3,
+.berocket_hidden_clickable.theme-3 .bapf_sfilter .bapf_head h3 {
+    font-weight: 600 !important;
+}
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-3 .bapf_sfilter .bapf_head .bapf_colaps_smb,
+.berocket_hidden_clickable.theme-3 .bapf_sfilter .bapf_head .bapf_colaps_smb {
+    color: #747481;
+}
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-3 .bapf_sfilter.bapf_ccolaps .bapf_head,
+.berocket_single_filter_widget.theme-3 .bapf_sfilter.bapf_ccolaps .bapf_head {
+    border: 2px solid #d8daff !important;
+    background-color: white !important;
+    color: #30303b !important;
+    padding: 14px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 0 4px rgba(181, 199, 255, 0.25);
+}
+#berocket-ajax-filters-sidebar .berocket_hidden_clickable.theme-3 .bapf_sfilter .bapf_body,
+.berocket_hidden_clickable.theme-3 .bapf_sfilter .bapf_body {
+    position: absolute !important;
+    top: 100% !important;
+    width: 100% !important;
+    background-color: white !important;
+    z-index: 800 !important;
+    margin: 0 !important;
+    border: 2px solid #ececec !important;
+    padding: 8px 15px !important;
+    border-radius: 9px !important;
+    box-shadow: 0 3px 15px 0 #00000017;
+}
+
 /*Products loading hide*/
 @keyframes bapf_loader {
     from { transform: rotate(0deg); } 
@@ -1141,6 +1253,95 @@ body .berocket_ajax_filters_sidebar_back.brapf_sidefl_linegrey {
 }
 .bapf_sfilter.bapf_button_berocket .bapf_button:hover {
     background-color: #d94825;
+}
+
+/* Dark & rounded button */
+.bapf_sfilter.bapf_button_dark_rounded .bapf_button {
+    background: #000;
+    color: #fff;
+    border: 0;
+    border-radius: 7px;
+    padding: 12px 15px;
+    width: 100%;
+    max-width: 240px;
+    font-weight: 600;
+    font-size: 16px;
+    position: relative;
+}
+.bapf_sfilter.bapf_button_dark_rounded .bapf_button:after{
+    content: "";
+    box-shadow: 0 7px 0 -3px #ccc;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 7px;
+}
+.bapf_sfilter.bapf_button_dark_rounded .bapf_button:hover:after {
+    opacity: 1;
+}
+
+/* Light button */
+.bapf_sfilter.bapf_button_light .bapf_button {
+    background: #fff;
+    border: 2px solid #a000aa;
+    color: #a000aa;
+    border-radius: 7px;
+    padding: 10px 15px;
+    max-width: 100%;
+    font-weight: 500;
+    font-size: 16px;
+}
+.bapf_sfilter.bapf_button_light .bapf_button:hover {
+    border-color: #bd12c8;
+    color: #bd12c8;
+}
+/* Clean & rounded checkbox */
+.berocket_single_filter_widget .bapf-clean-rounded ul {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.berocket_single_filter_widget .bapf-clean-rounded li input {
+    display: none;
+}
+.berocket_single_filter_widget .bapf-clean-rounded li label {
+    display: inline-block !important;
+    border: 2px solid #ccc;
+    padding: 3px 15px;
+    font-weight: 600;
+    border-radius: 14px;
+    color: #333;
+    position: relative;
+}
+.berocket_single_filter_widget .bapf-clean-rounded li label:hover {
+    border-color: #ddd;
+    color: #111;
+}
+.berocket_single_filter_widget .bapf-clean-rounded li.checked label {
+    border-color: #3781df;
+    color: #0d59b9;
+    padding-left: 26px;
+}
+.berocket_single_filter_widget .bapf-clean-rounded li.checked label:before {
+    border-bottom: 2px solid;
+    border-left: 2px solid;
+    border-color: #0d59b9;
+    content: "";
+    width: 10px;
+    height: 4px;
+    rotate: -45deg;
+    display: block;
+    position: absolute;
+    left: 8px;
+    top: 11px;
+}
+.berocket_single_filter_widget .bapf-clean-rounded .bapf_show_hide {
+    padding-top: 10px;
+    display: block;
 }
 .bapf_sfilter.bapf_colorinline li {
     display: inline-block !important;
@@ -1482,6 +1683,12 @@ body .berocket_ajax_filters_sidebar_back.brapf_sidefl_linegrey {
 #bapf-select2-high-zindex .select2-container{
     z-index: 999999999!important;
 }
+.select2-container--classic .select2-selection--multiple .select2-selection__choice,
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    margin-right: 5px !important;
+    margin-top: 5px !important;
+    padding: 0 5px !important;
+}
 .bapf_sfa_inline .berocket_aapf_widget_selected_area ul li{
     display: inline-block;
     margin-left: 3px!important;
@@ -1489,6 +1696,72 @@ body .berocket_ajax_filters_sidebar_back.brapf_sidefl_linegrey {
 }
 .bapf_sfa_valueonly .bapf_sfa_taxonomy > span {
     display: none;
+}
+
+/* Grey & rounded selected filters area */
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area ul {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding: 0 !important;
+    margin: 0;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area ul li {
+    display: inline-block;
+}
+
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area .berocket_aapf_widget_selected_filter {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area .bapf_sfa_taxonomy span {
+    display: none;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a {
+    display: inline-block !important;
+    border: 2px solid #ccc;
+    padding: 3px 30px 3px 15px;
+    font-weight: 600;
+    border-radius: 14px;
+    color: #333;
+    position: relative;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a:hover,
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a:focus {
+    border-color: #ddd;
+    color: #111;
+    outline: 0 none;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a:before {
+    color: #ccc;
+    content: "+";
+    width: 10px;
+    height: 10px;
+    rotate: -45deg;
+    display: block;
+    position: absolute;
+    right: 17px;
+    top: 7px;
+    font-size: 32px;
+    font-weight: 100;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a i.fa {
+    display: none !important;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area a.braapf_unselect_all {
+    border: 0;
+    padding: 0;
+    color: #848484;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area a.braapf_unselect_all::before {
+    display: none !important;
+}
+/* theme storefront fixes */
+.theme-storefront .bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a:before {
+    right: 24px !important;
+    top: -2px !important;
 }
 .bapf_ckbox_sqchck input[type=checkbox] {
     -webkit-appearance: none;

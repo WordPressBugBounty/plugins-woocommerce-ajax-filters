@@ -118,6 +118,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
             'scroll_shop_top'                 => '',
             'scroll_shop_top_px'              => '-180',
             'selected_area_show'              => '',
+            'selected_filters_template'       => 'sfa_default',
             'selected_area_hide_empty'        => '',
             'products_only'                   => '1',
             'out_of_stock_variable'           => '',
@@ -673,7 +674,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "type"      => "number",
                         "name"      => "attribute_count",
                         "value"     => $this->defaults["attribute_count"],
-                        'label_for' => __( 'Number of Attribute values that will be displayed. Other values will be hidden and can be displayed by pressing the button. Option <strong>Hide the Show/Hide value(s) button in the filters</strong> must be disabled', 'BeRocket_AJAX_domain' ),
+                        'label_for' => __( 'The number of Attribute values that will be displayed. Other values will be hidden and can be displayed by pressing the button. The option <b>"Hide the Show/Hide value(s) button in filters"</b> must be disabled.', 'BeRocket_AJAX_domain' ),
                     ),
                     'scroll_shop_top' => array(
                         "label"     => __( 'Scroll top', "BeRocket_AJAX_domain" ),
@@ -696,7 +697,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                                 "name"      => "scroll_shop_top_px",
                                 "class"     => "br_scroll_shop_top_px",
                                 "value"     => $this->defaults["scroll_shop_top_px"],
-                                'label_for' => __("px from products top.", 'BeRocket_AJAX_domain') . ' ' . __('Use this to fix top scroll.', 'BeRocket_AJAX_domain'),
+                                'label_for' => __("px from the products top.", 'BeRocket_AJAX_domain') . ' ' . __('Use this to fix the top scroll.', 'BeRocket_AJAX_domain'),
                             )
                         ),
                     ),
@@ -755,7 +756,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                                 )),
                                 "value"     => '',
                                 "class"     => "out_of_stock_variable",
-                                'label_for' => __('Hide variable products, if variations with selected filters are out of stock', 'BeRocket_AJAX_domain') . '<br>',
+                                'label_for' => __('Hide variable products if variations with selected filters are out of stock.', 'BeRocket_AJAX_domain') . '<br>',
                             ),
                             'out_of_stock_variable_reload' => array(
                                 "type"      => "checkbox",
@@ -771,7 +772,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "type"      => "checkbox",
                         "name"      => "filter_price_variation",
                         "value"     => '1',
-                        'label_for' => __('Use variation price instead of product price. IMPORTANT! It can slow down filtering by price', 'BeRocket_AJAX_domain'),
+                        'label_for' => __('Use variation price instead of product price. It may influence the speed of filtering by price.', 'BeRocket_AJAX_domain'),
                     ),
                 ),
                 'Elements' => array(
@@ -801,9 +802,13 @@ class BeRocket_AAPF extends BeRocket_Framework {
                                 "name"      => "selected_area_hide_empty",
                                 "class"     => "br_selected_area_hide_empty",
                                 "value"     => '1',
-                                'label_for'  => __("Hide selected filters area if nothing selected(affect only area above products)", 'BeRocket_AJAX_domain'),
+                                'label_for'  => __("Hide selected filters area if nothing is selected(affect only area above products)", 'BeRocket_AJAX_domain'),
                             ),
                         )
+                    ),
+                    'selected_filters_template' => array(
+                        "section"   => "selected_filters_template",
+                        "value"     => "",
                     ),
                 ),
                 'Selectors' => array(
@@ -826,7 +831,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "value"     => $this->defaults["products_holder_id"],
                         "class"     => "berocket_aapf_products_selector",
                         "tr_class"  => "berocket_disable_ajax_loading_hide",
-                        'label_for' => '<br>' . __("Selector for tag that is holding products. Don't change this if you don't know what it is", 'BeRocket_AJAX_domain'),
+                        'label_for' => '<br>' . __("Selector for a tag that is holding products. Don't change it if you don't know what it is", 'BeRocket_AJAX_domain'),
                     ),
                     'result_count' => array(
                         "label"     => __( 'Products Quantity Selector', "BeRocket_AJAX_domain" ),
@@ -836,7 +841,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                                 "name"      => 'woocommerce_result_count_class',
                                 "value"     => $this->defaults["woocommerce_result_count_class"],
                                 "class"     => "berocket_aapf_product_count_selector",
-                                'label_for' => '<br>' . __('Selector for tag with product result count("Showing 1–8 of 61 results"). Don\'t change this if you don\'t know what it is', 'BeRocket_AJAX_domain') . '<br>',
+                                'label_for' => '<br>' . __('Selector for a tag with product result count("Showing 1–8 of 61 results"). Don\'t change it if you don\'t know what it is', 'BeRocket_AJAX_domain') . '<br>',
                             ),
                         ),
                         "tr_class"  => "berocket_disable_ajax_loading_hide"
@@ -848,14 +853,14 @@ class BeRocket_AAPF extends BeRocket_Framework {
                                 "type"      => "text",
                                 "name"      => 'woocommerce_ordering_class',
                                 "value"     => $this->defaults["woocommerce_ordering_class"],
-                                'label_for' => '<br>' . __("Selector for order by form with drop down menu. Don't change this if you don't know what it is", 'BeRocket_AJAX_domain') . '<br>',
+                                'label_for' => '<br>' . __("Selector for order by form with drop-down menu. Don't change it if you don't know what it is", 'BeRocket_AJAX_domain') . '<br>',
                             ),
                             'control_sorting' => array(
                                 "label"     => __( 'Sorting drop-down control', "BeRocket_AJAX_domain" ),
                                 "type"      => "checkbox",
                                 "name"      => "control_sorting",
                                 "value"     => '1',
-                                'label_for'  => __("Take control over WooCommerce's sorting selectbox?", 'BeRocket_AJAX_domain'),
+                                'label_for'  => __("Take control of WooCommerce's sorting drop-down menu?", 'BeRocket_AJAX_domain'),
                             ),
                         ),
                         "tr_class"  => "berocket_disable_ajax_loading_hide"
@@ -868,7 +873,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                                 "name"      => 'woocommerce_pagination_class',
                                 "value"     => $this->defaults["woocommerce_pagination_class"],
                                 "class"     => "berocket_aapf_pagination_selector",
-                                'label_for' => '<br>' . __("Selector for tag that is holding products. Don't change this if you don't know what it is", 'BeRocket_AJAX_domain') . '<br>',
+                                'label_for' => '<br>' . __("Selector for a tag that is holding products. Don't change it if you don't know what it is", 'BeRocket_AJAX_domain') . '<br>',
                             ),
                             'pagination_ajax' => array(
                                 "type"      => "checkbox",
@@ -887,7 +892,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "name"      => "seo_friendly_urls",
                         "value"     => '1',
                         'class'     => 'berocket_seo_friendly_urls',
-                        'label_for' => __("If this option is on URL will be changed when filter is selected/changed", 'BeRocket_AJAX_domain'),
+                        'label_for' => __("If this option is on, the URL will be changed when the filter is selected/changed.", 'BeRocket_AJAX_domain'),
                     ),
                     'slug_urls' => array(
                         "label"     => __( 'Use slug in URL', "BeRocket_AJAX_domain" ),
@@ -895,7 +900,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "name"      => "slug_urls",
                         "value"     => '1',
                         'class'     => 'berocket_use_slug_in_url',
-                        'label_for' => __("Use attribute slug instead ID", 'BeRocket_AJAX_domain'),
+                        'label_for' => __("Use attribute slug instead of ID", 'BeRocket_AJAX_domain'),
                     ),
                     'seo_uri_decode' => array(
                         "label"     => __( 'URL decoding', "BeRocket_AJAX_domain" ),
@@ -903,7 +908,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "name"      => "seo_uri_decode",
                         "value"     => '1',
                         'class'     => 'berocket_uri_decode',
-                        'label_for' => __("Decode all symbols in URL to prevent errors on server side", 'BeRocket_AJAX_domain'),
+                        'label_for' => __("Decode all symbols in the URL to prevent errors on the server side", 'BeRocket_AJAX_domain'),
                     ),
                     'seo_meta_title' => array(
                         "label"     => __( 'SEO Meta, Title', "BeRocket_AJAX_domain" ),
@@ -965,10 +970,10 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "type"      => "checkbox",
                         "name"      => "products_only",
                         "value"     => '1',
-                        'label_for' => __('Always displays products, when filters are selected. Use the option when have categories and subcategories on the pages of your shop, and you want to display products when filtering.', 'BeRocket_AJAX_domain'),
+                        'label_for' => __('When filters are selected, products are always displayed. Use this option when your shop has categories and subcategories on its pages and you want to display products when filtering.', 'BeRocket_AJAX_domain'),
                     ),
                     'products_only_shortcode' => array(
-                        "label"     => __( 'Display products for Shortcode', "BeRocket_AJAX_domain" ),
+                        "label"     => __( 'Replace categories Shortcode', "BeRocket_AJAX_domain" ),
                         "type"      => "checkbox",
                         "items" => array(
                             "products_only_shortcode" => array(
@@ -999,7 +1004,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                     ),
                     'use_tax_for_price' => array(
                         "label"    => __( 'Use Taxes in Price Filters', "BeRocket_AJAX_domain" ),
-                        "label_for"=> __( 'Only Standard tax rates will be applied for prices', "BeRocket_AJAX_domain" ),
+                        "label_for"=> __( 'Only Standard tax rates will be applied to prices', "BeRocket_AJAX_domain" ),
                         "name"     => "use_tax_for_price",
                         "type"     => "selectbox",
                         "options"  => array(
@@ -1018,14 +1023,14 @@ class BeRocket_AAPF extends BeRocket_Framework {
                             array('value' => 'leave', 'text' => __('Leave only one value', 'BeRocket_AJAX_domain')),
                         ),
                         "value"    => '',
-                        "label_for" => __('On Category, Tag, Attribute page filter for it will remove value or leave only one value', 'BeRocket_AJAX_domain'),
+                        "label_for" => __('On the Category, Tag, and Attribute page filter with the same taxonomy will remove the page\'s value or leave only it.', 'BeRocket_AJAX_domain'),
                     ),
                     'reload_changed_filters' => array(
                         "label"     => __( 'Load products when URL changed', "BeRocket_AJAX_domain" ),
                         "type"      => "checkbox",
                         "name"      => "reload_changed_filters",
                         "value"     => '1',
-                        'label_for' => __('Load products again when some filters not exist after filtering', 'BeRocket_AJAX_domain'),
+                        'label_for' => __('Load products again if some filters are missing after filtering', 'BeRocket_AJAX_domain'),
                     ),
                     'purge_cache' => array(
                         "section"   => "purge_cache",
@@ -1063,7 +1068,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "type"      => "checkbox",
                         "name"      => "styles_in_footer",
                         "value"     => '1',
-                        'label_for' => __('On some sites it can cause visual problems on page load', 'BeRocket_AJAX_domain'),
+                        'label_for' => __('On some sites, it can cause visual problems with page load.', 'BeRocket_AJAX_domain'),
                     ),
                     'mysql_derived_merge' => array(
                         "tr_class"  => "bapf_incompatibility_fixes bapf_incompatibility_fixes_hide",
@@ -1263,7 +1268,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "type"      => "checkbox",
                         "name"      => "fontawesome_frontend_disable",
                         "value"     => '1',
-                        'label_for' => __('Don\'t loading css file for Font Awesome on site front end. Use it only if you doesn\'t uses Font Awesome icons in widgets or you have Font Awesome in your theme.', 'BeRocket_AJAX_domain'),
+                        'label_for' => __('Don\'t load CSS files for Font Awesome on the site\'s front end. Use it only if you don\'t use Font Awesome icons in widgets or have Font Awesome in your theme.', 'BeRocket_AJAX_domain'),
                     ),
                     'global_fontawesome_version' => array(
                         "label"    => __( 'Font Awesome Version', "BeRocket_AJAX_domain" ),
@@ -1274,14 +1279,14 @@ class BeRocket_AAPF extends BeRocket_Framework {
                             array('value' => 'fontawesome5', 'text' => __('Font Awesome 5', 'BeRocket_AJAX_domain')),
                         ),
                         "value"    => '',
-                        "label_for" => __('Version of Font Awesome that will be used on front end. Please select version that you have in your theme', 'BeRocket_AJAX_domain'),
+                        "label_for" => __('A version of Font Awesome that will be used on the front end. Please select the version that you have in your theme', 'BeRocket_AJAX_domain'),
                     ),
                     'after_update' => array(
                         "label"     => __( 'After Update:', "BeRocket_AJAX_domain" ),
                         "type"      => "textarea",
                         "name"      => array("javascript", "berocket_ajax_products_loaded"),
                         "value"     => $this->defaults["javascript"]["berocket_ajax_products_loaded"],
-                        "label_for" => __( "If you want to add own actions after products updated, eg: alert('1');", "BeRocket_AJAX_domain" ),
+                        "label_for" => __( "Add here your own actions after products updated, eg: alert('1');", "BeRocket_AJAX_domain" ),
                     ),
                     'header_part_javascript' => array(
                         'section' => 'header_part',
@@ -1295,7 +1300,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "type"      => "textarea",
                         "name"      => array("javascript", "berocket_ajax_filtering_start"),
                         "value"     => $this->defaults["javascript"]["berocket_ajax_filtering_start"],
-                        "label_for" => __( "If you want to add own actions on filter activation, eg: alert('1');", "BeRocket_AJAX_domain" ),
+                        "label_for" => __( "Add here your own actions on filter activation, eg: alert('1');", "BeRocket_AJAX_domain" ),
                     ),
                     'on_update' => array(
                         "tr_class"  => "bapf_javascript_fields bapf_javascript_fields_hide",
@@ -1303,7 +1308,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "type"      => "textarea",
                         "name"      => array("javascript", "berocket_ajax_filtering_on_update"),
                         "value"     => $this->defaults["javascript"]["berocket_ajax_filtering_on_update"],
-                        "label_for" => __( "If you want to add own actions on filter activation, eg: alert('1'); Before replace products", "BeRocket_AJAX_domain" ),
+                        "label_for" => __( "Add here your own actions on filter activation, eg: alert('1'); Before replace products", "BeRocket_AJAX_domain" ),
                     ),
                     'custom_css' => array(
                         'section' => 'custom_css',
@@ -1325,37 +1330,37 @@ class BeRocket_AAPF extends BeRocket_Framework {
                 ),
             )
         );
-        $tooltip_text = '<strong>' . __('Variation must be added to product with stock status out of stock.', 'BeRocket_AJAX_domain') . '</strong>'
-        . '<p>' . __('If product do not have variation, then it cannot be detected as out of stock/in stock and will be displayed as without this option', 'BeRocket_AJAX_domain') . '</p>'.
-        '<p>'.__('Slow down filtering.', 'BeRocket_AJAX_domain').'</p>';
+        $tooltip_text = '<b>' . __('Variations must be added to products with stock status out of stock.', 'BeRocket_AJAX_domain') . '</b>'
+        . '<p>' . __('If the product does not have variation, it cannot be detected as out of stock or in stock and will be displayed without this option.', 'BeRocket_AJAX_domain') . '</p>'.
+        '<p>'.__('This option influences filtering speed.', 'BeRocket_AJAX_domain').'</p>';
         self::add_tooltip('#braapf_out_of_stock_variable_info', $tooltip_text);
         
-        $tooltip_text = '<strong>' . __('Will be displayed only on default WooCommerce page.', 'BeRocket_AJAX_domain') . '</strong>'
-        . '<p>' . __('Default WooCommerce page are: shop page, category page, tag page, attribute page etc.', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p>' . __('Also it can does not work on WooCommerce pages edited with help of any page builders (Divi Builder, Elementor Builder etc.)', 'BeRocket_AJAX_domain') . '</p>';
+        $tooltip_text = '<b>' . __('This will work only on the default WooCommerce pages.', 'BeRocket_AJAX_domain') . '</b>'
+        . '<p>' . __('Default WooCommerce pages are: shop page, category page, tag page, attribute page, etc.', 'BeRocket_AJAX_domain') . '</p>'
+        . '<p>' . __('It also does not work on WooCommerce pages edited with page builders (e.g., Divi Builder, Elementor Builder).', 'BeRocket_AJAX_domain') . '</p>';
         self::add_tooltip('#braapf_selected_area_show_info', $tooltip_text);
            
-        $tooltip_text = '<strong>' . __('Please read this before asking support.', 'BeRocket_AJAX_domain') . '</strong>'
-        . '<p>' . __('Any option except first will slow down page load, because required some additional queries to database', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p><strong style="color:#0085ba;">'.__('All non-empty values are shown and use basic counting', 'BeRocket_AJAX_domain').'</strong>' 
-        . ' - ' . __('plugin do not recount anything. Only attribute values, that do not have products for full shop will be removed (fastest variant)', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p><strong style="color:#0085ba;">'.__('Remove empty values based on page(category/tag/etc)', 'BeRocket_AJAX_domain').'</strong>' 
-        . ' - ' . __('plugin recount products for attribute values based on page where displayed. Attribute values, that do not have products for current page will be removed', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p><strong style="color:#0085ba;">'.__('All non-empty values are shown and filters are considered while counting attribute values', 'BeRocket_AJAX_domain').'</strong>'
-        . ' - ' . __('plugin recount products only after filtering. Only attribute values, that do not have products for full shop will be removed. You can hide other empty values after filtering with help of option', 'BeRocket_AJAX_domain') . ' <strong>'.__('Hide values', 'BeRocket_AJAX_domain').'</strong></p>'
-        . '<p><strong style="color:#0085ba;">'.__('Remove empty values based on page(category/tag/etc). Filters are considered while counting attribute values and empty values based on filters are hidden', 'BeRocket_AJAX_domain').'</strong>'
-        . ' - ' . __('uses previous two option together. Works slower, because recounts twice for each attribute values (not recommended)', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p><strong style="color:#0085ba;">'.__('Filters are considered while counting attribute values. Empty values are removed server side', 'BeRocket_AJAX_domain').'</strong>' 
-        . ' - ' . __('plugin recount products on page load and after filtering. All empty values will be removed based on page and selected filters', 'BeRocket_AJAX_domain') . '</p>';
+        $tooltip_text = '<b>' . __('Please read this before asking for support.', 'BeRocket_AJAX_domain') . '</b>'
+        . '<p>' . __('Any option except the first will slow down the page load because it requires additional queries to the database.', 'BeRocket_AJAX_domain') . '</p>'
+        . '<p><b style="color:#0085ba;">'.__('All non-empty values are shown and use basic counting', 'BeRocket_AJAX_domain').'</b>'
+        . ' - ' . __('the plugin does not recount anything. Only attribute values that do not have products at all will be removed (fastest variant).', 'BeRocket_AJAX_domain') . '</p>'
+        . '<p><b style="color:#0085ba;">'.__('Remove empty values based on the page(category/tag/etc)', 'BeRocket_AJAX_domain').'</b>'
+        . ' - ' . __('the plugin recounts products for attribute values based on the displayed page. Attribute values that do not have products for the current page will be removed.', 'BeRocket_AJAX_domain') . '</p>'
+        . '<p><b style="color:#0085ba;">'.__('All non-empty values are shown and filters are considered while counting attribute values', 'BeRocket_AJAX_domain').'</b>'
+        . ' - ' . __('the plugin recounts products only after filtering. Only attribute values that do not have products at all will be removed. You can hide other empty values after filtering with the help of the option', 'BeRocket_AJAX_domain') . ' <b>'.__('Hide values', 'BeRocket_AJAX_domain').'</b></p>'
+        . '<p><b style="color:#0085ba;">'.__('Remove empty values based on page(category/tag/etc). Filters are considered while counting attribute values and empty values based on filters are hidden', 'BeRocket_AJAX_domain').'</b>'
+        . ' - ' . __('uses the previous two options together. Works slower because recounts twice for each attribute value.', 'BeRocket_AJAX_domain') . '</p>'
+        . '<p><b style="color:#0085ba;">'.__('Filters are considered while counting attribute values. Empty values are removed server side', 'BeRocket_AJAX_domain').'</b>'
+        . ' - ' . __('the plugin recounts products on page load and after filtering. All empty values will be removed based on page and selected filters.', 'BeRocket_AJAX_domain') . '</p>';
         self::add_tooltip('#braapf_recount_hide_info', $tooltip_text);
         
-        $tooltip_text = '<strong>' . __('On products archive page (attribute/category/tag pages) change how filters for the same taxonomy (attribute/category/tag) are displayed.', 'BeRocket_AJAX_domain') . '</strong>'
-        . '<p><strong style="color:#0085ba;">' . __('Default', 'BeRocket_AJAX_domain') . '</strong> - '
-        . __('Display filter same as it is displayed on any other page', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p><strong style="color:#0085ba;">' . __('Delete value', 'BeRocket_AJAX_domain') . '</strong> - '
-        . __('filters for same taxonomy will be removed from page (Example: On page of Product category "Jeans" the filter for Product category will be removed)', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p><strong style="color:#0085ba;">' . __('Leave only one value', 'BeRocket_AJAX_domain') . '</strong> - '
-        . __('filters for same taxonomy will be displayed with single value, that same as current page (Example: On page of Product category "Jeans" the filter for Product category will be displayed only with the value "Jeans")', 'BeRocket_AJAX_domain') . '</p>';
+        $tooltip_text = '<b>' . __('On the products archive page (attribute/category/tag pages), change how filters for the same taxonomy (attribute/category/tag) are displayed.', 'BeRocket_AJAX_domain') . '</b>'
+        . '<p><b style="color:#0085ba;">' . __('Default', 'BeRocket_AJAX_domain') . '</b> - '
+        . __('Display filter same as it is displayed on any other page.', 'BeRocket_AJAX_domain') . '</p>'
+        . '<p><b style="color:#0085ba;">' . __('Delete value', 'BeRocket_AJAX_domain') . '</b> - '
+        . __('filters for the same taxonomy will be removed from the page (Example: On the page of Product category "Jeans", the filter for Product category will be removed).', 'BeRocket_AJAX_domain') . '</p>'
+        . '<p><b style="color:#0085ba;">' . __('Leave only one value', 'BeRocket_AJAX_domain') . '</b> - '
+        . __('filters for the same taxonomy will be displayed with a single value that is the same as the current page (Example: On the page of Product category "Jeans", the filter for the Product category will be shown only with the value "Jeans").', 'BeRocket_AJAX_domain') . '</p>';
         self::add_tooltip('#braapf_page_same_as_filter_info', $tooltip_text);
     }
     public static function add_tooltip($selector, $text) {
@@ -1397,31 +1402,64 @@ class BeRocket_AAPF extends BeRocket_Framework {
     public function section_autoselector ( $item, $options ) {
         do_action('BeRocket_wizard_javascript', array(
             'creating_products' => __('Creating products', 'BeRocket_AJAX_domain'),
-            'getting_selectors' => __('Gettings selectors', 'BeRocket_AJAX_domain'),
+            'getting_selectors' => __('Retrieving selectors', 'BeRocket_AJAX_domain'),
             'removing_products' => __('Removing products', 'BeRocket_AJAX_domain'),
             'error'             => __('Error:', 'BeRocket_AJAX_domain')
         ));
         $output_text = array(
-            'important'             => __('IMPORTANT: It will generate some products on your site. Please disable all SEO plugins and plugins, that doing anything on product creating.', 'BeRocket_AJAX_domain'),
-            'was_runned'            => __('Script was runned, but page closed until end. Please stop it to prevent any problems on your site', 'BeRocket_AJAX_domain'),
+            'important'             => __('IMPORTANT: It will generate products on your site. Please disable all SEO plugins and plugins that affect product creation.', 'BeRocket_AJAX_domain'),
+            'was_runned'            => __('The script was run, but the page was closed until the end. Please stop it to prevent any problems on your site', 'BeRocket_AJAX_domain'),
             'run_button'            => __('Auto-Selectors', 'BeRocket_AJAX_domain'),
             'was_runned_stop'       => __('Stop', 'BeRocket_AJAX_domain'),
             'steps'                 => __('Steps:', 'BeRocket_AJAX_domain'),
             'step_create_products'  => __('Creating products', 'BeRocket_AJAX_domain'),
-            'step_get_selectors'    => __('Gettings selectors', 'BeRocket_AJAX_domain'),
+            'step_get_selectors'    => __('Retrieving selectors', 'BeRocket_AJAX_domain'),
             'step_remove_product'   => __('Removing products', 'BeRocket_AJAX_domain')
         );
         $html = '<tr>
             <th scope="row">' . __('Get selectors automatically', 'BeRocket_AJAX_domain') . '</th>
             <td>
-                <h4>' . __('How it work:', 'BeRocket_AJAX_domain') . '</h4>
+                <h4>' . __('How it works:', 'BeRocket_AJAX_domain') . '</h4>
                 <ol>
-                    <li>' . __('Run Auto-selector', 'BeRocket_AJAX_domain') . '</li>
-                    <li>' . __('Wait until end <strong style="color:red;">do not close this page</strong>', 'BeRocket_AJAX_domain') . '</li>
-                    <li>' . __('Save settings with new selectors', 'BeRocket_AJAX_domain') . '</li>
+                    <li>' . __('Run Auto-selector;', 'BeRocket_AJAX_domain') . '</li>
+                    <li>' . __('Wait until the end. <strong style="color:red;">Do not close this page;</strong>', 'BeRocket_AJAX_domain') . '</li>
+                    <li>' . __('Save settings with new selectors.', 'BeRocket_AJAX_domain') . '</li>
                 </ol>
                 ' . BeRocket_wizard_generate_autoselectors_v2(array('products' => '.berocket_aapf_products_selector', 'pagination' => '.berocket_aapf_pagination_selector', 'result_count' => '.berocket_aapf_product_count_selector'), array(), $output_text) . '
             </td>
+        </tr>';
+        return $html;
+    }
+    public function section_selected_filters_template ( $item, $options ) {
+        $style_setting = br_get_value_from_array($options, 'selected_filters_template', '');
+        $html = '<tr class="selected_filters_template_tr">
+            <td colspan="2">';
+        $styles = apply_filters('BeRocket_AAPF_getall_Template_Styles', array());
+        $sfa_styles = array();
+        foreach($styles as $style_id => $style) {
+            if( $style['template'] == 'selected_filters' ) {
+                $sfa_styles[$style_id] = $style;
+            }
+        }
+        $templates = braapf_convert_filter_styles_to_templates($sfa_styles, 'br_filters_options[selected_filters_template]', $style_setting);
+        $html .= '<div class="braapf_templates_list_sfa">';
+        foreach($templates as $template_slug => $template_data) {
+            $html .= '<div class="braapf_template_'.$template_data['template'].'_'.$template_data['specific'].'">';
+                $template_name = br_get_value_from_array($templates_data, array($template_data['template'], (empty($template_data['specific']) ? 0 : $template_data['specific'])));
+                if( empty($template_name) ) {
+                    $template_name = ucfirst(str_replace('_', ' ', $template_data['template']));
+                    if( ! empty($template_data['specific']) ) {
+                        $template_name .= '. ' .ucfirst(str_replace('_', ' ', $template_data['specific']));
+                    }
+                }
+                $html .= '<div class="braapf_style">';
+                    $template_html = implode($template_data['html']);
+                    $html .= $template_html;
+                $html .= '</div>';
+            $html .= '</div>';
+        }
+        $html .= '</div>';
+        $html .= '</td>
         </tr>';
         return $html;
     }
@@ -1443,7 +1481,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                     <input class="berocket_purge_cache_input" type="hidden" name="br_filters_options[purge_cache_time]" value="'.br_get_value_from_array($options, 'purge_cache_time').'">
                     ' . __('Purge Cache', 'BeRocket_AJAX_domain') . '
                 </span>
-                <p>' . __('Clears the attribute/custom taxonomy cache for plugin', 'BeRocket_AJAX_domain') . '</p>
+                <p>' . __('Clear the attribute/custom taxonomy cache for the plugin', 'BeRocket_AJAX_domain') . '</p>
                 <script>
                     jQuery(".berocket_purge_cache").click(function() {
                         var $this = jQuery(this);
@@ -1572,8 +1610,10 @@ jQuery(document).on('change', '.br_scroll_shop_top', br_scroll_shop_top);
 function br_selected_area_show() {
     if( jQuery('.br_selected_area_show').prop('checked') ) {
         jQuery('.br_selected_area_hide_empty').parent().show();
+        jQuery('.selected_filters_template_tr').show();
     } else {
         jQuery('.br_selected_area_hide_empty').parent().hide();
+        jQuery('.selected_filters_template_tr').hide();
     }
 }
 br_selected_area_show();
@@ -1598,7 +1638,7 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
         ob_start();
         include AAPF_TEMPLATE_PATH.'settings/design_title_styles.php';
         $html = '</table>'.ob_get_clean().'<table class="framework-form-table berocket_framework_menu_design">';
-        $tooltip_text = '<strong>' . __('Those design settings change only the styles for filters inside a Group with enabled option', 'BeRocket_AJAX_domain') . ' <span style="color:#0085ba;">' . __('Show title only', 'BeRocket_AJAX_domain') . '</span></strong>';
+        $tooltip_text = '<strong>' . __('Those design settings change only the styles for filters inside a Group with the enabled option', 'BeRocket_AJAX_domain') . ' <span style="color:#0085ba;">' . __('Show title only', 'BeRocket_AJAX_domain') . '</span></strong>';
         self::add_tooltip('#braapf_design_title_styles', $tooltip_text);
         return $html;
     }
@@ -2343,7 +2383,7 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
         $br_options = apply_filters( 'berocket_aapf_listener_br_options', $this->get_option() );
         $set_query_var_title['title'] = '';
         $set_query_var_title['widget_type'] = 'selected_area';
-        $set_query_var_title['style'] = 'sfa_default';
+        $set_query_var_title['style'] = br_get_value_from_array($br_options, 'selected_filters_template', 'sfa_default');
         $set_query_var_title['selected_area_show'] = empty($br_options['selected_area_hide_empty']);
         $set_query_var_title = array_merge(BeRocket_AAPF_Widget::$defaults, $set_query_var_title);
         new BeRocket_AAPF_Widget($set_query_var_title);

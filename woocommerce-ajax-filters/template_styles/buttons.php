@@ -32,6 +32,40 @@ if( ! class_exists('BeRocket_AAPF_Elemets_Style_button_default') ) {
     }
     new BeRocket_AAPF_Elemets_Style_button_default();
 }
+if( ! class_exists('BeRocket_AAPF_Elemets_Style_button_dark_rounded') ) {
+	class BeRocket_AAPF_Elemets_Style_button_dark_rounded extends BeRocket_AAPF_Elemets_Style_button_default {
+		function __construct() {
+			parent::__construct();
+			$this->data['slug'] = 'button_dark_rounded';
+			$this->data['name'] = 'Dark & rounded';
+			$this->data['image'] = plugin_dir_url( __FILE__ ) . 'images/button_dark_rounded.png';
+			$this->data['style_file'] = 'css/button.css';
+			$this->data['sort_pos'] = '500';
+		}
+		function template_element_full($template, $berocket_query_var_title) {
+			$template['template']['attributes']['class']['inline'] = 'bapf_button_dark_rounded';
+			return $template;
+		}
+	}
+	new BeRocket_AAPF_Elemets_Style_button_dark_rounded();
+}
+if( ! class_exists('BeRocket_AAPF_Elemets_Style_button_light') ) {
+	class BeRocket_AAPF_Elemets_Style_button_light extends BeRocket_AAPF_Elemets_Style_button_default {
+		function __construct() {
+			parent::__construct();
+			$this->data['slug'] = 'button_light';
+			$this->data['name'] = 'Light';
+			$this->data['image'] = plugin_dir_url( __FILE__ ) . 'images/button_light.png';
+			$this->data['style_file'] = 'css/button.css';
+			$this->data['sort_pos'] = '600';
+		}
+		function template_element_full($template, $berocket_query_var_title) {
+			$template['template']['attributes']['class']['inline'] = 'bapf_button_light';
+			return $template;
+		}
+	}
+	new BeRocket_AAPF_Elemets_Style_button_light();
+}
 if( ! class_exists('BeRocket_AAPF_Elemets_Style_button_berocket') ) {
     class BeRocket_AAPF_Elemets_Style_button_berocket extends BeRocket_AAPF_Elemets_Style_button_default {
         function __construct() {

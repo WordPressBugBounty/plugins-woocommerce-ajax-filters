@@ -202,7 +202,7 @@ if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
                 'was_runned_stop'       => __('Stop', 'BeRocket_domain'),
                 'steps'                 => __('Steps:', 'BeRocket_domain'),
                 'step_create_products'  => __('Creating products', 'BeRocket_domain'),
-                'step_get_selectors'    => __('Gettings selectors', 'BeRocket_domain'),
+                'step_get_selectors'    => __('Retrieving selectors', 'BeRocket_domain'),
                 'step_remove_product'   => __('Removing products', 'BeRocket_domain'),
                 'popup_before_run'      => '',
                 'popup_before_run_close'=> __('Close', 'BeRocket_domain'),

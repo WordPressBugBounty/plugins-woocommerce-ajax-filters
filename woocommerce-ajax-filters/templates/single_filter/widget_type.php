@@ -7,9 +7,6 @@ $widget_types = apply_filters('braapf_new_widget_edit_page_widget_types', array(
         'value' => 'filter',
         'name'  => __('Filter', 'BeRocket_AJAX_domain'),
         'image' => plugin_dir_url( BeRocket_AJAX_filters_file ) . 'assets/admin/images/filters.png',
-        'info'  => '<p>' . __('Create filters by price, attributes, categories, tags etc.', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p>' . __('Basic widget type. Other widget types do not work without filters', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p><small>' . __('Plugin do not have possibility to filter products by post meta') . '</small></p>'
     ),
     'update_button' => array(
         'value' => 'update_button',
@@ -17,8 +14,6 @@ $widget_types = apply_filters('braapf_new_widget_edit_page_widget_types', array(
         'image' => plugin_dir_url( BeRocket_AJAX_filters_file ) . 'assets/admin/images/apply_filters.png',
         'templates' => array('button'),
         'specific'  => array('elements'),
-        'info'      => '<p>' . __('Filters will be applied to the products only after this button will be clicked.', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p>' . __('If at least one update button displayed on the page, then all filters will be applied only after button clicked.', 'BeRocket_AJAX_domain') . '</p>'
     ),
     'reset_button' => array(
         'value' => 'reset_button',
@@ -26,8 +21,6 @@ $widget_types = apply_filters('braapf_new_widget_edit_page_widget_types', array(
         'image' => plugin_dir_url( BeRocket_AJAX_filters_file ) . 'assets/admin/images/clear_filters.png',
         'templates' => array('button'),
         'specific'  => array('elements'),
-        'info'      => '<p>' . __('Clear all selected filters.', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p>' . __('After click on Reset button all selected filters will be unselected and products updated.', 'BeRocket_AJAX_domain') . '</p>'
     ),
     'selected_area' => array(
         'value' => 'selected_area',
@@ -35,9 +28,6 @@ $widget_types = apply_filters('braapf_new_widget_edit_page_widget_types', array(
         'image' => plugin_dir_url( BeRocket_AJAX_filters_file ) . 'assets/admin/images/selected_filters.png',
         'templates' => array('selected_filters'),
         'specific'  => array('elements'),
-        'info'      => '<p>' . __('Display all selected filters.', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p>' . __('Each filter can be clicked to reset it.', 'BeRocket_AJAX_domain') . '</p>'
-        . '<p>' . __('Also has link to reset all filters, that works same as Reset button.', 'BeRocket_AJAX_domain') . '</p>'
     ),
 ));
 echo '<p>'.__('Select widget type that you need to create', 'BeRocket_AJAX_domain').'</p>';
@@ -98,27 +88,6 @@ foreach($widget_types as $widget_slug => $widget_type) {
                         'attributes'=> array(),
                         'content'   => array(
                             'title'     => $widget_type['name']
-                        ),
-                    ),
-                    'active'  => array(
-                        'type'      => 'tag',
-                        'tag'       => 'span',
-                        'attributes'=> array(
-                            'class'     => array(
-                                'active'    => 'braapf_active'
-                            )
-                        ),
-                        'content'   => array(
-                            'check'  => array(
-                                'type'      => 'tag',
-                                'tag'       => 'i',
-                                'attributes'=> array(
-                                    'class'     => array(
-                                        'fa'        => 'fa',
-                                        'check'     => 'fa-check'
-                                    )
-                                ),
-                            ),
                         ),
                     ),
                 )

@@ -1837,3 +1837,50 @@ if( ! function_exists('berocket_term_get_metadata') ) {
         return $color_meta;
     }
 }
+if( ! function_exists('braapf_convert_filter_styles_to_templates') ) {
+    function braapf_convert_filter_styles_to_templates($styles, $settings_name, $style_setting) {
+        $templates = array();
+        foreach($styles as $style_id => $style_data) {
+            $JQdata = '';
+            if( empty($style_data['image']) || ! file_exists(plugin_dir_path($style_data['file']) . str_replace(plugin_dir_url($style_data['file']), '', $style_data['image'])) ) {
+                $style_data['image'] = plugin_dir_url( BeRocket_AJAX_filters_file ) . 'images/without-preview.png';
+            }
+            foreach($style_data as $data_name => $data_value) {
+                if( (is_string($data_value) || is_numeric($data_value)) && ! in_array($data_name, array('this', 'file', 'style_file', 'script_file')) ) {
+                    $JQdata_ok = true;
+                    if( in_array($data_name, array('image_price', 'image')) ) {
+                        $JQdata_ok = false;
+                        $path = plugin_dir_path($style_data['file']) . str_replace(plugin_dir_url($style_data['file']), '', $data_value);
+                        if( file_exists($path) ) {
+                            $JQdata_ok = true;
+                        }
+                    }
+                    if($JQdata_ok) {
+                        $JQdata .= ' data-'. $data_name.'="'.$data_value.'"';
+                    }
+                }
+            }
+            if( ! isset($templates[$style_data['template'].'+'.$style_data['specific']]) ) {
+                $templates[$style_data['template'].'+'.$style_data['specific']] = array(
+                    'template' => $style_data['template'],
+                    'specific' => $style_data['specific'],
+                    'html'     => array()
+                );
+            }
+            $style_html = '<div class="braapf_style_'.$style_id.'"'.$JQdata.'>';
+                $style_html .= '<input id="braapf_style_'.$style_id.'" type="radio" name="'.$settings_name.'" value="'.$style_id.'"'.($style_setting == $style_id ? ' checked' : '') . $JQdata . '>';
+                $style_html .= '<label for="braapf_style_'.$style_id.'">';
+                    $style_html .= '<img alt="'.$style_data['name'].'" src="'.$style_data['image'].'">';
+                    $style_html .= '<h3>'.$style_data['name'].'</h3>';
+                $style_html .= '</label>';
+            $style_html .= '</div>';
+            if( isset($style_data['sort_pos']) && $style_data['sort_pos'] == 1 ) {
+                $templates[$style_data['template'].'+'.$style_data['specific']]['html'] = 
+                    array($style_id => $style_html) + $templates[$style_data['template'].'+'.$style_data['specific']]['html'];
+            } else {
+                $templates[$style_data['template'].'+'.$style_data['specific']]['html'][$style_id] = $style_html;
+            }
+        }
+        return $templates;
+    }
+}

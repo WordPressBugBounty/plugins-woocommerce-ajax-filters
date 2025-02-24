@@ -32,6 +32,23 @@ if( ! class_exists('BeRocket_AAPF_Elemets_Style_sfa_default') ) {
     }
     new BeRocket_AAPF_Elemets_Style_sfa_default();
 }
+if( ! class_exists('BeRocket_AAPF_Elemets_Style_sfa_grey_rounded') ) {
+	class BeRocket_AAPF_Elemets_Style_sfa_grey_rounded extends BeRocket_AAPF_Elemets_Style_sfa_default {
+		function __construct() {
+			parent::__construct();
+			$this->data['slug'] = 'grey_rounded';
+			$this->data['name'] = 'Grey & rounded';
+			$this->data['image'] = plugin_dir_url( __FILE__ ) . 'images/selected_filters_area-grey_rounded.png';
+			$this->data['style_file'] = 'css/selected_filters_area.css';
+			$this->data['sort_pos'] = 600;
+		}
+		function template_element_full($template, $berocket_query_var_title) {
+			$template['template']['attributes']['class']['inline'] = 'bapf-sfa-grey-rounded';
+			return $template;
+		}
+	}
+	new BeRocket_AAPF_Elemets_Style_sfa_grey_rounded();
+}
 if( ! class_exists('BeRocket_AAPF_Elemets_Style_sfa_inline') ) {
     class BeRocket_AAPF_Elemets_Style_sfa_inline extends BeRocket_AAPF_Elemets_Style_sfa_default {
         function __construct() {
@@ -40,10 +57,11 @@ if( ! class_exists('BeRocket_AAPF_Elemets_Style_sfa_inline') ) {
             $this->data['name'] = 'Selected Filters Area Inline';
             $this->data['image'] = plugin_dir_url( __FILE__ ) . 'images/selected_filters_area-inline.png';
             $this->data['style_file'] = 'css/selected_filters_area.css';
+	        $this->data['sort_pos'] = 900;
         }
         function template_element_full($template, $berocket_query_var_title) {
             $template['template']['attributes']['class']['inline'] = 'bapf_sfa_inline';
-            return $template;
+			return $template;
         }
     }
     new BeRocket_AAPF_Elemets_Style_sfa_inline();

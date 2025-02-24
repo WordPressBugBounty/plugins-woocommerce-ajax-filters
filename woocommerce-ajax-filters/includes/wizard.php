@@ -556,7 +556,6 @@ class BeRocket_AAPF_Wizard {
     public function wizard_install_single_plugin() {
         $nonce = $_POST['nonce'];
         if( ! wp_verify_nonce($nonce, 'br-aapf-setup') ) {
-        echo $nonce;
             echo 'false';
             wp_die();
         }
@@ -856,7 +855,6 @@ class BeRocket_AAPF_Wizard {
     public function wizard_create_single_filter() {
         $nonce = $_POST['nonce'];
         if( ! wp_verify_nonce($nonce, 'br-aapf-setup') ) {
-        echo $nonce;
             echo 'false';
             wp_die();
         }

@@ -463,12 +463,12 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
                         'attribute'  => array(
                             'name'      => __('Attribute: ', 'BeRocket_AJAX_domain'),
                             'value'     => 'attribute',
-                            'error'     => __('Attribute not exists. This filter can work incorrect', 'BeRocket_AJAX_domain')
+                            'error'     => __('Attribute does not exist. This filter can work incorrectly', 'BeRocket_AJAX_domain')
                         ),
                         'custom_taxonomy'  => array(
                             'name'      => __('Custom Taxonomy: ', 'BeRocket_AJAX_domain'),
                             'value'     => 'custom_taxonomy',
-                            'error'     => __('Custom taxonomy not exists. This filter can work incorrect', 'BeRocket_AJAX_domain')
+                            'error'     => __('Custom taxonomy does not exist. This filter can work incorrectly', 'BeRocket_AJAX_domain')
                         ),
                     );
                     if( isset($specific_filter_type[$filter['filter_type']]) ) {
