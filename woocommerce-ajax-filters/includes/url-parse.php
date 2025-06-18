@@ -17,6 +17,7 @@ if( ! class_exists('BeRocket_url_parse_page') ) {
                 include_once($filename);
             }
             add_action('woocommerce_product_query', array($this, 'woocommerce_product_query'), 99999999, 1);
+            add_action('init', array($this, 'init_queried_obj'), 1);
             add_filter('woocommerce_shortcode_products_query', array( $this, 'woocommerce_shortcode_products_query' ), 900000, 3);
             add_filter('woocommerce_shortcode_products_query', array( $this, 'woocommerce_shortcode_products_query_save_query_late' ), 9000000, 3);
             add_filter('bapf_uparse_apply_filters_to_query_vars', array( $this, 'query_vars_apply_filters' ), 10, 1);
@@ -69,14 +70,17 @@ if( ! class_exists('BeRocket_url_parse_page') ) {
                     $query_vars['meta_query'] = $meta_query_wc_main;
                 }
                 $this->query_vars = $query_vars;
-                $this->queried_object = $query->get_queried_object();
             }
+        }
+        public function init_queried_obj() {
+            $this->queried_object = get_queried_object();
         }
         public function woocommerce_shortcode_products_query($query_vars, $atts = array(), $name = 'products') {
             if( isset($atts['berocket_aapf']) && $atts['berocket_aapf'] === false ) {
                 return $query_vars;
             }
-            if( apply_filters('berocket_aapf_wcshortcode_is_filtering', ( (! is_shop() && ! is_product_taxonomy() && ! is_product_category() && ! is_product_tag()) || ! empty($atts['berocket_aapf']) ), $query_vars, $atts, $name ) ) {
+            $page_check = braapf_is_shortcode_must_be_filtered();
+            if( apply_filters('berocket_aapf_wcshortcode_is_filtering', ( $page_check || ! empty($atts['berocket_aapf']) ), $query_vars, $atts, $name ) ) {
                 $query_vars['bapf_apply'] = true;
                 $this->query_vars = $query_vars;
                 $query_vars = $this->query_vars_apply_filters($query_vars);
@@ -301,7 +305,14 @@ if( ! class_exists('BeRocket_url_parse_page') ) {
             $this->args_apply_to_query($query, $args);
             do_action('bapf_uparse_query_vars_ready', $query->query_vars);
             if( ! empty($query->query_vars['bapf_save_query']) ) {
-                $this->save_shortcode_query_vars($query->query_vars);
+                $query_vars = $query->query_vars;
+                if( ! empty($query->tax_query) && empty($query_vars['tax_query']) ) {
+                    $query_vars['tax_query'] = $query->tax_query->queries;
+                }
+                if( ! empty($query->meta_query) && empty($query_vars['meta_query']) ) {
+                    $query_vars['meta_query'] = $query->meta_query->queries;
+                }
+                $this->save_shortcode_query_vars($query_vars);
             }
         }
         public function add_custom_query_without_check($args) {
@@ -458,6 +469,9 @@ if( ! class_exists('BeRocket_url_parse_page') ) {
                 return $data;
             }
             $filter_line = $this->parse_get_filter_line($link);
+            return $this->parse_filter_line($filter_line, $link);
+        }
+        public function parse_filter_line($filter_line, $link = false) {
             $data = $this->parse_filter_line_to_array($filter_line);
             $data = $this->parse_filter_values($data);
             $data = $this->add_terms_to_data($data);

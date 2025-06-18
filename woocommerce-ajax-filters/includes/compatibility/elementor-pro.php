@@ -8,6 +8,7 @@ if( ! class_exists('BeRocket_AAPF_compat_Elementor_pro') ) {
             add_action("elementor/element/loop-carousel/section_query/before_section_end", array($this, 'add_control_loop_carousel'), 10, 2);
             add_action('elementor/widget/before_render_content', array($this, 'before_render_content'), 10, 1);
             add_filter('aapf_localize_widget_script', array($this, 'modify_products_selector'));
+            add_action('wp_footer', array($this, 'custom_js'));
         }
         function modify_products_selector($args) {
             if( ! empty($args['products_holder_id']) ) {
@@ -80,7 +81,7 @@ if( ! class_exists('BeRocket_AAPF_compat_Elementor_pro') ) {
             if( $element_name == 'woocommerce-products' || $element_name == 'loop-grid' || $element_name == 'loop-carousel' ) {
                 $this->attributes = $element->get_settings();
                 add_filter('berocket_aapf_wcshortcode_is_filtering', array($this, 'enable_filtering'), 1000);
-                $enabled = (! is_shop() && ! is_product_taxonomy() && ! is_product_category() && ! is_product_tag());
+                $enabled = braapf_is_shortcode_must_be_filtered();
                 if( ! empty($this->attributes['bapf_apply']) && $this->attributes['bapf_apply'] == 'enable' ) {
                     $enabled = true;
                 } elseif( ! empty($this->attributes['bapf_apply']) && $this->attributes['bapf_apply'] == 'disable' ) {
@@ -107,6 +108,34 @@ if( ! class_exists('BeRocket_AAPF_compat_Elementor_pro') ) {
                 $enabled = true;
             }
             return $enabled;
+        }
+        function custom_js() {
+            ?>
+            <script>
+bapf_remove_page_elementor_compat = function(url_data, $this) {
+    var elemntor_products = jQuery('.bapf_products_apply_filters.elementor-element');
+    if( elemntor_products.length && Array.isArray(url_data.queryargs) ) {
+        var elemntor_products_pageid = 'e-page-' + elemntor_products.data('id');
+        var newqueryargs = [];
+        jQuery.each(url_data.queryargs, function(i, val) {
+            if(val.name != elemntor_products_pageid) {
+                newqueryargs.push(val);
+            }
+        });
+        url_data.queryargs = newqueryargs;
+    }
+    return url_data;
+}
+if ( typeof(berocket_add_filter) == 'function' ) {
+    berocket_add_filter('braapf_remove_pages_from_url_data', bapf_remove_page_elementor_compat);
+} else {
+    jQuery(document).on('berocket_hooks_ready', function() {
+        berocket_add_filter('braapf_remove_pages_from_url_data', bapf_remove_page_elementor_compat);
+    });
+}
+            </script>
+            <?php
+            
         }
     }
     new BeRocket_AAPF_compat_Elementor_pro();

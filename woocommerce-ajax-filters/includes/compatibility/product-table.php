@@ -12,22 +12,12 @@ class BeRocket_AAPF_compat_product_table {
             if( $options['nice_urls'] ) {
                 $filter_name = apply_filters('berocket_aapf_filter_variable_name', 'filters');
                 if( ! empty($_POST[$filter_name]) ) {
-                    if( empty($options['seo_uri_decode']) ) {
-                        $_GET[$filter_name] = $_POST[$filter_name];
-                    } else {
-                        $_GET[$filter_name] = urldecode($_POST[$filter_name]);
-                    }
-                    global $wp_query;
-                    $wp_query->set($filter_name, $_GET[$filter_name]);
+                    bapf_set_filter_field_ajax($_POST[$filter_name]);
                 }
             } else {
                 $filter_nn_name = apply_filters('berocket_aapf_filter_variable_name_nn', 'filters');
                 if( ! empty($_POST[$filter_nn_name]) ) {
-                    if( empty($options['seo_uri_decode']) ) {
-                        $_GET[$filter_nn_name] = $_POST[$filter_nn_name];
-                    } else {
-                        $_GET[$filter_nn_name] = urldecode($_POST[$filter_nn_name]);
-                    }
+                    bapf_set_filter_field_ajax($_POST[$filter_nn_name]);
                 }
             }
             $table_id = filter_input( INPUT_POST, 'table_id', FILTER_SANITIZE_STRING );

@@ -3,6 +3,7 @@ if( ! class_exists('BeRocket_AAPF_shortcode_apply_filters') ) {
     class BeRocket_AAPF_shortcode_apply_filters {
         function __construct() {
             add_shortcode( 'brapf_next_shortcode_apply', array( $this, 'shortcode_apply' ) );
+            add_action( 'brapf_next_shortcode_apply_action', array( $this, 'shortcode_apply' ) );
         }
         public function shortcode_apply( $atts = array() ) {
             if( ! is_array($atts) ) $atts = array();
@@ -61,7 +62,7 @@ if( ! class_exists('BeRocket_AAPF_shortcode_apply_filters') ) {
         }
         public function add_apply_filter() {
             add_filter('berocket_aapf_wcshortcode_is_filtering', array($this, 'apply_filter_to_shortcode'));
-            add_filter('pre_get_posts', array($this, 'apply_filter_to_query'));
+            add_filter('pre_get_posts', array($this, 'apply_filter_to_query'), 1);
         }
         public function add_not_apply_filter() {
             add_filter('berocket_aapf_wcshortcode_is_filtering', array($this, 'not_apply_filter_to_shortcode'));
@@ -70,8 +71,8 @@ if( ! class_exists('BeRocket_AAPF_shortcode_apply_filters') ) {
         public function remove_all() {
             remove_filter('berocket_aapf_wcshortcode_is_filtering', array($this, 'apply_filter_to_shortcode'));
             remove_filter('berocket_aapf_wcshortcode_is_filtering', array($this, 'not_apply_filter_to_shortcode'));
-            remove_filter('pre_get_posts', array($this, 'apply_filter_to_query'));
-            remove_filter('pre_get_posts', array($this, 'not_apply_filter_to_query'));
+            remove_filter('pre_get_posts', array($this, 'apply_filter_to_query'), 1);
+            remove_filter('pre_get_posts', array($this, 'not_apply_filter_to_query'), 2);
         }
     }
     new BeRocket_AAPF_shortcode_apply_filters();

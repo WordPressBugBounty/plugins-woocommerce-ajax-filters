@@ -520,7 +520,7 @@ function braapf_filtered_filters_set() {
                 }
             }
         });
-        return berocket_apply_filters('get_current_url_data', {baselink:link, queryargs:query_arr, filter:"", page:page});
+        return berocket_apply_filters('get_current_url_data', {baselink:link, queryargs:query_arr, filter:"", page:page}, url, query);
     }
     braapf_remove_pages_from_url_data = function(url_data) {
         url_data.page = 1;
@@ -976,7 +976,7 @@ function braapf_filtered_filters_set() {
         return data;
     }
     jQuery(document).on('preInit.dt', '.berocket_product_table_compat .wc-product-table', function (e, settings, data) {
-        if( the_ajax_script.nice_urls ) {
+        if( the_ajax_script.nice_urls && typeof(settings.ajax) == 'object' && settings.ajax ) {
             settings.ajax.data[the_ajax_script.nice_url_variable] = braapf_get_filters_selected();
         }
     });
@@ -1613,7 +1613,7 @@ jQuery(document).ready(function() {
         }
     }
     jQuery(document).on('berocket_ajax_filtering_on_update', function() {
-        if( typeof(jQuery('.bapf_sfilter .bapf_select2').select2) == 'function' ) {
+        if( jQuery('.bapf_sfilter .bapf_select2').length && typeof(jQuery('.bapf_sfilter .bapf_select2').select2) == 'function' ) {
             jQuery('.bapf_sfilter .bapf_select2').select2('close');
         }
         bapf_select2_disable_for_parent(jQuery(document));

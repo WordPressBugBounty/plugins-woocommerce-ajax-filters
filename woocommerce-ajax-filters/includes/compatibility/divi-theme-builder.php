@@ -6,6 +6,7 @@ if( ! class_exists('BeRocket_AAPF_compat_Divi_theme_builder') ) {
             add_filter('et_pb_all_fields_unprocessed_et_pb_shop', array($this, 'add_field'));
             add_filter('et_pb_module_shortcode_attributes', array($this, 'attribute_get'), 10, 5);
             add_filter('bapf_isoption_ajax_site', array($this, 'enable_for_builder'));
+            add_filter('aapf_localize_widget_script', array($this, 'modify_products_selector'));
             if(defined('DOING_AJAX') && in_array(berocket_isset($_REQUEST['action']), array('et_fb_ajax_render_shortcode', 'brapf_get_single_filter', 'brapf_get_group_filter'))) {
                 add_filter('braapf_check_widget_by_instance_single', array($this, 'disable_conditions'));
                 add_filter('braapf_check_widget_by_instance_group', array($this, 'disable_conditions'));
@@ -14,13 +15,40 @@ if( ! class_exists('BeRocket_AAPF_compat_Divi_theme_builder') ) {
                 add_action('wp_footer', array($this, 'apply_styles'));
             }
         }
+        function modify_products_selector($args) {
+            if( ! empty($args['products_holder_id']) ) {
+                $args['products_holder_id'] .= ',';
+            }
+            $args['products_holder_id'] .= '.bapf_products_divi_apply_filters  .products';
+            if( ! empty($args['pagination_class']) ) {
+                $args['pagination_class'] .= ',';
+            }
+            $args['pagination_class'] .= '.bapf_products_divi_apply_filters  .woocommerce-pagination';
+            return $args;
+        }
         function attribute_get($props, $attrs, $render_slug, $_address, $content) {
             remove_filter('berocket_aapf_wcshortcode_is_filtering', array($this, 'enable_filtering'), 1000);
+            remove_filter('et_builder_shop_classes', array($this, 'add_class'), 1000);
             if( $render_slug == 'et_pb_shop' ) {
                 $this->attributes = $props;
                 add_filter('berocket_aapf_wcshortcode_is_filtering', array($this, 'enable_filtering'), 1000);
+                add_filter('et_builder_shop_classes', array($this, 'add_class'), 1000);
             }
             return $props;
+        }
+        function add_class($classes) {
+            $enabled = braapf_is_shortcode_must_be_filtered();
+            if( ! empty($this->attributes['bapf_apply']) && $this->attributes['bapf_apply'] == 'enable' ) {
+                $enabled = true;
+            } elseif( ! empty($this->attributes['bapf_apply']) && $this->attributes['bapf_apply'] == 'disable' ) {
+                $enabled = false;
+            } elseif( ! empty($this->attributes['use_current_loop']) && $this->attributes['use_current_loop'] == 'on' && ( is_post_type_archive( 'product' ) || is_search() || et_is_product_taxonomy() ) ) {
+                $enabled = true;
+            }
+            if( $enabled ) {
+                $classes[] = 'bapf_products_divi_apply_filters';
+            }
+            return $classes;
         }
         function add_field($fields) {
             $fields = berocket_insert_to_array(

@@ -272,6 +272,9 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         }
                         add_action('plugins_loaded', array($this, 'plugins_loaded'));
                     }
+                    add_action('plugins_loaded', array($this, 'compatibility') );
+                    add_action('after_setup_theme', array($this, 'compatibility') );
+                    add_action('init', array($this, 'compatibility'), 1 );
                     if( ! empty($option['products_only']) ) {
                         add_filter('woocommerce_is_filtered', array($this, 'woocommerce_is_filtered'));
                     }
@@ -557,45 +560,10 @@ class BeRocket_AAPF extends BeRocket_Framework {
             wp_dequeue_style( 'font-awesome' );
         }
     }
+    public function compatibility() {
+        include(plugin_dir_path( __FILE__ ) . "includes/compatibility/include.php");
+    }
     public function plugins_loaded() {
-        include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/divi-theme-builder.php");
-        include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/beaver-builder.php");
-        if( defined( 'ELEMENTOR_PRO_VERSION') ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/elementor-pro.php");
-        }
-        if( class_exists('RankMath') ) {
-            include(plugin_dir_path( __FILE__ ) . "includes/compatibility/rank_math_seo.php");
-        }
-        if( function_exists('wmc_get_price') ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/woo-multi-currency.php");
-        }
-        if( defined('WOOCS_VERSION') ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/woocs.php");
-        }
-        if ( ((defined( 'WCML_VERSION' ) || defined('POLYLANG_VERSION')) && defined( 'ICL_LANGUAGE_CODE' )) || function_exists('wpm_get_language') ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/wpml.php");
-        }
-        if( class_exists('WCPBC_Pricing_Zones') ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/price-based-on-country.php");
-        }
-        if( defined( 'DE_DB_WOO_VERSION' ) ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/bodycommerce.php");
-        }
-        if( defined( 'WCJ_PLUGIN_FILE' ) ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/woojetpack.php");
-        }
-        if( function_exists('relevanssi_do_query') ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/relevanssi.php");
-        }
-        if( function_exists('premmerce_multicurrency') ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/premmerce-multicurrency.php");
-        }
-        if( ! empty($GLOBALS['woocommerce-aelia-currencyswitcher']) ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/aelia-currencyswitcher.php");
-        }
-        if( defined( 'SEARCHWP_WOOCOMMERCE_VERSION') ) {
-            include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/wpsearch_wc_compatibility.php");
-        }
         if( apply_filters('BeRocket_AAPF_widget_load_file', true) ) {
             foreach (glob(__DIR__ . "/includes/display_filter/*.php") as $filename)
             {
@@ -614,6 +582,24 @@ class BeRocket_AAPF extends BeRocket_Framework {
     public function admin_settings( $tabs_info = array(), $data = array() ) {
         do_action('bapf_include_all_tempate_styles');
         wp_enqueue_script( 'berocket_aapf_widget-admin' );
+        $elements_position = array(
+            array('value' => 'woocommerce_archive_description', 'text' => __('WooCommerce Description(in header)', 'BeRocket_AJAX_domain')),
+            array('value' => 'woocommerce_before_shop_loop', 'text' => __('WooCommerce Before Shop Loop', 'BeRocket_AJAX_domain')),
+            array('value' => 'woocommerce_after_shop_loop', 'text' => __('WooCommerce After Shop Loop', 'BeRocket_AJAX_domain')),
+        );
+        $additional_elements_position = apply_filters('bapf_elements_position_hook_additional', array());
+        if( ! is_array($additional_elements_position) ) {
+            if( is_string($additional_elements_position) ) {
+                $additional_elements_position = array($additional_elements_position);
+            } else {
+                $additional_elements_position = array();
+            }
+        }
+        foreach($additional_elements_position as $additional_elements_position_element) {
+            if( is_string($additional_elements_position_element) ) {
+                $elements_position[] = array('value' => $additional_elements_position_element, 'text' => $additional_elements_position_element);
+            }
+        }
         parent::admin_settings(
             array(
                 'General' => array(
@@ -780,11 +766,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "label"     => __( 'Selected filters position', "BeRocket_AJAX_domain" ),
                         "name"     => "elements_position_hook",
                         "type"     => "selectbox",
-                        "options"  => array(
-                            array('value' => 'woocommerce_archive_description', 'text' => __('WooCommerce Description(in header)', 'BeRocket_AJAX_domain')),
-                            array('value' => 'woocommerce_before_shop_loop', 'text' => __('WooCommerce Before Shop Loop', 'BeRocket_AJAX_domain')),
-                            array('value' => 'woocommerce_after_shop_loop', 'text' => __('WooCommerce After Shop Loop', 'BeRocket_AJAX_domain')),
-                        ),
+                        "options"  => $elements_position,
                         "value"    => 'woocommerce_archive_description',
                     ),
                     'selected_area' => array(
@@ -2679,10 +2661,19 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
             include_once($filename);
         }
         $styles = apply_filters('BeRocket_AAPF_getall_Template_Styles', array());
+        $styles_to_remove = array('this', 'image', 'name', 'name_price', 'image_price', 'sort_pos', 'version');
+        $empty_to_remove = array('style_file', 'script_file', 'specific');
         if( ! empty($styles) && is_array($styles) ) {
             foreach( $styles as &$style ) {
-                if( isset($style['this']) ) {
-                    unset($style['this']);
+                foreach($styles_to_remove as $style_to_remove) {
+                    if( isset($style[$style_to_remove]) ) {
+                        unset($style[$style_to_remove]);
+                    }
+                }
+                foreach($empty_to_remove as $style_to_remove) {
+                    if( isset($style[$style_to_remove]) && empty($style[$style_to_remove]) ) {
+                        unset($style[$style_to_remove]);
+                    }
                 }
             }
             if( isset($style) ) {

@@ -4,8 +4,8 @@ Contributors: dholovnia, berocket
 Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=donate&utm_campaign=ajax_filters
 Tags: product filters, ajax product filters, woocommerce filters, wc filters, category filter
 Requires at least: 5.0
-Tested up to: 6.7
-Stable tag: 1.6.8.2
+Tested up to: 6.8.1
+Stable tag: 1.6.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -183,6 +183,20 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Changelog ==
+
+= 1.6.9 =
+* Enhancement - Better support Divi Builder
+* Enhancement - Better support Elementor Builder
+* Enhancement - Support Live Composer Page Builder
+* Enhancement - Support WPBakery Page Builder
+* Enhancement - Support Page Builder by SiteOrigin
+* Enhancement - Support Oxygen Builder
+* Enhancement - Support Breakdance Builder
+* Fix - Select2 initialize error
+* Fix - Additional table variation update error
+* Fix - Meta query parameters support in some cases
+* Fix - Divi theme/builder issue in some case page not displayed or header has incorrect style
+* Fix - Admin bar styles
 
 = 1.6.8.2 =
 * HOTFIX - Vulnerability in plugin
