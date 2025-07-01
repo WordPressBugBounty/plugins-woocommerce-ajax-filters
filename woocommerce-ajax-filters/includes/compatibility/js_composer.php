@@ -6,7 +6,6 @@ if( ! class_exists('BeRocket_AAPF_compat_js_composer') ) {
             add_filter('vc_element_settings_filter', array($this, 'add_option'), 10, 2);
             add_filter('pre_do_shortcode_tag', array($this, 'builder_check'), 100, 3);
             add_filter('do_shortcode_tag', array($this, 'builder_check_replace'), 100, 3);
-            add_filter('vc_shortcodes_css_class', array($this, 'builder_check'), 1, 3);
             add_action('wp_footer', array($this, 'custom_js'));
             add_action('wp_ajax_vc_get_vc_grid_data', array($this, 'init'), 1);
             add_action('wp_ajax_nopriv_vc_get_vc_grid_data', array($this, 'init'), 1);

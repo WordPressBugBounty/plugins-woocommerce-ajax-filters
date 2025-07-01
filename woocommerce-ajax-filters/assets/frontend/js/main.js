@@ -1522,6 +1522,7 @@ braapf_jqrui_slidr_ion_values_link_arr_attr;
         berocket_add_filter('jqrui_slidr_ion_link_arr_attr', braapf_jqrui_slidr_ion_values_link_arr_attr);
         berocket_add_filter('jqrui_slidr_ion_link_arr_attr_price', braapf_jqrui_slidr_ion_values_link_arr_attr);
         berocket_add_filter('jqrui_slidr_ion_wc_price', braapf_jqrui_slidr_ion_value_wc_price);
+        berocket_add_filter('jqrui_slidr_ion_num_attr', braapf_jqrui_slidr_ion_value_wc_price);
         berocket_add_filter('jqrui_slidr_ion_arr_attr', braapf_jqrui_slidr_ion_value_arr_attr);
         berocket_add_filter('jqrui_slidr_ion_arr_attr_price', braapf_jqrui_slidr_ion_value_arr_attr, 10);
         berocket_add_filter('jqrui_slidr_ion_arr_attr_price', braapf_jqrui_slidr_ion_value_wc_price, 20);
@@ -1781,6 +1782,14 @@ braapf_jqrui_slidr_values_link_arr_attr;
             $slider.removeClass('bapf_jqrui_blocked');
         });
     }
+    braapf_jqrui_slidr_values_num_attr_style = function(values, $element) {
+        var number_style = $element.data('number_style');
+        if( number_style ) {
+            values[0] = berocket_format_number (values[0], number_style );
+            values[1] = berocket_format_number (values[1], number_style );
+        }
+        return values;
+    }
     braapf_jqrui_slidr_values_wc_price = function(values, $element) {
         var number_style = $element.data('number_style');
         if( ! number_style ) {
@@ -1841,6 +1850,7 @@ braapf_jqrui_slidr_values_link_arr_attr;
     });
     function braapf_jqrui_slidr_berocket_add_filter() {
         berocket_add_filter('jqrui_slidr_wc_price', braapf_jqrui_slidr_values_wc_price);
+        berocket_add_filter('jqrui_slidr_num_attr', braapf_jqrui_slidr_values_num_attr_style);
         berocket_add_filter('jqrui_slidr_arr_attr', braapf_jqrui_slidr_values_arr_attr);
         berocket_add_filter('jqrui_slidr_arr_attr_price', braapf_jqrui_slidr_values_arr_attr, 10);
         berocket_add_filter('jqrui_slidr_arr_attr_price', braapf_jqrui_slidr_values_wc_price, 20);

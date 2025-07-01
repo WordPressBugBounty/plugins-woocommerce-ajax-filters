@@ -17,12 +17,14 @@ class BeRocket_AAPF_Wizard {
     public function init_wizard() {
         if( current_user_can( 'manage_berocket_aapf' ) ) {
             require_once dirname( __FILE__ ) . '/../wizard/setup-wizard.php';
-            add_filter( 'berocket_wizard_steps_br-aapf-setup', array( $this, 'setup_wizard_steps' ) );
-            add_action( 'before_wizard_run_br-aapf-setup', array( $this, 'set_wizard_js_css' ) );
-            berocket_add_setup_wizard_v2( 'br-aapf-setup', array( 'title' => __( 'AJAX Product Filters Setup Wizard', 'BeRocket_AJAX_domain' ) ) );
-            
-            add_action('wp_ajax_brapf_wizard_install_plugin', array($this, 'wizard_install_single_plugin'));
-            add_action('wp_ajax_brapf_wizard_create_filter', array($this, 'wizard_create_single_filter'));
+            if( function_exists('berocket_add_setup_wizard_v2') ) {
+                add_filter( 'berocket_wizard_steps_br-aapf-setup', array( $this, 'setup_wizard_steps' ) );
+                add_action( 'before_wizard_run_br-aapf-setup', array( $this, 'set_wizard_js_css' ) );
+                berocket_add_setup_wizard_v2( 'br-aapf-setup', array( 'title' => __( 'AJAX Product Filters Setup Wizard', 'BeRocket_AJAX_domain' ) ) );
+                
+                add_action('wp_ajax_brapf_wizard_install_plugin', array($this, 'wizard_install_single_plugin'));
+                add_action('wp_ajax_brapf_wizard_create_filter', array($this, 'wizard_create_single_filter'));
+            }
         }
     }
     public function wp_redirect() {

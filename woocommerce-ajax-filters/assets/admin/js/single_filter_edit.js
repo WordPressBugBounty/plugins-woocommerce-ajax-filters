@@ -333,8 +333,8 @@ braapf_checked_style_parent;
         berocket_show_element('.braapf_min_price, .braapf_max_price', '{.braapf_widget_type input[type=radio]} == "filter" && {#braapf_filter_type} == "price" && {#braapf_price_values} == "" && (!braapf_current_template! == "slider" || !braapf_current_template! == "new_slider")');
         berocket_show_element('.braapf_text_before_price, .braapf_text_after_price', '{.braapf_widget_type input[type=radio]} == "filter" && (!braapf_current_template! == "slider" || !braapf_current_template! == "new_slider")');
         berocket_show_element('.braapf_price_value_position', '{.braapf_widget_type input[type=radio]} == "filter" && (!braapf_current_template! == "slider" || !braapf_current_template! == "new_slider")');
-        berocket_show_element('.braapf_number_style', '{.braapf_widget_type input[type=radio]} == "filter" && {#braapf_filter_type} == "price"');
-        berocket_show_element('.braapf_number_style_elements', '{.braapf_widget_type input[type=radio]} == "filter" && {#braapf_filter_type} == "price" && {#braapf_number_style} == true');
+        berocket_show_element('.braapf_number_style', '{.braapf_widget_type input[type=radio]} == "filter" && ({#braapf_filter_type} == "price" || ({#braapf_filter_type} == "attribute" && (!braapf_current_template! == "slider" || !braapf_current_template! == "new_slider") && {#braapf_slider_numeric}))');
+        berocket_show_element('.braapf_number_style_elements', '{.braapf_widget_type input[type=radio]} == "filter" && ({#braapf_filter_type} == "price" || ({#braapf_filter_type} == "attribute" && (!braapf_current_template! == "slider" || !braapf_current_template! == "new_slider") && {#braapf_slider_numeric})) && {#braapf_number_style} == true');
         berocket_show_element('#braapf_text_after_price_info, #braapf_text_before_price_info', '{.braapf_widget_type input[type=radio]} == "filter" && {#braapf_filter_type} == "price" && (!braapf_current_template! == "slider" || !braapf_current_template! == "new_slider")');
         //RESET BUTTON
         berocket_show_element('.braapf_reset_hide', '{.braapf_widget_type input[type=radio]} == "reset_button"');
