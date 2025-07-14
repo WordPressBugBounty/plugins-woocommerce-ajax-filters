@@ -580,25 +580,14 @@ class BeRocket_AAPF extends BeRocket_Framework {
         wp_enqueue_style( 'font-awesome' );
     }
     public function admin_settings( $tabs_info = array(), $data = array() ) {
+        include_once(__DIR__ . "/includes/admin_settings/functions.php");
         do_action('bapf_include_all_tempate_styles');
         wp_enqueue_script( 'berocket_aapf_widget-admin' );
-        $elements_position = array(
-            array('value' => 'woocommerce_archive_description', 'text' => __('WooCommerce Description(in header)', 'BeRocket_AJAX_domain')),
-            array('value' => 'woocommerce_before_shop_loop', 'text' => __('WooCommerce Before Shop Loop', 'BeRocket_AJAX_domain')),
-            array('value' => 'woocommerce_after_shop_loop', 'text' => __('WooCommerce After Shop Loop', 'BeRocket_AJAX_domain')),
-        );
-        $additional_elements_position = apply_filters('bapf_elements_position_hook_additional', array());
-        if( ! is_array($additional_elements_position) ) {
-            if( is_string($additional_elements_position) ) {
-                $additional_elements_position = array($additional_elements_position);
-            } else {
-                $additional_elements_position = array();
-            }
-        }
-        foreach($additional_elements_position as $additional_elements_position_element) {
-            if( is_string($additional_elements_position_element) ) {
-                $elements_position[] = array('value' => $additional_elements_position_element, 'text' => $additional_elements_position_element);
-            }
+        $elements_position = bapf_settings_get_elements_position();
+        $selectors_preset = bapf_settings_get_selectors_preset();
+        $selectors_preset_dropdown = array(array('value' => '', 'text' => __('-=Custom Selectors=-', 'BeRocket_AJAX_domain')));
+        foreach($selectors_preset as $selectors_preset_slug => $selectors_preset_option) {
+            $selectors_preset_dropdown[] = array('value' => $selectors_preset_slug, 'text' => $selectors_preset_option['name']);
         }
         parent::admin_settings(
             array(
@@ -800,6 +789,15 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "name"      => "disable_ajax_loading",
                         "value"     => '1',
                         'class'     => 'berocket_disable_ajax_loading'
+                    ),
+                    'selectors_preset' => array(
+                        "label"    => __( 'Presets', "BeRocket_AJAX_domain" ),
+                        "name"     => "selectors_preset",
+                        "type"     => "selectbox",
+                        "options"  => $selectors_preset_dropdown,
+                        "value"    => '',
+                        "tr_class" => "berocket_disable_ajax_loading_hide",
+                        'class'    => 'berocket_selectors_preset'
                     ),
                     'autoselector_set' => array(
                         "section"   => "autoselector",
@@ -1344,6 +1342,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
         . '<p><b style="color:#0085ba;">' . __('Leave only one value', 'BeRocket_AJAX_domain') . '</b> - '
         . __('filters for the same taxonomy will be displayed with a single value that is the same as the current page (Example: On the page of Product category "Jeans", the filter for the Product category will be shown only with the value "Jeans").', 'BeRocket_AJAX_domain') . '</p>';
         self::add_tooltip('#braapf_page_same_as_filter_info', $tooltip_text);
+        bapf_settings_get_selectors_preset_js();
     }
     public static function add_tooltip($selector, $text) {
         BeRocket_tooltip_display::add_tooltip(

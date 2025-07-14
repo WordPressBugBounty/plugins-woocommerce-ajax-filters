@@ -5,7 +5,7 @@ Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=w
 Tags: product filters, ajax product filters, woocommerce filters, wc filters, category filter
 Requires at least: 5.0
 Tested up to: 6.8.1
-Stable tag: 1.6.9.1
+Stable tag: 1.6.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -183,6 +183,9 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Changelog ==
+
+= 1.6.9.2 =
+* Fix - Compatibility version: WooCommerce 10.0
 
 = 1.6.9.1 =
 * Enhancement - New hook to disable any compatibility for theme/builder/plugin.
