@@ -13,7 +13,7 @@ if( ! class_exists('BeRocket_AAPF_Template_Style_select') ) {
                 'version'       => '1.0',
                 'sort_pos'      => '1',
                 'name_price'    => 'Price Ranges Select',
-                'image_price'   => plugin_dir_url( __FILE__ ) . 'paid/images/select-price.png',
+                'image_price'   => plugin_dir_url( BeRocket_AJAX_filters_file ) . 'paid/template_styles/images/select-price.png',
             );
             parent::__construct();
         }
@@ -29,7 +29,7 @@ if( ! class_exists('BeRocket_AAPF_Template_Style_select2') ) {
             $this->data['image'] = plugin_dir_url( __FILE__ ) . 'images/select2.png';
             $this->data['sort_pos'] = '900';
             $this->data['name_price'] = 'Price Ranges Select2';
-            $this->data['image_price'] = plugin_dir_url( __FILE__ ) . 'paid/images/select2-price.png';
+            $this->data['image_price'] = plugin_dir_url( BeRocket_AJAX_filters_file ) . 'paid/template_styles/images/select2-price.png';
         }
         function enqueue_all() {
             do_action('bapf_select2_load');
@@ -57,7 +57,7 @@ if( ! class_exists('BeRocket_AAPF_Template_Style_select2_classic') ) {
             $this->data['name']  = 'Select2 Classic';
             $this->data['image'] = plugin_dir_url( __FILE__ ) . 'images/select2classic.png';
             $this->data['name_price'] = 'Price Ranges Select2 Classic';
-            $this->data['image_price'] = plugin_dir_url( __FILE__ ) . 'paid/images/select2classic-price.png';
+            $this->data['image_price'] = plugin_dir_url( BeRocket_AJAX_filters_file ) . 'paid/template_styles/images/select2classic-price.png';
         }
         function template_full($template, $terms, $berocket_query_var_title) {
             $template = parent::template_full($template, $terms, $berocket_query_var_title);

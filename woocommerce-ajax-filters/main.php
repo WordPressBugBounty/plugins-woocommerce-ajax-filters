@@ -8,6 +8,12 @@ foreach (glob(__DIR__ . "/includes/*.php") as $filename)
 {
     include_once($filename);
 }
+if( file_exists(__DIR__ . "/paid/paid.php") ) {
+    include_once(__DIR__ . "/paid/paid.php");
+}
+if( file_exists(__DIR__ . "/business/business.php") ) {
+    include_once(__DIR__ . "/business/business.php");
+}
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 require_once dirname( __FILE__ ) . '/wizard/main.php';
 include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/product-table.php");
@@ -200,7 +206,6 @@ class BeRocket_AAPF extends BeRocket_Framework {
             BeRocket_AAPF_single_filter::getInstance();
             BeRocket_AAPF_group_filters::getInstance();
             new BeRocket_AAPF_compat_JetSmartFilter();
-            add_action('vc_before_init', 'berocket_filter_vc_before_init', 100000);
             //----------------------
 
 	        if( is_admin() ) {
@@ -2690,6 +2695,27 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
     public function divi_extensions_init() {
         if( class_exists('DiviExtension') ) {
             include_once dirname( __FILE__ ) . '/divi/includes/FiltersExtension.php';
+        }
+    }
+    public function activation() {
+        include_once(__DIR__ . "/includes/admin_settings/functions.php");
+        $selectors = bapf_settings_get_selectors_preset();
+        foreach($selectors as $selector_name => $selector) {
+            $basic_option = get_option( 'br_filters_options' );
+            $option = BeRocket_AAPF::get_aapf_option();
+            if( ! is_array($basic_option) || ! isset($basic_option['selectors_preset']) || ! empty($option['selectors_preset']) ) {
+                $option['selectors_preset'] = $selector_name;
+                foreach($selector['options'] as $option_name => $option_val) {
+                    if( is_array($option_val) ) {
+                        $option[$option_name] = array_merge($option[$option_name], $option_val);
+                    } else {
+                        $option[$option_name] = $option_val;
+                    }
+                }
+                $option = array_merge($option, $selector['options']);
+                update_option( 'br_filters_options', $option );
+            }
+            break;
         }
     }
 }

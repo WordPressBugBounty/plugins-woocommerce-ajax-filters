@@ -1850,7 +1850,7 @@ if( ! function_exists('braapf_convert_filter_styles_to_templates') ) {
                     $JQdata_ok = true;
                     if( in_array($data_name, array('image_price', 'image')) ) {
                         $JQdata_ok = false;
-                        $path = plugin_dir_path($style_data['file']) . str_replace(plugin_dir_url($style_data['file']), '', $data_value);
+                        $path = plugin_dir_path(BeRocket_AJAX_filters_file) . str_replace(plugin_dir_url(BeRocket_AJAX_filters_file), '', $data_value);
                         if( file_exists($path) ) {
                             $JQdata_ok = true;
                         }

@@ -4,7 +4,28 @@ class BeRocket_AAPF_Wizard {
         add_action('wp_loaded', array($this, 'init_wizard'));
         add_action('admin_init', array($this, 'wp_redirect'), 100);
         add_filter('brfr_header_links_ajax_filters', array($this, 'admin_link'));
+        add_action('switch_theme', array($this, 'switch_theme'), 10, 2);
 	}
+
+    public function switch_theme($new_name, $new_theme) {
+        include_once(__DIR__ . "/admin_settings/functions.php");
+        $selectors = bapf_settings_get_selectors_preset($new_theme);
+        foreach($selectors as $selector_name => $selector) {
+            $option = BeRocket_AAPF::get_aapf_option();
+            if( ! empty($option['selectors_preset']) ) {
+                $option['selectors_preset'] = $selector_name;
+                foreach($selector['options'] as $option_name => $option_val) {
+                    if( is_array($option_val) ) {
+                        $option[$option_name] = array_merge($option[$option_name], $option_val);
+                    } else {
+                        $option[$option_name] = $option_val;
+                    }
+                }
+                update_option( 'br_filters_options', $option );
+            }
+            break;
+        }
+    }
 
     public function admin_link($header_links) {
         $header_links['wizard'] = array(
@@ -350,11 +371,7 @@ class BeRocket_AAPF_Wizard {
 		update_option( 'br_filters_options', $option );
         wp_cache_delete('br_filters_options', 'berocket_framework_option');
 
-		if ( class_exists('BeRocket_AAPF_paid') && ! empty( $new_option['nice_urls'] ) ) {
-            $default_values = $BeRocket_AAPF->default_permalink;
-            $BeRocket_AAPF_paid = BeRocket_AAPF_paid::getInstance();
-            $BeRocket_AAPF_paid->save_permalink_option( $default_values );
-		}
+        do_action('brapf_wizard_selectors_save', $option);
         
 		$wizard->redirect_to_next_step();
 	}
@@ -470,11 +487,7 @@ class BeRocket_AAPF_Wizard {
 		update_option( 'br_filters_options', $option );
         wp_cache_delete('br_filters_options', 'berocket_framework_option');
 
-		if ( class_exists('BeRocket_AAPF_paid') && ! empty( $new_option['nice_urls'] ) ) {
-            $default_values = $BeRocket_AAPF->default_permalink;
-            $BeRocket_AAPF_paid = BeRocket_AAPF_paid::getInstance();
-            $BeRocket_AAPF_paid->save_permalink_option( $default_values );
-		}
+        do_action('brapf_wizard_addons_save', $option);
         
 		$wizard->redirect_to_next_step();
 	}
@@ -815,6 +828,8 @@ class BeRocket_AAPF_Wizard {
                 remove_query_arg( 'activate_error' ) ) );
             wp_redirect($same_link);
         }
+
+        do_action('brapf_wizard_plugins_install_save', $option);
 		$wizard->redirect_to_next_step();
 	}
 
@@ -1124,6 +1139,8 @@ class BeRocket_AAPF_Wizard {
                 remove_query_arg( 'activate_error' ) ) );
             wp_redirect($same_link);
         }
+
+        do_action('brapf_wizard_filters_create_save', $option);
 		$wizard->redirect_to_next_step();
 	}
 

@@ -381,6 +381,7 @@ class BeRocket_AAPF_Widget {
             if( $custom_type_html !== TRUE ) {
                 BeRocket_AAPF::wp_enqueue_script( 'berocket_aapf_widget-script' );
                 BeRocket_AAPF::wp_enqueue_style ( 'berocket_aapf_widget-style' );
+                do_action('br_footer_script');
                 echo $custom_type_html;
             }
             $widget_error_log['return'] = $widget_type;

@@ -5,7 +5,6 @@ if( ! class_exists('BeRocket_AAPF_compat_rank_math_seo') ) {
         function __construct() {
             add_action('braapf_seo_meta_description', array($this, 'description'), 10, 1);
             add_action('braapf_seo_meta_title', array($this, 'title'), 10, 1);
-            add_filter('rank_math/frontend/canonical', array($this, 'add_canonical'));
         }
         function description($instance) {
             self::$seo_meta = $instance;
@@ -25,20 +24,6 @@ if( ! class_exists('BeRocket_AAPF_compat_rank_math_seo') ) {
         function add_title($title) {
             $title = self::$seo_meta->wpseo_title($title);
             return $title;
-        }
-        function add_canonical($canonical) {
-            if( class_exists('BeRocket_AAPF_paid') ) {
-                remove_filter('berocket_wp_head_canonical', array($this, 'prevent_default_canonical'));
-                $BeRocket_AAPF_paid = BeRocket_AAPF_paid::getInstance();
-                if( $BeRocket_AAPF_paid->is_canonical_applied() ) {
-                    $canonical = $BeRocket_AAPF_paid->get_current_canonical_url();
-                }
-                add_filter('berocket_wp_head_canonical', array($this, 'prevent_default_canonical'));
-            }
-            return $canonical;
-        }
-        function prevent_default_canonical() {
-            return false;
         }
     }
     new BeRocket_AAPF_compat_rank_math_seo();

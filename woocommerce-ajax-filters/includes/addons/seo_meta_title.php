@@ -241,6 +241,10 @@ if( ! class_exists('BeRocket_AAPF_addon_woocommerce_seo_title') ) {
             return sprintf($price_format, $currency, $price);
         }
         function get_filters_string($text, $section = 'title') {
+            $filters = apply_filters('berocket_aapf_seo_meta_filters_text_before_check', '', $text, $section, $this->terms_filtered);
+            if( ! empty($filters) ) {
+                return $filters;
+            }
             if( empty($this->terms_filtered) ) {
                 return $text;
             }

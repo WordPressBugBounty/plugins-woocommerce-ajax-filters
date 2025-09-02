@@ -88,5 +88,10 @@ $compatibility_features = apply_filters('bapf_compatibility_include', $compatibi
 foreach($compatibility_features as $compatibility_feature) {
     if( ! isset($compatibility_feature['check']) || $compatibility_feature['check'] ) {
         include_once(plugin_dir_path( BeRocket_AJAX_filters_file ) . "includes/compatibility/" . $compatibility_feature['file']);
+        if( isset($compatibility_feature['file_add']) && is_array($compatibility_feature['file_add']) ) {
+            foreach($compatibility_feature['file_add'] as $file_add) {
+                include_once(plugin_dir_path( BeRocket_AJAX_filters_file ) . $file_add);
+            }
+        }
     }
 }

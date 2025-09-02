@@ -743,7 +743,7 @@ body .berocket_ajax_filters_sidebar_back.brapf_sidefl_linegrey {
     white-space: initial;
 }
 .select2-container {
-    z-index: 999;
+    z-index: 9999;
 }
 
 

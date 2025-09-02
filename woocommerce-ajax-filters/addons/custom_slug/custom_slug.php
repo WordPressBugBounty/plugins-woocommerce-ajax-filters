@@ -2,7 +2,7 @@
 class BeRocket_aapf_custom_slug_addon extends BeRocket_framework_addon_lib {
     public $addon_file = __FILE__;
     public $plugin_name = 'ajax_filters';
-    public $php_file_name   = 'custom_slug_include';
+    public $php_file_name   = '%plugindir%/paid/addons/custom_slug/custom_slug_include';
     function get_addon_data() {
         $data = parent::get_addon_data();
         return array_merge($data, array(

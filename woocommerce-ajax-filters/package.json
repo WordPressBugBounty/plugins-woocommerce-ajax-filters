@@ -1,0 +1,29 @@
+{
+  "name": "dev.berocket.com",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:berocket/berocket.git"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "grunt": "^1.6.1",
+    "grunt-cli": "^1.4.3",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-uglify": "^5.0.1",
+    "grunt-contrib-cssmin": "^4.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-compress": "^1.6.0"
+  },
+  "dependencies": {
+    "grunt-cleanempty": "^1.0.4",
+    "grunt-contrib-clean": "^2.0.0"
+  }
+}

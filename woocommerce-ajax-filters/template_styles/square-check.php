@@ -12,7 +12,7 @@ if( ! class_exists('BeRocket_AAPF_Template_Style_square_check') ) {
                 'image'         => plugin_dir_url( __FILE__ ) . 'images/square-check.png',
                 'version'       => '1.0',
                 'name_price'    => 'Price Ranges Square Check',
-                'image_price'   => plugin_dir_url( __FILE__ ) . 'paid/images/square-check-price.png',
+                'image_price'   => plugin_dir_url( BeRocket_AJAX_filters_file ) . 'paid/template_styles/images/square-check-price.png',
             );
             parent::__construct();
         }

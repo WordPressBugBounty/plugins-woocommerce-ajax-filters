@@ -13,7 +13,7 @@ if( ! class_exists('BeRocket_AAPF_Template_Style_checkbox') ) {
                 'version'       => '1.0',
                 'sort_pos'      => '1',
                 'name_price'    => 'Price Ranges',
-                'image_price'   => plugin_dir_url( __FILE__ ) . 'paid/images/checkbox-price.png',
+                'image_price'   => plugin_dir_url( BeRocket_AJAX_filters_file ) . 'paid/template_styles/images/checkbox-price.png',
             );
             parent::__construct();
         }
@@ -28,7 +28,7 @@ if( ! class_exists('BeRocket_AAPF_Template_Style_checkbox_clean_rounded') ) {
 			$this->data['name'] = 'Clean & rounded';
 			$this->data['name_price'] = 'Price Ranges clean';
 			$this->data['image'] = plugin_dir_url( __FILE__ ) . 'images/checkbox-clean-rounded.png';
-			$this->data['image_price'] = plugin_dir_url( __FILE__ ) . 'paid/images/checkbox-clean-rounded-price.png';
+			$this->data['image_price'] = plugin_dir_url( BeRocket_AJAX_filters_file ) . 'paid/template_styles/images/checkbox-clean-rounded-price.png';
 			$this->data['style_file'] = 'css/checkbox.css';
 			$this->data['sort_pos'] = '600';
 		}
@@ -66,7 +66,7 @@ if( ! class_exists('BeRocket_AAPF_Template_Style_checkbox_hide') ) {
             $this->data['name'] = 'Checkbox Hide';
             $this->data['name_price'] = 'Price Ranges Hide';
             $this->data['image'] = plugin_dir_url( __FILE__ ) . 'images/checkbox-hide.png';
-            $this->data['image_price'] = plugin_dir_url( __FILE__ ) . 'paid/images/checkbox-hide-price.png';
+            $this->data['image_price'] = plugin_dir_url( BeRocket_AJAX_filters_file ) . 'paid/template_styles/images/checkbox-hide-price.png';
             $this->data['sort_pos'] = '1900';
         }
         function template_full($template, $terms, $berocket_query_var_title) {

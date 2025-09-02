@@ -770,6 +770,24 @@ function braapf_filtered_filters_set() {
         xhr.setRequestHeader('X-Braapf', '1');
         return xhr;
     }
+    var braapf_select2_ordering_reinit_check = false;
+    function braapf_select2_ordering_reinit(xhr) {
+        var ordering_class = the_ajax_script.ordering_class;
+        ordering_class = ordering_class.replaceAll(',', ' select,');
+        ordering_class = ordering_class+' select';
+        if( jQuery(ordering_class).data('select2') ) {
+            braapf_select2_ordering_reinit_check = true
+        }
+        return xhr;
+    }
+    jQuery(document).on('berocket_ajax_products_loaded', function() {
+        if( braapf_select2_ordering_reinit_check ) {
+            var ordering_class = the_ajax_script.ordering_class;
+            ordering_class = ordering_class.replaceAll(',', ' select,');
+            ordering_class = ordering_class+' select';
+            jQuery(ordering_class).select2({minimumResultsForSearch: -1});
+        }
+    });
     function braapf_sngl_hd_loaded_filters($elements) {
         var mobile_width = berocket_apply_filters('filter_mobile_width', 767); 
         var tablet_width = berocket_apply_filters('filter_tablet_width', 1024); 
@@ -889,6 +907,7 @@ function braapf_filtered_filters_set() {
     }
     //Additional part
     berocket_add_filter('ajax_load_from_url_beforeSend', braapf_additional_header);
+    berocket_add_filter('ajax_load_from_url_beforeSend', braapf_select2_ordering_reinit);
     berocket_add_filter('update_products', braapf_update_products);
     berocket_add_filter('error_notsame_block_qty', braapf_reload_page_for_products_error);
     bapf_universal_theme_compatibility = function(data) {

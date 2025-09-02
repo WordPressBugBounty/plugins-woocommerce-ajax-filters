@@ -11,7 +11,7 @@ if( ! class_exists('BeRocket_AAPF_Template_Style_radio') ) {
                 'script_file'   => 'js/radio.js',
                 'image'         => plugin_dir_url( __FILE__ ) . 'images/radio.png',
                 'version'       => '1.0',
-                'image_price'   => plugin_dir_url( __FILE__ ) . 'paid/images/radio-price.png',
+                'image_price'   => plugin_dir_url( BeRocket_AJAX_filters_file ) . 'paid/template_styles/images/radio-price.png',
             );
             parent::__construct();
         }
