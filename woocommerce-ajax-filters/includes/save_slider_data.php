@@ -20,6 +20,9 @@ class BRAAPF_slider_data {
         if( is_array($filter_ids) ) {
             foreach($filter_ids as $filter_id) {
                 $filter_data = $filtersInstance->get_option($filter_id);
+                if( ! isset($filter_data['filter_id']) ) {
+                    $filter_data['filter_id'] = $filter_id;
+                }
                 if( isset($filter_data['style']) && isset($all_styles[$filter_data['style']]) && in_array($all_styles[$filter_data['style']]['template'], array('slider', 'new_slider')) ) {
                     $get_terms_data = $this->generate_data_for_filter($filter_data);
                     if( $get_terms_data !== false ) {

@@ -11,7 +11,7 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
             add_action('braapf_single_filter_style', array(__CLASS__, 'styles_template_description'), 100, 2);
             add_action('braapf_single_filter_style', array(__CLASS__, 'styles_template'), 100, 2);
             //REQUIRED
-            add_action('braapf_single_filter_required', array(__CLASS__, 'required_description'), 100, 2);
+            add_action('braapf_single_filter_required', array(__CLASS__, 'required_description'), 10, 2);
             add_action('braapf_single_filter_required', array(__CLASS__, 'color_image_pick'), 100, 2);
             //ADDITIONAL
             //FOR ALL FILTERS

@@ -38,6 +38,7 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
         add_action('admin_footer', array($this, 'init_tables'), 3);
         add_filter('brfr_ajax_filters_purge_additional_tables', array($this, 'section_purge_additional_tables'), 10, 3);
         add_action( "wp_ajax_brapf_regenerate_additional_tables", array ( $this, 'regenerate_additional_tables' ) );
+        add_action( "bapf_additional_tables_reset_all_table", array ( $this, 'reset_all_table' ) );
     }
     function init_tables() {
         if( $this->run_additional_tables ) {
@@ -141,7 +142,11 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
         $data = parent::get_addon_data();
         return array_merge($data, array(
             'addon_name'    => __('Additional Tables', 'BeRocket_AJAX_domain'),
-            'tooltip'       => __('Create 4 additional tables.<ul><li>Table to speed up hierarchical taxonomies recount: <strong>Product categories</strong>, <strong>Brands</strong> etc</li><li>3 tables to speed up functions for variation filtering</li></ul>', 'BeRocket_AJAX_domain'),
+            'tooltip'       => __('Create 4 additional tables.<ul><li>Table to speed up hierarchical taxonomies recount: 
+									<strong>Product categories</strong>, <strong>Brands</strong> etc</li><li>3 tables to 
+									speed up functions for variation filtering</li></ul>', 'BeRocket_AJAX_domain'),
+            'image'         => 'https://berocket.ams3.cdn.digitaloceanspaces.com/plugins/addons/filters/filters_c_tables.jpg',
+            'image_class'   => 'c_tables',
         ));
     }
     function check_init() {
@@ -744,7 +749,8 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
         do_action('BeRocket_aapf_variations_tables_addon_destroy_table', $this);
     }
     function destroy_table_wc_regeneration() {
-        if ( apply_filters( 'br-filters/addon/add-table/wc-regenerate-destroy', $this->product_lookup_tables_is_running() ) ) {
+        if ( (! defined('BAPF_DISABLE_TABLE_UPDATES') || ! BAPF_DISABLE_TABLE_UPDATES)
+            && apply_filters( 'br-filters/addon/add-table/wc-regenerate-destroy', $this->product_lookup_tables_is_running() ) ) {
             $this->reset_all_table();
         }
     }
@@ -800,13 +806,19 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
         $this->reset_all_table();
     }
     public function product_lookup_tables_is_running() {
+        $status = get_transient('braapf_product_lookup_tables_is_running');
+        if( is_array($status) && isset($status['time']) && $status['time'] > time() && isset($status['status']) ) {
+            $status = $status['status'];
+        } else {
+            $status = false;
+        }
         $status = apply_filters('braapf_product_lookup_tables_is_running', get_transient('braapf_product_lookup_tables_is_running'), $this);
         if( $status === false ) {
             $status = 1;
             if( class_exists('ActionScheduler') && ! ActionScheduler::is_initialized( FALSE ) || function_exists('wc_update_product_lookup_tables_is_running') && wc_update_product_lookup_tables_is_running() ) {
                 $status = 2;
             }
-            set_transient('braapf_product_lookup_tables_is_running', $status, 300);
+            set_transient('braapf_product_lookup_tables_is_running', array( 'status' => $status, 'time' => (time() + 400) ), 300);
         }
         return $status === 2;
     }

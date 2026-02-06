@@ -23,8 +23,11 @@ if( ! class_exists('BeRocket_AAPF_compat_siteorigin_builder') ) {
             return $classes;
         }
         function modify_query($instance, $the_widget, $widget_class) {
-            if( $the_widget->id_base == 'siteorigin-panels-postloop' ) {
+            if( $the_widget->id_base == 'siteorigin-panels-postloop' || $the_widget->id_base == 'woocommerce_products' ) {
                 $enabled = braapf_is_shortcode_must_be_filtered();
+                if( ! empty($instance['aapf_apply']) )  {
+                    $instance['bapf_apply'] = $instance['aapf_apply'];
+                }
                 if( ! empty($instance['bapf_apply']) && $instance['bapf_apply'] == 'enable' ) {
                     $enabled = true;
                 } elseif( ! empty($instance['bapf_apply']) && $instance['bapf_apply'] == 'disable' ) {

@@ -227,7 +227,11 @@ if ( ! function_exists( 'br_get_selected_term' ) ) {
             foreach($filter_data['filters'] as $filter) {
                 $is_checked_correct = $filter['taxonomy'] == $taxonomy;
                 if( apply_filters('br_get_selected_term_checked_each', $is_checked_correct, $filter, $taxonomy, $additional) ) {
-                    $term_ids = array_merge($term_ids, $filter['val_ids']);
+                    if( empty($additional['get_val']) ) {
+                        $term_ids = array_merge($term_ids, $filter['val_ids']);
+                    } else {
+                        $term_ids[] = $filter[$additional['get_val']];
+                    }
                 }
             }
         }

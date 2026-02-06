@@ -14,8 +14,8 @@ if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
             add_action( 'wp_ajax_berocket_wizard_selector_ended', array( $this, 'remove_products_ended_check' ) );
             $status = get_option('BeRocket_selector_wizard_status');
             if( $status == 'started' ) {
-                add_filter('loop_shop_per_page', array($this, 'loop_shop_per_page'), 999999999999999 );
-                add_action('pre_get_posts', array($this, 'products_per_page'), 999999999999999);
+                add_filter('loop_shop_per_page', array($this, 'loop_shop_per_page'), 9999999 );
+                add_action('pre_get_posts', array($this, 'products_per_page'), 9999999);
             }
         }
 
@@ -144,7 +144,7 @@ if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
         }
         
         public function remove_products_ended() {
-            add_action('pre_get_posts', array($this, 'products_per_page_more'), 999999999999999);
+            add_action('pre_get_posts', array($this, 'products_per_page_more'), 9999999);
             $args = array("post_type" => "product", "s" => 'BeRocketSelectorsTest', 'posts_per_page'   => 100, 'fields' => 'ids');
             $query = get_posts( $args );
             if( is_array($query) ) {
@@ -157,7 +157,7 @@ if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
             if( $term !== FALSE ) {
                 wp_delete_term($term->term_id, $term->taxonomy);
             }
-            remove_action('pre_get_posts', array($this, 'products_per_page_more'), 999999999999999);
+            remove_action('pre_get_posts', array($this, 'products_per_page_more'), 9999999);
         }
         function remove_products_ended_check() {
             $status = get_option('BeRocket_selector_wizard_status');
@@ -167,8 +167,8 @@ if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
             wp_die();
         }
         function remove_products() {
-            remove_filter('loop_shop_per_page', array($this, 'loop_shop_per_page'), 999999999999999 );
-            remove_action('pre_get_posts', array($this, 'products_per_page'), 999999999999999);
+            remove_filter('loop_shop_per_page', array($this, 'loop_shop_per_page'), 9999999 );
+            remove_action('pre_get_posts', array($this, 'products_per_page'), 9999999);
             $this->remove_products_ended();
             update_option('BeRocket_selector_wizard_status', 'ended');
             wp_die();

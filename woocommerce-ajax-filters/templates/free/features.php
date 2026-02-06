@@ -3,8 +3,12 @@
         <div>
             <h4>Choose the best layout for your filter</h4>
             <ul>
-                <li>Our WooCommerce AJAX Products Filter plugin offers several layouts, including slider, image and color</li>
+                <li>Our AJAX Products Filter plugin offers several layouts, including slider, image and color</li>
                 <li>You can use one layout for all filters or combine them as you like</li>
+                <li class="business business-single">
+                    <span><i></i><span>Customize filter appearance with font color and styles, border styles and more.
+                        All accessible through the admin panel, with no coding required</span></span>
+                </li>
             </ul>
             <div class="homepage-buy-now-block">
                 <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=first"
@@ -55,6 +59,46 @@
         <img alt="Show filters above products"
              src="https://e8e3g4v6.delivery.rocketcdn.me/wp-content/uploads/2022/09/plugin-page-filters-2.png" />
     </div>
+
+    <!-- Business start -->
+
+    <div class="br_odd business-row">
+        <div>
+            <h4>Custom SEO Meta & H1 for Filtered Pages</h4>
+            <ul>
+                <li class="business">Define <b>specific, keyword-rich SEO text</b> for each filter combination</li>
+                <li class="business">Content is injected into meta tags and H1 when filters are active</li>
+                <li class="business">Shortcode for <b>custom H1</b></li>
+            </ul>
+            <div class="homepage-buy-now-block">
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=business1"
+                   class="button">Read more</a>
+                <a href="https://woocommerce-products-filter.berocket.com/shop/filters/price/465_1913/color/red/" target="_blank" rel="noopener">Demo site</a>
+            </div>
+        </div>
+        <img alt="Custom SEO Meta & H1 for Filtered Pages"
+             src="https://apicdn.berocket.com/filter%20plugin%20page%20feature%20x2.png" />
+    </div>
+
+    <div class="br_even business-row">
+        <div>
+            <h4 style="text-align: center;">Statistics<br>Filter Usage Charts</h4>
+            <ul>
+                <li class="business">Track filter requests per day with line chart</li>
+                <li class="business">The plugin introduces a <b>pie chart showing the count of filter requests per country</b></li>
+                <li class="business">Check how often specific filters are used with <b>per-filter pie charts</b></li>
+                <li class="business">Line chart of price filter with most used ranges</li>
+            </ul>
+            <div class="homepage-buy-now-block">
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=business2"
+                   class="button">Read more</a>
+            </div>
+        </div>
+        <img alt="Statistics"
+             src="https://apicdn.berocket.com/filter%20plugin%20page%20feature%20statistics2.png" />
+    </div>
+
+    <!-- Business end -->
 
     <div class="br_odd">
         <div>
@@ -382,16 +426,26 @@
     }
 }
 @media screen and (max-width: 782px){
+    .berocket_aapf_features {
+        padding: 10px;
+    }
     .berocket_aapf_features > div {
         flex-wrap: wrap;
-        box-shadow: 0 -8px 10px -8px #ccc;
-        padding-top: 10px;
+        box-shadow: 0 13px 16px -14px #ccc;
+        padding-top: 20px;
         margin-top: 30px;
+        padding-bottom: 25px;
     }
-    .berocket_aapf_features > div > div,
-    .berocket_aapf_features img {
+    .berocket_aapf_features > div.buy-now-block {
+        box-shadow: none;
+    }
+    .berocket_aapf_features > div > div {
         max-width: 100%;
         width: 100%;
+    }
+    .berocket_aapf_features img {
+        max-width: 60%;
+        width: 60%;
     }
     .berocket_aapf_features .homepage-reviewer-block img {
         width: auto;
@@ -425,6 +479,200 @@
     .berocket_aapf_features .homepage-buy-now-block a {
         display: block;
         width: 100%;
+    }
+}
+
+
+
+/* Single product page - Business boxes and items */
+.berocket_aapf_features .crown-business {
+    content: '';
+    position: relative;
+    background: transparent no-repeat url('https://apicdn.berocket.com/crown2.png') center center;
+    background-size: contain;
+    display: block;
+    height: 41px;
+}
+
+.berocket_aapf_features .business-row {
+    position: relative !important;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    padding-top: 20px !important;
+    max-width: 1170px !important;
+    width: calc(100% - 30px);
+}
+.berocket_aapf_features .business-row + .business-row {
+    margin-top: 120px;
+}
+.berocket_aapf_features .business-row:before,
+.berocket_aapf_features .business-row:after {
+    content: '';
+    z-index: 2;
+    display: block !important;
+    position: absolute;
+    background: linear-gradient(141deg, #fffceb, white);
+    top: -14px;
+    right: -14px;
+    bottom: -14px;
+    left: -14px;
+    border-radius: 3px;
+    visibility: visible !important;
+    line-height: 1em !important;
+    height: auto !important;
+    width: auto !important;
+}
+.berocket_aapf_features .business-row:before {
+    background: linear-gradient(141deg, gold, #ff00ef);
+    top: -16px;
+    right: -16px;
+    bottom: -16px;
+    left: -16px;
+    border-radius: 5px;
+    z-index: 1;
+}
+.berocket_aapf_features .business-row > div,
+.berocket_aapf_features .business-row > img {
+    display: block !important;
+    position: relative !important;
+    z-index: 7;
+}
+.berocket_aapf_features .business-row > div:before {
+    position: absolute;
+    background: transparent no-repeat url('https://apicdn.berocket.com/crown2.png') center center;
+    content: '';
+    background-size: contain;
+    display: block;
+    height: 100px;
+    top: -105px;
+    width: 150px;
+    z-index: 10;
+    left: 50% !important;
+    transform: translateX(-50%);
+}
+.berocket_aapf_features .business-row > div:after {
+    position: absolute;
+    background: white !important;
+    content: 'Business' !important;
+    background-size: contain;
+    display: block;
+    top: -50px !important;
+    right: 0 !important;
+    z-index: 10;
+    font-size: 18px !important;
+    font-weight: 500;
+    color: goldenrod !important;
+    padding: 2px 14px 3px !important;
+    border: 2px solid goldenrod !important;
+    border-radius: 15px !important;
+}
+.berocket_aapf_features .business-row.br_even > div:after {
+    right: auto !important;
+    left: 0 !important;
+}
+.berocket_aapf_features .business-row.br_even .homepage-buy-now-block {
+    text-align: center;
+}
+
+.berocket_aapf_features li.business {
+    position: relative;
+}
+.berocket_aapf_features li.business:before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-left: 0 none;
+    border-bottom: 0 none;
+    transform: rotate(0deg);
+    position: absolute;
+    top: 5px;
+    left: 0;
+    margin-right: 0;
+    background: transparent no-repeat url('https://apicdn.berocket.com/crown2.png') center center;
+    background-size: contain;
+}
+.berocket_aapf_features li.business > span {
+    position: relative;
+    display: block;
+}
+.berocket_aapf_features li.business > span:before,
+.berocket_aapf_features li.business > span:after {
+    content: '';
+    z-index: 2;
+    display: block;
+    position: absolute;
+    background: linear-gradient(141deg, #fffceb, white);
+    top: -4px;
+    right: -4px;
+    bottom: -4px;
+    left: -4px;
+    border-radius: 3px;
+}
+.berocket_aapf_features li.business > span:before {
+    background: linear-gradient(141deg, gold, #ff00ef);
+    top: -6px;
+    right: -6px;
+    bottom: -6px;
+    left: -6px;
+    border-radius: 5px;
+    z-index: 1;
+}
+.berocket_aapf_features li.business > span i:before {
+    content: 'Business';
+    font-size: 15px;
+    color: goldenrod;
+    z-index: 8;
+    display: block;
+    position: absolute;
+    background: white;
+    top: -25px;
+    right: 0px;
+    border-radius: 15px;
+    padding: 1px 12px;
+    border: 1px solid goldenrod;
+    line-height: 1.6em;
+    font-style: normal;
+}
+.berocket_aapf_features li.business > span > span {
+    position: relative;
+    display: block;
+    z-index: 7;
+}
+@media screen and (max-width: 782px) {
+    .berocket_aapf_features > div.business-row {
+        box-shadow: none;
+        padding-bottom: 5px;
+    }
+    .berocket_aapf_features .business-row + .business-row {
+        margin-top: 50px;
+    }
+    .berocket_aapf_features .business-row > div:before {
+        height: 100px;
+        top: -148px;
+        width: 100px;
+        z-index: 10;
+        right: -10px;
+        transform: none;
+        left: auto !important;
+    }
+    .berocket_aapf_features .business-row > div:after {
+        margin-right: -10px;
+    }
+    .berocket_aapf_features .business-row.br_even > div:after {
+        right: 0 !important;
+        left: auto !important;
+    }
+}
+@media screen and (max-width: 600px) {
+    .berocket_aapf_features .business-row > div:before {
+        width: 60px;
+        height: 50px;
+        top: -110px;
+    }
+    .berocket_aapf_features .business-row > div:after {
+        margin-right: -20px;
+        font-size: 13px !important;
     }
 }
 </style>

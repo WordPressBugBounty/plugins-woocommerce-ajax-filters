@@ -8,10 +8,10 @@ foreach (glob(__DIR__ . "/includes/*.php") as $filename)
 {
     include_once($filename);
 }
-if( file_exists(__DIR__ . "/paid/paid.php") ) {
+if( ( ! defined("BAPF_VER_PAID_DISABLE") || ! BAPF_VER_PAID_DISABLE ) && file_exists(__DIR__ . "/paid/paid.php") ) {
     include_once(__DIR__ . "/paid/paid.php");
 }
-if( file_exists(__DIR__ . "/business/business.php") ) {
+if( ( ! defined("BAPF_VER_BUSINESS_DISABLE") || ! BAPF_VER_BUSINESS_DISABLE ) && file_exists(__DIR__ . "/business/business.php") ) {
     include_once(__DIR__ . "/business/business.php");
 }
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
@@ -196,7 +196,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
         }
         $this->feature_list = array();
         $this->framework_data['fontawesome_frontend'] = true;
-        $this->active_libraries = array('addons', 'feature', 'tippy', 'popup', 'tutorial');
+        $this->active_libraries = apply_filters('bapf_active_libraries', array('addons', 'feature', 'tippy', 'popup', 'tutorial'));
 
         if( method_exists($this, 'include_once_files') ) {
             $this->include_once_files();
@@ -284,7 +284,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         add_filter('woocommerce_is_filtered', array($this, 'woocommerce_is_filtered'));
                     }
                     if( ! empty($option['products_only_shortcode']) ) {
-                        add_filter('product_categories_shortcode_tag', array($this, 'product_categories_shortcode_tag'));
+                        add_filter('pre_do_shortcode_tag', array($this, 'product_categories_shortcode_tag'), 10, 4);
                     }
                     if( ! empty($option['search_fix']) ) {
                         add_filter( 'woocommerce_redirect_single_search_result', '__return_false' );
@@ -555,7 +555,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
         parent::init();
         $option = $this->get_option();
         self::$user_can_manage = current_user_can( 'manage_berocket_aapf' );
-        if( self::$user_can_manage && ! is_admin() && empty($option['disable_admin_bar']) ) {
+        if( self::$user_can_manage && ! is_admin() ) {
             include_once(plugin_dir_path( __FILE__ ) . "includes/admin/admin_bar.php");
         }
         if( ! empty($option['use_tax_for_price']) ) {
@@ -1034,11 +1034,15 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "value"     => '1',
                         'label_for' => __("If you want to hide filters without losing current configuration just turn them off", 'BeRocket_AJAX_domain'),
                     ),
-                    'disable_admin_bar' => array(
+                    'disable_admin_bar_panel' => array(
                         "tr_class"  => "bapf_tools_fields bapf_tools_fields_hide",
                         "label"     => __( 'Disable admin bar', "BeRocket_AJAX_domain" ),
-                        "type"      => "checkbox",
-                        "name"      => "disable_admin_bar",
+                        "type"     => "selectbox",
+                        "options"  => array(
+                            array('value' => 'enable', 'text' => __('Enable', 'BeRocket_AJAX_domain')),
+                            array('value' => 'disable', 'text' => __('Disable', 'BeRocket_AJAX_domain')),
+                        ),
+                        "name"      => "disable_admin_bar_panel",
                         "value"     => '1',
                         'label_for' => __("Disable panel in WordPress Admin Bar", 'BeRocket_AJAX_domain'),
                     ),
@@ -1776,12 +1780,11 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
         }
         return $filtered;
     }
-    public function product_categories_shortcode_tag($shortcode) {
-        if ( br_is_filtered() ) {
-            add_shortcode( $shortcode, array($this, 'replace_with_products') );
-            $shortcode = $shortcode . '_disable';
+    public function product_categories_shortcode_tag($html, $tag, $attr, $m) {
+        if( $tag == 'product_categories' && br_is_filtered() ) {
+            $html = $this->replace_with_products();
         }
-        return $shortcode;
+        return $html;
     }
     public function replace_with_products($atts = array()) {
         $option = $this->get_option();
@@ -1913,6 +1916,8 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
                 'trailing_slash'                       => $permalink_structure,
                 'pagination_base'                      => $wp_rewrite->pagination_base,
                 'reload_changed_filters'               => ( empty($br_options['reload_changed_filters']) ? false : true),
+                'operator_and'          => '+',
+                'operator_or'           => '-',
             ), $br_options );
             self::$the_ajax_script_initialized = TRUE;
         }
@@ -2714,6 +2719,7 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
                 }
                 $option = array_merge($option, $selector['options']);
                 update_option( 'br_filters_options', $option );
+                do_action('bapf_update_selectors_preset', $selector_name, $selector, $option);
             }
             break;
         }

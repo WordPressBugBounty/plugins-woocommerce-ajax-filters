@@ -5,10 +5,12 @@ class BeRocket_aapf_variations_tables {
         add_filter('berocket_aapf_wcvariation_filtering_total_query', array($this, 'wcvariation_filtering_total_query'), 10, 4);
         add_filter('berocket_aapf_wcvariation_filtering_main_query', array($this, 'wcvariation_filtering_main_query'), 10, 2);
         add_filter('berocket_aapf_wcvariation_filtering_single_attribute', array($this, 'wcvariation_filtering_single_attribute'), 10, 4);
-        add_action( 'woocommerce_variation_set_stock_status', array($this, 'set_stock_status'), 10, 3 );
-        add_action( 'woocommerce_product_set_stock_status', array($this, 'set_stock_status'), 10, 3 );
-        add_action( 'delete_post', array($this, 'delete_post'), 10, 1 );
-        add_action( 'woocommerce_after_product_object_save', array($this, 'variation_object_save'), 10, 1 );
+        if( ! defined('BAPF_DISABLE_TABLE_UPDATES') || ! BAPF_DISABLE_TABLE_UPDATES ) {
+            add_action( 'woocommerce_variation_set_stock_status', array($this, 'set_stock_status'), 10, 3 );
+            add_action( 'woocommerce_product_set_stock_status', array($this, 'set_stock_status'), 10, 3 );
+            add_action( 'delete_post', array($this, 'delete_post'), 10, 1 );
+            add_action( 'woocommerce_after_product_object_save', array($this, 'variation_object_save'), 10, 1 );
+        }
         //hierarhical recount custom table
         add_action('berocket_aapf_recount_terms_initialized', array($this, 'recount_terms_initialized'), 10, 1);
         add_filter('berocket_aapf_recount_stock_status_query', array($this, 'recount_stock_status'), 10, 1);

@@ -21,27 +21,29 @@ if( ! class_exists('BeRocket_AAPF_compat_live_composer_builder') ) {
         }
         function shortcode_check($content, $tag, $attr, $m) {
             if( 'dslc_module_posts_output' == $tag && is_array($m) && ! empty($m[5]) ) {
-                $args = $m[5];
-                $data = @unserialize( $args );
+                try {
+                    $args = $m[5];
+                    $data = json_decode( $args, true );
 
-                if ( $data !== false ) {
-                    $options = unserialize( $args );
-                } else {
-                    $fixed_data = preg_replace_callback( '!s:(\d+):"(.*?)";!', function( $match ) {
-                        return ( $match[1] == strlen( $match[2] ) ) ? $match[0] : 's:' . strlen( $match[2] ) . ':"' . $match[2] . '";';
-                    }, $args );
-                    $options = unserialize( $fixed_data );
-                }
-                $bapf_status = ( isset($options['bapf_apply']) ? $options['bapf_apply'] : false );
-                $enabled = braapf_is_shortcode_must_be_filtered();
-                if( $bapf_status !== false ) {
-                    if( $bapf_status == 'enable' ) {
-                        $enabled = true;
-                    } elseif( $bapf_status == 'disable' ) {
-                        $enabled = false;
+                    if ( $data !== false ) {
+                        $options = $data;
+                    } else {
+                        $fixed_data = preg_replace_callback( '!s:(\d+):"(.*?)";!', function( $match ) {
+                            return ( $match[1] == strlen( $match[2] ) ) ? $match[0] : 's:' . strlen( $match[2] ) . ':"' . $match[2] . '";';
+                        }, $args );
+                        $options = json_decode( $fixed_data, true );
                     }
-                }
-                do_action('brapf_next_shortcode_apply_action', array('apply' => $enabled));
+                    $bapf_status = ( isset($options['bapf_apply']) ? $options['bapf_apply'] : false );
+                    $enabled = braapf_is_shortcode_must_be_filtered();
+                    if( $bapf_status !== false ) {
+                        if( $bapf_status == 'enable' ) {
+                            $enabled = true;
+                        } elseif( $bapf_status == 'disable' ) {
+                            $enabled = false;
+                        }
+                    }
+                    do_action('brapf_next_shortcode_apply_action', array('apply' => $enabled));
+                } catch (Exception $err) {}
             }
             return $content;
         }

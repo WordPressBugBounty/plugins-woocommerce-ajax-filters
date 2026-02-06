@@ -143,8 +143,8 @@ braapf_checked_style_parent;
             } else {
                 clrimg_use_attrval = 0;
             }
-            console.log(clrimg_use_attrval);
-            var data = 'action=berocket_aapf_color_listener&tax_color_name='+taxonomy_name+'&type='+specific+'&'+filtertype+'&br_product_filter[clrimg_use_attrval]='+clrimg_use_attrval;
+            var postID = $('#post_ID').val();
+            var data = 'action=berocket_aapf_color_listener&br_product_filter[filter_id]='+postID+'&tax_color_name='+taxonomy_name+'&type='+specific+'&'+filtertype+'&br_product_filter[clrimg_use_attrval]='+clrimg_use_attrval;
             if ( specific == 'color' || specific == 'image' ) {
                 $.post(ajaxurl, data, function(data) {
                     $('.braapf_widget_color_pick').html(data);
@@ -316,6 +316,8 @@ braapf_checked_style_parent;
         berocket_show_element('.braapf_icon_before_title, .braapf_icon_after_title', '{.braapf_widget_type input[type=radio]} == "filter" || {.braapf_widget_type input[type=radio]} == "selected_area"');
         berocket_show_element('.braapf_icon_before_value, .braapf_icon_after_value', '{.braapf_widget_type input[type=radio]} == "filter" && (!braapf_current_template! != "select" && ((!braapf_current_specific! != "color" && !braapf_current_specific! != "image") || {#braapf_use_value_with_color} != ""))');
         berocket_show_element('.braapf_enable_slider_inputs', '{.braapf_widget_type input[type=radio]} == "filter" && !braapf_current_template! == "slider"');
+        //RATING STARS
+        berocket_show_element('.braapf_style_rating_stars_inline', '{.braapf_widget_type input[type=radio]} == "filter" && {#braapf_filter_type} == "_rating"', true, berocket_show_template_style_callback);
         //CHECKBOX
         berocket_show_element('.braapf_hide_child_attributes', '{.braapf_widget_type input[type=radio]} == "filter" && (!braapf_current_template! == "checkbox" || !braapf_current_template! == "select") && !braapf_current_taxonomy_hierarchical! == true', true, braapf_hide_child_attributes_select);
         berocket_show_element('.braapf_single_selection', '{.braapf_widget_type input[type=radio]} == "filter" && (!braapf_current_template! == "select" || !braapf_current_template! == "checkbox")');

@@ -22,6 +22,7 @@ class BeRocket_AAPF_Wizard {
                     }
                 }
                 update_option( 'br_filters_options', $option );
+                do_action('bapf_update_selectors_preset', $selector_name, $selector, $option);
             }
             break;
         }

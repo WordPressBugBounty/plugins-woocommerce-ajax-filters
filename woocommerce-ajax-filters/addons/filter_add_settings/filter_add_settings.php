@@ -8,6 +8,8 @@ class BeRocket_aapf_filter_add_settings_addon extends BeRocket_framework_addon_l
         return array_merge($data, apply_filters('bapf_filter_add_settings_addon_data', array(
             'addon_name'    => __('Filter Additional Settings', 'BeRocket_AJAX_domain'),
             'tooltip'       => __('Options for each filter: Hide empty, Enable recount, hide empty after recount etc', 'BeRocket_AJAX_domain'),
+            'image'         => 'https://berocket.ams3.cdn.digitaloceanspaces.com/plugins/addons/filters/filters_add_settings.jpg',
+			'image_class'   => 'add_settings',
             'paid'          => true
         ), $this));
     }

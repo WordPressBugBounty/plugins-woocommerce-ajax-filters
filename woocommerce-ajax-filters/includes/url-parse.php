@@ -549,7 +549,8 @@ if( ! class_exists('BeRocket_url_parse_page') ) {
                 return $result;
             }
             $values_lines = array();
-            if(in_array($filter['type'], array('attribute', 'taxonomy'))) {
+            $check = apply_filters('bapf_uparse_generate_filter_link_each_check', in_array($filter['type'], array('attribute', 'taxonomy')), $this, $filter, $data, $args);
+            if( $check ) {
                 $values_lines = $this->generate_filter_link_each_without_check($filter, $data, $args);
             }
             return $values_lines;

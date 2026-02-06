@@ -9,6 +9,16 @@ function berocket_show_element_callback(show, element, data_string, init) {
     }
     jQuery(document).trigger('berocket_show_element_callback', show, element, data_string, init);
 }
+function berocket_show_template_style_callback(show, element, data_string, init) {
+    if( show == "1" ) {
+        jQuery(element).removeClass('brapf_disabled_template_style');
+        jQuery(element).find('input, select, textarea').prop('disabled', false);
+    } else {
+        jQuery(element).addClass('brapf_disabled_template_style');
+        jQuery(element).find('input, select, textarea').prop('disabled', true);
+    }
+    jQuery(document).trigger('berocket_show_element_callback', show, element, data_string, init);
+}
 var braapf_test_interval = false;
 var braapf_test_recount_it = 0;
 function berocket_show_element(element, data_string, init, callback) {

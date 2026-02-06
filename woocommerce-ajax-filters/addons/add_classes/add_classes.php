@@ -7,7 +7,9 @@ class BeRocket_aapf_add_classes_addon extends BeRocket_framework_addon_lib {
         $data = parent::get_addon_data();
         return array_merge($data, array(
             'addon_name'    => __('Add more classes', 'BeRocket_AJAX_domain'),
-            'tooltip'       => __('Adds extra classes to the filter\'s HTML structure so that you can better control the custom styling.', 'BeRocket_AJAX_domain')
+            'tooltip'       => __('Extends the filter HTML markup with extra CSS classes, allowing more precise and flexible custom styling.', 'BeRocket_AJAX_domain'),
+	        'image'         => 'https://berocket.ams3.cdn.digitaloceanspaces.com/plugins/addons/filters/filters_extra_classes.jpg',
+            'image_class'   => 'extra_classes',
         ));
     }
 }

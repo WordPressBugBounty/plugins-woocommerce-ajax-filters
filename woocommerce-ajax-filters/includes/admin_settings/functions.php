@@ -337,3 +337,20 @@ foreach($options_to_update as $option_to_update_key => $option_to_update) {
 ?>
 </script><?php
 }
+function bapf_update_selectors_preset_woodmart($selector_name = false) {
+    if( $selector_name == 'Woodmart' ) {
+        $options = get_option('xts-woodmart-options');
+        if( ! is_array($options) ) {
+            $options = array();
+        }
+        $options['icons_font_display'] = 'block';
+        update_option('xts-woodmart-options', $options);
+        $global_option = get_option('berocket_framework_option_global');
+        if( ! is_array($global_option) ) {
+            $global_option = array();
+        }
+        $global_option['fontawesome_frontend_version'] = 'fontawesome5';
+        update_option('berocket_framework_option_global', $global_option);
+    }
+}
+add_action('bapf_update_selectors_preset', 'bapf_update_selectors_preset_woodmart', 10, 1);

@@ -26,6 +26,29 @@ class ET_Builder_Module_br_filters_group_item extends ET_Builder_Module {
         $this->fields_defaults = array(
             'filter_id'                => array($filter_id),
         );
+		$this->advanced_fields = array(
+			'fonts'           => array(
+				'title'   => array(
+					'label'        => et_builder_i18n( 'Title' ),
+					'css'          => array(
+						'main'      => "{$this->main_css_element} h2, {$this->main_css_element} h1, {$this->main_css_element} h3, {$this->main_css_element} h4, {$this->main_css_element} h5, {$this->main_css_element} h6",
+						'important' => 'plugin_only',
+					),
+				),
+				'Body'   => array(
+					'css'          => array(
+						'main'      => "{$this->main_css_element} .bapf_body, {$this->main_css_element} .bapf_body label a",
+						'important' => 'plugin_only',
+					),
+				),
+			),
+			'link_options'  => false,
+			'visibility'    => false,
+			'text'          => false,
+			'button'        => false,
+			'filters'       => false,
+			'max_width'     => false,
+        );
     }
 
     function get_fields() {

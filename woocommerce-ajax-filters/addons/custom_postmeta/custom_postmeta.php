@@ -27,7 +27,9 @@ class BeRocket_aapf_add_custom_postmeta extends BeRocket_framework_addon_lib {
         $data = parent::get_addon_data();
         return array_merge($data, array(
             'addon_name'    => __('Custom Post Meta Filtering', 'BeRocket_AJAX_domain'),
-            'tooltip'       => __('Option allows you to filter by the post\'s meta(weight, length, etc.).', 'BeRocket_AJAX_domain')
+            'tooltip'       => __('Enables filtering products using custom post meta fields such as weight, length, dimensions, brand, SKU, or any other custom field attached to the product.', 'BeRocket_AJAX_domain'),
+            'image'         => 'https://berocket.ams3.cdn.digitaloceanspaces.com/plugins/addons/filters/filters_c_postmeta.jpg',
+	        'image_class'   => 'c_postmeta',
         ));
     }
     function deactivate() {

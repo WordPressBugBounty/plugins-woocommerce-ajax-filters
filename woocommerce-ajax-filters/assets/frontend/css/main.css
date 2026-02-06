@@ -1238,6 +1238,13 @@ body .berocket_ajax_filters_sidebar_back.brapf_sidefl_linegrey {
 .bapf_sfilter .brapf_disabled_checkbox input, .bapf_sfilter .brapf_disabled_checkbox label {
     cursor: default!important;
 }
+.bapf_sfilter .bapf_body .bapf_slidr_main .ui-slider-handle {
+    border-style: solid;
+}
+.berocket_aapf_widget_selected_area a.braapf_unselect .fa,
+.berocket_aapf_widget_selected_area .braapf_unselect_all .fa {
+    margin-right: 3px;
+}
 .bapf_sfilter.bapf_button_berocket .bapf_button {
     font-size: 20px;
     padding: 8px 30px;
@@ -1747,7 +1754,7 @@ body .berocket_ajax_filters_sidebar_back.brapf_sidefl_linegrey {
     font-size: 32px;
     font-weight: 100;
 }
-.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a i.fa {
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a i.fa-times {
     display: none !important;
 }
 .bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area a.braapf_unselect_all {

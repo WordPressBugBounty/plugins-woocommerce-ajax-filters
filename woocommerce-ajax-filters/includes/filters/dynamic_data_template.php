@@ -286,6 +286,7 @@ class BeRocket_AAPF_dynamic_data_template {
             $template_content['template']['attributes']['class'][] = ($widget_is_hide ? 'bapf_ocolaps' : 'bapf_ccolaps');
             $template_content['template']['content']['header']['attributes'] = self::create_element_arrays($template_content['template']['content']['header']['attributes'], array('class'));
             $template_content['template']['content']['header']['attributes']['class'][] = 'bapf_colaps_togl';
+            $template_content['template']['content']['header']['content']['title']['attributes']['tabindex'] = "0";
             if( $widget_is_hide ) {
                 $template_content['template']['content']['filter'] = self::create_element_arrays($template_content['template']['content']['filter'], array('attributes', 'style'));
                 if( ! in_array('display:none;', $template_content['template']['content']['filter']['attributes']['style']) ) {
@@ -403,15 +404,15 @@ class BeRocket_AAPF_dynamic_data_template {
     }
     function hierarhical_hide_child($template_content, $terms, $berocket_query_var_title) {
         if( $berocket_query_var_title['new_template'] == 'checkbox' && berocket_isset($berocket_query_var_title['hide_child_attributes']) == "1" ) {
-            $template_content['template']['content']['filter']['content']['list']['content'] = $this->hierarhical_add_open_close_button($template_content['template']['content']['filter']['content']['list']['content']);
+            $template_content['template']['content']['filter']['content']['list']['content'] = $this->hierarhical_add_open_close_button($template_content['template']['content']['filter']['content']['list']['content'], $berocket_query_var_title);
         }
         return $template_content;
     }
-    function hierarhical_add_open_close_button($elements) {
+    function hierarhical_add_open_close_button($elements, $berocket_query_var_title) {
         foreach($elements as &$element) {
             if( ! empty($element['content']['child']) && count($element['content']['child']['content']) ) {
                 $element['content'] = berocket_insert_to_array($element['content'], 'child', array(
-                    'open_child' => array(
+                    'open_child' => apply_filters('bapf_hierarhical_add_open_close_button', array(
                         'type'          => 'tag',
                         'tag'           => 'i',
                         'attributes'    => array(
@@ -422,13 +423,13 @@ class BeRocket_AAPF_dynamic_data_template {
                             ),
                         ),
                         'content'       => array()
-                    ),
+                    ), $berocket_query_var_title),
                 ), true);
                 $element['content']['child']['attributes'] = self::create_element_arrays($element['content']['child']['attributes'], array('style'));
                 if( ! in_array('display:none;', $element['content']['child']['attributes']['style']) ) {
                     $element['content']['child']['attributes']['style'][] = 'display:none;';
                 }
-                $element['content']['child']['content'] = $this->hierarhical_add_open_close_button($element['content']['child']['content']);
+                $element['content']['child']['content'] = $this->hierarhical_add_open_close_button($element['content']['child']['content'], $berocket_query_var_title);
             }
         }
         if( isset($element) ) {

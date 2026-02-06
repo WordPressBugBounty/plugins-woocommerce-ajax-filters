@@ -59,7 +59,7 @@ if( ! class_exists('BeRocket_AAPF_compat_js_composer') ) {
             foreach($this->brfilter_ajax_list['single'] as $filter_id) {
                 $output .= do_shortcode('[br_filter_single filter_id='.$filter_id.']');
             }
-            $output .= '<script>jQuery(document).trigger("bapf_ajax_load_replace");console.log("TEST AJAX")</script>';
+            $output .= '<script>jQuery(document).trigger("bapf_ajax_load_replace");</script>';
             $output .= '</div>';
             $output .= ob_get_clean();
             return $output;

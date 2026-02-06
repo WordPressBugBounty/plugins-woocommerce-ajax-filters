@@ -4,89 +4,98 @@ Contributors: dholovnia, berocket
 Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=donate&utm_campaign=ajax_filters
 Tags: product filters, ajax product filters, woocommerce filters, wc filters, category filter
 Requires at least: 5.0
-Tested up to: 6.8.1
-Stable tag: 1.6.9.3
+Tested up to: 6.9
+Stable tag: 3.1.9.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WooCommerce AJAX Product Filters - Advanced product filtering ability for your WooCommerce shop. Add unlimited filters with one widget.
+Fast and flexible AJAX product filters for WooCommerce. Filter by categories, attributes, price, tags, rating, and more. No page reloads.
 
 == Description ==
 
-WooCommerce AJAX Product Filters - Advanced product filtering ability for your WooCommerce shop. Add unlimited filters with one widget.
+Give your customers the power to find products instantly.  
+**WooCommerce Ajax Products Filter** lets users filter, sort, and search products without reloading the page. Fast, flexible, and compatible with most themes and page builders.  
 
-= New Feature in version 1.6.3 =
+Already packed with features in the free version, and even more powerful with [Pro and Business versions](https://berocket.com/woocommerce-ajax-products-filter/).
 
-&#9989; Filter by Post Meta (Custom meta field)
+= ✨ Free Features =
+Everything you need to create professional product filters:
 
-= New Feature in version 1.5 =
+* **Ajax Filtering, Pagination and Sorting** – update results instantly without reloading.
+* **Drag & Drop Filter Builder** – design filters with ease.
+* **Filter Types**: checkboxes, dropdowns, radio buttons, sliders, color/image swatches.
+* **Filter Options**: categories, attributes, tags, price, ratings, product meta (custom fields).
+* **Filter Controls**: apply button, reset/clear button, selected filters area (vertical & horizontal).
+* **Filter Layouts**: collapse on load, collapse on title click, nested filters, hierarchical display, limit height with scroll, hide extra values under “Show More” button.
+* **Filter Styles**: multiple slider styles, button styles, checkbox styles, color box, image box, checked image style, Select + Select2 support.
+* **Advanced Display**: show product counts, hide empty values, remove out-of-stock variations, child values on taxonomy pages.
+* **Widgets & Shortcodes** – display filters/groups anywhere.
+* **Custom CSS Styling** – style filters your way.
+* **Icons Before/After** – add icons to titles and values.
+* **Selected Filters Area** – horizontal/vertical styles, custom placement.
+* **Compatibility**:
+  * Works with most WooCommerce themes.
+  * Page builders: Elementor, Divi, Beaver Builder.
+  * Plugins: ACF Pro, WPML, Polylang, Relevanssi, Barn2 Product Table, other BeRocket plugins.
+  * WooCommerce shortcodes.
+* **SEO Friendly URLs** – clean filter links.
+* **Integration**: Permalink Manager for WooCommerce.
+* **Performance**: minified JS/CSS, optimized code, scroll-to-top after filtering.
+* **Developer Friendly** – hooks and custom code options for full control.
+* **Translation Ready** – translate via .po/.mo files or plugin settings.
+* **Browser Back Button Support** – smooth navigation with AJAX.
 
-&#9989; New styles for filters: Checkbox, Select, Slider, Color, Image
-&#9989; New slider styles
-&#9989; New buttons styles
-&#9989; Selected filters area horizontal styles
-&#9989; Single selection for check
-&#9989; Select and Select2 can be displayed at the same time
-&#9989; Collapse widget option with different settings
-&#9989; Less JavaScript and HTML code for the same result.
-&#9989; More compatibility with themes and plugins
-&#9989; Better compatibility with Divi Builder, Beaver Builder, Elementor Builder
-&#9989; Relevanssi compatibility
-&#9989; More ways to customize filters and add additional functionality
-&#9989; Option to set how hierarchical attributes must be displayed
-&#9989; Separate admin title and frontend title
-&#9989; Back button in the browser on AJAX
-&#9989; All JavaScript in one minified file
-&#9989; All CSS Styles in one minified file
-&#9989; Checked style for image element style
+👉 In short: almost everything you expect from a professional filter plugin — already free.
 
-= Features: =
+= 🚀 Pro Features =
+Upgrade to [WooCommerce Ajax Products Filter Pro](https://berocket.com/woocommerce-ajax-products-filter/) to unlock advanced features:
 
-&#9989; AJAX Filters, Pagination and Sorting!
-&#9989; Filter by Price
-&#9989; Filter by Product Category
-&#9989; Filter by Attribute
-&#9989; Unlimited Filters
-&#9989; Multiple User Interface Elements
-&#9989; Great support for custom/premium themes
-&#9989; SEO Friendly URLs ( with HTML5 PushState )
-&#9989; Filter Visibility By Product Category And Globals.
-&#9989; Accessible through shortcode
-&#9989; Filter box height limit with scroll themes
-&#9989; Working great with custom widget area
-&#9989; Drag and Drop Filter Building
-&#9989; Select2 for the dropdown menu
-&#9989; And More...
+* **SEO Enhancements**
+  * SEO-friendly URLs with advanced control.
+  * Canonical links, meta & titles for filtered pages.
+  * Add filters to page title/description/header.
+* **New Filter Types**
+  * Filter by stock status, sale status.
+  * Filters by custom taxonomies.
+  * Slider range for attributes/taxonomies.
+  * Datepicker for attributes & product publication date.
+  * Availability( in stock | out of stock | any ).
+* **Advanced Styling & Layout**
+  * Filters above products, custom sidebar, 1–4 filters per row.
+  * Collapsed filters above products.
+  * Show filter titles only.
+* **Filter Options**
+  * Product count per value.
+  * Checkbox/value list for price ranges.
+  * Multiple colors (up to 4) for attributes.
+  * Display variation image/price matching selected filters.
+  * Open product directly with matching variation.
+* **Navigation Tools**
+  * Search box block for redirect filters.
+  * Link setup after filtering.
 
-= Additional Features in Paid Plugin: =
+= 💼 Business Features =
+For large stores and professional needs:
 
-&#9989; Filter by Custom Taxonomy, Price ranges, Sale status, Sub-categories, Date and Availability( in stock | out of stock | any )
-&#9989; Nice URLs for SEO-Friendly URLs
-&#9989; A slider can use strings as a value
-&#9989; Price as a checkbox with min and max values
-&#9989; Enhancements of the free features
-&#9989; Show amount of products before updating with the "Update button" widget
-&#9989; Search box widget
-&#9989; Cache for Widgets
-&#9989; Display only selected attribute values or hide selected attribute values
+* **Filter Statistics** – see which filters your customers use most.
+* **Custom SEO Meta per Page** – individual SEO control for each filter result.
+* **Advanced Filter Styling** – fine-tune filter design.
+* **Priority Support** – direct help from the BeRocket team.
 
+= 📌 Live Demo & Docs =
+* [Pro & Business](https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=plugin_links&utm_campaign=ajax_filters)
+* [Frontend Demo](https://woocommerce-products-filter.berocket.com/shop?utm_source=wordpress_org&utm_medium=plugin_links&utm_campaign=ajax_filters)
+* [Admin Demo](https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=admin_demo&utm_campaign=ajax_filters#try-admin)
+* [Documentation](https://docs.berocket.com/plugin/woocommerce-ajax-products-filter?utm_source=wordpress_org&utm_medium=plugin_links&utm_campaign=ajax_filters)
 
-= Plugin Links: =
-[Paid Plugin](https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=plugin_links&utm_campaign=ajax_filters)
-[Demo](https://woocommerce-products-filter.berocket.com/shop?utm_source=wordpress_org&utm_medium=plugin_links&utm_campaign=ajax_filters)
-[Docs](https://docs.berocket.com/plugin/woocommerce-ajax-products-filter?utm_source=wordpress_org&utm_medium=plugin_links&utm_campaign=ajax_filters)
-
-= &#127852; Wanna try the admin side? =
-[Admin Demo](https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=admin_demo&utm_campaign=ajax_filters#try-admin) - Get access to this plugin's admin and try it from inside. Change things and watch how they work.
-
-= Premium plugin video =
-[youtube https://youtu.be/PQTXzp9Tpbc]
-[youtube https://youtu.be/Ltz82Zs5pl0]
-[youtube https://youtu.be/GA3O1F6YVNE]
-[youtube https://youtu.be/GPA77L0XBxM]
+= 🎬 Premium plugin video =
+* [youtube https://youtu.be/PQTXzp9Tpbc]
+* [youtube https://youtu.be/Ltz82Zs5pl0]
+* [youtube https://youtu.be/GA3O1F6YVNE]
+* [youtube https://youtu.be/GPA77L0XBxM]
 *we don't have a video with the free plugin right now, but we are working on it*
 
-= Compatibility with WooCommerce plugins =
+= 🤝 Compatibility with WooCommerce plugins =
 Advanced AJAX Product Filters has been tested and compatibility is certain with the following WooCommerce plugins that you can add to your site:
 
 &#128312; [**Advanced Product Labels for WooCommerce**](https://wordpress.org/plugins/advanced-product-labels-for-woocommerce/)
@@ -97,11 +106,11 @@ Advanced AJAX Product Filters has been tested and compatibility is certain with 
 &#128312; [**Products Compare for WooCommerce**](https://wordpress.org/plugins/products-compare-for-woocommerce/)
 &#128312; [**Wishlist and Waitlist for WooCommerce**](https://wordpress.org/plugins/wish-wait-list-for-woocommerce/)
 
-= Shortcode: =
+= 🧩 Shortcode =
 * In editor `[br_filters attribute=price type=slider title="Price Filter"]`
 * In PHP `do_shortcode('[br_filters attribute=price type=slider title="Price Filter"]');`
 
-= Shortcode Options: =
+= ⚙️ Shortcode Options: =
 * `attribute`(required) - product attribute, e.g. price or length. Don't forget that WooCommerce adds the pa_ suffix for created attributes.
  So if you create a new attribute `jump`, its name is `pa_jump`
 * `type`(required) - checkbox, radio, slider or select
@@ -112,49 +121,33 @@ Advanced AJAX Product Filters has been tested and compatibility is certain with 
 * `height` - max filter box height. When height is met, the scroll will be added
 * `scroll_theme` - used if height is set and actual height of the box is more
 
-
-= Advanced Settings (Widget area): =
-* Product Category - this is a good place to pin your filter to a product's category.
- For example, you sell phones and cases for them. If the user chooses the Category "Phones", the filter "Have Wi-Fi" will appear, but if the user chooses "Cases", it will not be there as the Admin sets that the "Have Wi-Fi" filter will be visible only on the "Phones" category.
-* Filter Box Height - if your filter has too many options, it is nice to limit the height of the filter so that it does not prolong the page too much. A scroll will appear.
-* Scroll theme - if "Filter Box Height" is set and the box length is more than "Filter Box Height," the scroll will appear, and how it looks depends on the theme you choose.
-
-
-= Advanced Settings (Plugin Settings): =
-* Plugin settings can be found in admin area, WooCommerce -> Product Filters
-* "No Products" message - Text that will be shown if no products are found
-* "No Products" class - Add class and use it to style "No Products" box
-* Products selector - Selector for a tag that is holding products
-* Sorting control - Take control over WooCommerce's sorting selection
-* SEO-friendly URLs - URL will be changed when the filter is selected/changed
-* Turn all filters off - If you want to hide filters without losing the current configuration, just turn them off
-
-
+---
 
 == Installation ==
 
-= Step 1: =
-* First, you need to add attributes to the products( the WooCommerce plugin should be installed and activated already )
-* Go to Admin area -> Products -> Attributes and add attributes your products will have
-* Click the attribute's name where the type is selected and add values to it. Predefine product options
-* Go to your products and add attributes to each of them
+1. Upload the plugin files to `/wp-content/plugins/woocommerce-ajax-filters/`, or install the plugin through the WordPress plugins screen directly.
+2. Activate the plugin through the **Plugins** screen in WordPress.
+3. Go to **Appearance > Widgets** or use shortcodes to add your filters.
+4. Configure your filter groups in the plugin settings.
 
-= Step 2: =
-* Install and activate the plugin
-* First of all, open Admin area -> WooCommerce -> Product Filter and check what global options you can manage
-* After that, open Admin area -> Appearance -> Widgets
-* In Available Widgets ( left side of the screen ) find AJAX Product Filters
-* Add it to the Sidebar you choose
-* Enter title, choose an attribute that will be used for filtering products, choose filter type, choose operator( whether a product should have all selected values (AND) or one of them (OR) ),
-* Click save and go to your shop to check how it works.
-* That's it =)
-
+---
 
 == Frequently Asked Questions ==
 
-= Is it compatible with all WordPress themes? =
-BeRocket plugins are compatible with most themes that are developed according to WordPress and WooCommerce guidelines.
+= Does this plugin work with my theme? =
+Yes, the plugin is compatible with most themes for WooCommerce. If you experience any issues, we provide ways to adjust via custom code or settings.
 
+= Can I use this plugin with Elementor / Divi / Beaver Builder? =
+Yes, the plugin integrates with popular page builders and works inside custom layouts.
+
+= Is it translation ready? =
+Yes, you can translate all texts via .po/.mo files or from the plugin’s settings page.
+
+= Do I need coding knowledge to use this plugin? =
+No coding is required. Filters can be built with drag-and-drop. Developers can use hooks for advanced customization.
+
+= What’s the difference between Free, Pro, and Business? =
+The free version includes everything most stores need. Pro adds advanced filter types, SEO options, and styling. Business adds filter statistics, custom SEO per page, and priority support.
 
 = How can I get support if my WooCommerce plugin is not working? =
 If you have problems with our plugins or something is not working as it should, first follow these preliminary steps:
@@ -165,10 +158,8 @@ If you have problems with our plugins or something is not working as it should, 
 
 If none of the previously listed actions help you resolve the issue, please submit a ticket in the forum and accurately describe your problem. Specify the versions of WordPress and WooCommerce you are using, as well as any other information that may assist us in resolving your issue as swiftly as possible. Thank you!
 
-
 = How can I get more features for my WooCommerce plugin? =
 You can get more features with the premium version of Advanced AJAX Product Filters, available on [BeRocket page](https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=faq&utm_campaign=ajax_filters). Here you can read more about the premium features of the plugin and make it give it its best shot!
-
 
 = How can I try the full-featured plugin? =
 You can try this plugin's admin side [here](https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=faq&utm_campaign=ajax_filters#try-admin). Configure plugin the way you need to check the results.
@@ -176,13 +167,47 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Screenshots ==
-1. General settings
-2. JavaScript settings
-3. Widget
+1. Example of AJAX filtering on a shop page.
+2. Filter builder interface in the admin panel.
+3. Custom sidebar with filters.
+4. Selected filters area showing active selections.
+5. Sliders with price and attributes.
+6. Group settings with added filters.
 
 ---
 
 == Changelog ==
+
+= 3.1.9.7 =
+* Fix - Some styles in admin area
+* Fix - Live composer compatibility
+* Fix - Some PHP errors
+
+= 3.1.9.6 =
+* Enhancement - New add-on images
+* Fix - JS error on filtering
+* Fix - JS error with new slider template
+* Fix - JS remove some logs
+
+= 3.1.9.5 =
+* Enhancement - Compatibility version: WooCommerce 10.4 and WordPress 6.9
+* Enhancement - Framework Version
+* Enhancement - RTL language styles
+* Enhancement - New errors for groups
+* Enhancement - Changing show/hide to slide
+* Fix - Selected filters area style
+* Fix - Woodmart theme compatibility
+* Fix - Styles for filters with scroll when scroll jumping
+
+= 1.6.9.4 =
+* Enhancement - Framework Version
+* Enhancement - Optimization for plugin settings
+* Enhancement - New admin bar statistic
+* Fix - Compatibility version: WooCommerce 10.2
+* Fix - Category shortcode replace
+* Fix - Single filter edit page options
+* Fix - Compatibility with some themes
+* Fix - Infinite Additional table generation
 
 = 1.6.9.3 =
 * Fix - Compatibility version: WooCommerce 10.1

@@ -1,48 +1,21 @@
 <?php
-if( ! class_exists('BeRocket_aapf_admin_bar_debug') ) {
-    class BeRocket_aapf_admin_bar_debug{
-		public $footer_run = false, $admin_bar_run = false;
+if( class_exists('BeRocket_admin_bar_plugin_data') ) {
+    class BeRocket_aapf_admin_bar_debug extends BeRocket_admin_bar_plugin_data {
         function __construct() {
-            if( empty($_GET['et_fb']) ) {
-                add_action( 'admin_bar_menu', array($this, 'debug_admin_bar_menu'), 1000 );
-                add_action( 'wp_footer', array($this, 'footer_bar'), 1000 );
-            }
+            $BeRocket_AAPF = BeRocket_AAPF::getInstance();
+            $this->slug = $BeRocket_AAPF->info['plugin_name'];
+            $this->name = $BeRocket_AAPF->info['norm_name'];
+            parent::__construct();
         }
-		function footer_bar() {
-			$this->footer_run = true;
-            if ( ! current_user_can( 'edit_posts' ) ) return;
+        function is_not_footer() {
             $filter_data = BeRocket_AAPF::$current_page_filters;
             unset($filter_data['added']);
-			if( $this->admin_bar_run && count($filter_data) > 0 ) {
-				echo '<div style="display: none;">';
-				echo '<div class="bapf_wp_admin_bar_replacement">';
-				echo $this->get_html();
-				echo '</div>';
-				echo '<script>try{ jQuery(".bapf_wp_admin_bar_replace").replaceWith(jQuery(".bapf_wp_admin_bar_replacement")); } catch(e){}</script>';
-				echo $this->get_javascript();
-				echo $this->get_css();
-				echo '</div>';
-			}
-		}
-        function debug_admin_bar_menu() {
-			$this->admin_bar_run = true;
-            global $wp_admin_bar, $wpdb;
-            if ( ! current_user_can( 'edit_posts' ) ) return;
+            return (count($filter_data) > 0);
+        }
+        function in_footer() {
             $filter_data = BeRocket_AAPF::$current_page_filters;
             unset($filter_data['added']);
-            if( count($filter_data) > 0 ) {
-				$html = $this->get_html();
-				$html .= $this->get_javascript();
-				$html .= $this->get_css();
-			} elseif( ! $this->footer_run ) {
-				$html = '<div class="bapf_wp_admin_bar_replace">Filters cannot be detected</div>';
-			}
-            if( ! empty($html) ) {
-                $BeRocket_AAPF = BeRocket_AAPF::getInstance();
-                $title = '<img style="width:22px;height:22px;display:inline;" src="' . plugin_dir_url( BeRocket_AJAX_filters_file ) . 'berocket/includes/ico.png" alt="">' . $BeRocket_AAPF->info['norm_name'];
-                $wp_admin_bar->add_menu( array( 'id' => 'bapf_debug_bar', 'title' => $title, 'href' => FALSE ) );
-                $wp_admin_bar->add_menu( array( 'id' => 'bapf_debug_bar_content', 'parent' => 'bapf_debug_bar', 'title' => $html, 'href' => FALSE ) );
-            }
+            return (count($filter_data) > 0);
         }
 		function get_html() {
             $filter_data = BeRocket_AAPF::$current_page_filters;
@@ -67,7 +40,7 @@ if( ! class_exists('BeRocket_aapf_admin_bar_debug') ) {
 						}
 					}
 					if( ! empty($html2) ) {
-						$html .= '<div><h2>'.esc_html(strtoupper(trim(str_replace('_', ' ', $data_type)))).'</h2>'.$html2.'</div>';
+						$html .= '<div class="bapf_admin_bar_section"><h2>'.esc_html(strtoupper(trim(str_replace('_', ' ', $data_type)))).'</h2>'.$html2.'</div>';
 					}
 				}
 			}
@@ -77,11 +50,9 @@ if( ! class_exists('BeRocket_aapf_admin_bar_debug') ) {
 			$html .= '<div class="bapf_adminbar_status">';
 			$html .= '</div>';
             $html = apply_filters('BeRocket_aapf_admin_bar_debug_html', $html);
-			$html .= '<div class="bapf_adminbar_errors">';
-			$html .= '</div>';
 			return $html;
 		}
-		function get_javascript() {
+		function get_js() {
 			global $br_aapf_wc_footer_widget;
 			$html = '<script>
             var berocket_admin_inited = false;
@@ -125,12 +96,9 @@ if( ! class_exists('BeRocket_aapf_admin_bar_debug') ) {
                 var html = \'<div><span class="dashicons dashicons-info-outline"></span><p>\';
                 html += text;
                 html += \'</p></div>\';
-                jQuery("#wp-admin-bar-bapf_debug_bar .bapf_adminbar_errors").prepend(jQuery(html));
+                jQuery(".berocket_adminbar_errors").prepend(jQuery(html));
                 if( critical_error ) {
-                    jQuery("#wp-admin-bar-bapf_debug_bar").removeClass("brapf_admin_error_alert");
-                    setTimeout(function() {jQuery("#wp-admin-bar-bapf_debug_bar").addClass("brapf_admin_error_alert")});
-                    jQuery("#wp-admin-bar-bapf_debug_bar > .ab-item .dashicons").remove();
-                    jQuery("#wp-admin-bar-bapf_debug_bar > .ab-item").append(jQuery(\'<span class="dashicons dashicons-info-outline"></span>\'));
+                    jQuery(".berocket_adminbar_errors").trigger("critical_error");
                 }
             }
             jQuery(document).ready(function() {
@@ -194,67 +162,32 @@ if( ! class_exists('BeRocket_aapf_admin_bar_debug') ) {
 			return apply_filters('BeRocket_aapf_admin_bar_debug_js', $html);
 		}
 		function get_css() {
-			$html = '<style>#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item {height:initial!important;line-height:1em;}
-			#wp-admin-bar-bapf_debug_bar .ab-item {display: flex!important;align-items: center;flex-direction: row;}
-			#wp-admin-bar-bapf_debug_bar #wp-admin-bar-bapf_debug_bar_content .ab-item {display: flex!important;align-items: center;flex-direction: column; max-height:90vh;overflow:auto;}
-			#wp-admin-bar-bapf_debug_bar.brapf_admin_error_alert .ab-item .dashicons.dashicons-info-outline {margin-left: 5px;font-family: dashicons;font-size: 24px;line-height:32px;cursor:pointer;color: red; transform: rotate(180deg);}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item *{line-height:1em;color:#ccc;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item h2{color:white;font-size: 1.5em;text-align:center;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item h3{font-weight:bold;color:#0085ba;font-size: 1.25em;text-align:center;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item ul {display: flex; flex-wrap: wrap; max-width: 300px;}
-            #wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item ul li {display:inline-block!important;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item ul li a {height:initial;margin:0;padding:2px;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_status,
-            #wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_custom_sidebar{text-align:center;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .dashicons {font-family: dashicons;font-size: 34px;line-height: 26px;display: block;cursor:pointer;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .dashicons-yes {color:green;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .dashicons-no {color:red;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_status_element {display:inline-block;text-align:center; padding:3px;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_errors {text-align:center; max-height: 200px; overflow: auto; margin-left: -10px; margin-right: -10px;}
-            #wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_errors > div {display: flex; border-top: 1px solid #555;text-align:left;align-items: center;}
-            #wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_errors > div p {padding: 3px;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_errors .dashicons {font-family: dashicons;font-size: 34px;line-height: 34px;display: block;cursor:pointer;}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_errors .dashicons-info-outline {color: red; transform: rotate(180deg);}
-			#wp-admin-bar-bapf_debug_bar .ab-submenu .ab-item .bapf_adminbar_errors .bapf_admin_error_code {color: #777; background-color:#ccc; line-height:1em; display:inline-block; padding: 3px;}
-            #wp-admin-bar-bapf_debug_bar .brapf_admin_link {text-align:center;}
-            #wp-admin-bar-bapf_debug_bar .brapf_admin_link a {font-size: 18px;}
-            @keyframes bapf_admin_alert {
-              0% {
-                background-color: #23282d;
-              }
-              10% {
-                background-color: #ee3333;
-              }
-              20% {
-                background-color: #23282d;
-              }
-              30% {
-                background-color: #ee3333;
-              }
-              40% {
-                background-color: #23282d;
-              }
-              50% {
-                background-color: #ee3333;
-              }
-              60% {
-                background-color: #23282d;
-              }
-              70% {
-                background-color: #ee3333;
-              }
-              80% {
-                background-color: #23282d;
-              }
-              90% {
-                background-color: #ee3333;
-              }
-              100% {
-                background-color: #23282d;
-              }
-            }
-            #wp-admin-bar-bapf_debug_bar.brapf_admin_error_alert {animation-duration: 3s;animation-name: bapf_admin_alert;}
-            #wp-admin-bar-bapf_debug_bar img {margin-right: 6px;}
+			$html = '<style>
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters {width: 100%;}
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .bapf_admin_bar_section,
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_status,
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_custom_sidebar{border-top: 1px solid #999; width: 100%; position: relative;margin-bottom: 12px;}
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_status,
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_custom_sidebar{padding-top:4px;}
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .bapf_admin_bar_section h2,
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_status h2,
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_custom_sidebar h2{position: absolute; top: -10px; left: 0; background: #2c3338;}
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .bapf_admin_bar_section h3{font-weight:bold;color:#0085ba;font-size: 1.25em;text-align:center;}
+
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_status .dashicons,
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_status_element .dashicons{display:inline-block;}
+
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_custom_sidebar a{height:1em;}
+
+			#wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters ul {display: flex; flex-wrap: wrap; max-width: 300px;}
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters ul li {display:inline-block!important;}
+			#wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters ul li a {height:initial;margin:0;padding:2px;}
+			#wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_status,
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_custom_sidebar{text-align:center;}
+			#wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_status_element {line-height:2em;display:inline-block;text-align:center; padding:3px;}
+            #wp-admin-bar-berocket_debug_bar .ab-submenu .ab-item .berocket_admin_bar_plugin_block_ajax_filters .bapf_adminbar_status_element
+            #wp-admin-bar-berocket_debug_bar .berocket_admin_bar_plugin_block_ajax_filters .brapf_admin_link {text-align:center;}
+            #wp-admin-bar-berocket_debug_bar .berocket_admin_bar_plugin_block_ajax_filters .brapf_admin_link a {font-size: 18px;}
 			</style>';
 			return $html;
 		}

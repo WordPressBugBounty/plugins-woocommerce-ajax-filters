@@ -81,11 +81,19 @@ class BeRocket_new_AAPF_Widget extends WP_Widget
     }
     public static function check_widget_by_instance($instance) {
         if( ( empty($instance['group_id']) || get_post_status($instance['group_id']) != 'publish' ) && empty($instance['filters']) ) {
+            if( empty($instance['group_id']) ) {
+                braapf_is_filters_displayed_debug('-1', 'group', 'disabled', 'Do not have group ID');
+            } elseif( get_post_status($instance['group_id']) != 'publish' ) {
+                braapf_is_filters_displayed_debug($instance['group_id'], 'group', 'disabled', 'Group not published');
+            } elseif( empty($instance['filters']) ) {
+                braapf_is_filters_displayed_debug($instance['group_id'], 'group', 'disabled', 'Empty filters');
+            }
             return false;
         }
         $BeRocket_AAPF = BeRocket_AAPF::getInstance();
         $br_options = $BeRocket_AAPF->get_option();
         if( ! empty($br_options['filters_turn_off']) ) {
+            braapf_is_filters_displayed_debug($instance['group_id'], 'group', 'disabled', 'All filters disabled by global settings');
             return false;
         }
         if( empty($instance['group_id']) ) {

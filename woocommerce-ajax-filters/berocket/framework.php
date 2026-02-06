@@ -35,8 +35,8 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
     include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
     load_plugin_textdomain('BeRocket_domain', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
     class BeRocket_Framework {
-        public static $framework_version = '3.0.3.6';
-        public $plugin_framework_version = '3.0.3.6';
+        public static $framework_version = '3.0.4.3';
+        public $plugin_framework_version = '3.0.4.3';
         public $licenses_current = array('free');
         public static $settings_name = '';
         public $addons;
@@ -58,7 +58,8 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
         protected $global_settings = array(
             'fontawesome_frontend_disable',
             'fontawesome_frontend_version',
-            'framework_products_per_page'
+            'framework_products_per_page',
+            'disable_admin_bar_panel'
         );
         public $check_lib = null;
         protected $check_init_array = array();
@@ -160,6 +161,10 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
             foreach (glob($this->info['plugin_dir'] . "/includes/*.php") as $filename)
             {
                 include_once($filename);
+            }
+            $global_option = $this->get_global_option();
+            if( ! is_admin() && br_get_value_from_array($global_option, 'disable_admin_bar_panel') != 'disable' ) {
+                include_once('includes/admin/admin_bar.php');
             }
         }
         public function init_check_lib() {
@@ -445,9 +450,11 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
          */
         public function set_styles() {
             $options = $this->get_option();
-            $previous_options = $this->get_option();
-            $custom_css = berocket_sanitize_array($options[ 'custom_css' ], array($this->cc->values[ 'settings_name' ]), $previous_options);
-            echo '<style>' . $custom_css . '</style>';
+            if( ! empty($options[ 'custom_css' ]) ) {
+                $previous_options = $this->get_option();
+                $custom_css = berocket_sanitize_array($options[ 'custom_css' ], array($this->cc->values[ 'settings_name' ]), $previous_options);
+                echo '<style>' . $custom_css . '</style>';
+            }
         }
         public function set_scripts() {
             $options = $this->get_option();
@@ -734,6 +741,10 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
                                 $item['td_class'] = (empty($item['td_class']) ? '' : ' class="'.$item['td_class'].'"');
                                 $page_content .= '<th scope="row">' . $item['label'] .'</th><td'.$item['td_class'].'>';
 
+                                if( ! empty($item['text_before']) ) {
+                                    $page_content .= $item['text_before'];
+                                }
+
                                 $field_items = array();
                                 if( isset($item['items']) && is_array($item['items']) ) {
                                     $field_items = $item['items'];
@@ -820,6 +831,10 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
                                     }
                                     $page_content .= $item_content;
                                     $item_i++;
+                                }
+
+                                if( ! empty($item['text_after']) ) {
+                                    $page_content .= $item['text_after'];
                                 }
 
                                 $page_content .= '</td>';
