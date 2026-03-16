@@ -23,7 +23,7 @@ class BRAAPF_slider_data {
                 if( ! isset($filter_data['filter_id']) ) {
                     $filter_data['filter_id'] = $filter_id;
                 }
-                if( isset($filter_data['style']) && isset($all_styles[$filter_data['style']]) && in_array($all_styles[$filter_data['style']]['template'], array('slider', 'new_slider')) ) {
+                if( isset($filter_data['style']) && isset($all_styles[$filter_data['style']]) && in_array($all_styles[$filter_data['style']]['template'], array('slider', 'new_slider', 'datepicker')) ) {
                     $get_terms_data = $this->generate_data_for_filter($filter_data);
                     if( $get_terms_data !== false ) {
                         $filters_data[$get_terms_data['get_terms_args']['taxonomy']] = $get_terms_data;

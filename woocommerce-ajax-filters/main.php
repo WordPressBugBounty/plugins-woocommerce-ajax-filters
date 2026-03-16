@@ -943,13 +943,6 @@ class BeRocket_AAPF extends BeRocket_Framework {
                     ),
                 ),
                 'Advanced' => array(
-                    'framework_products_per_page' => array(
-                        "label"     => __( 'Products per page', "BeRocket_AJAX_domain" ),
-                        "type"      => "number",
-                        "name"      => "framework_products_per_page",
-                        "value"     => '',
-                        'extra'     => 'placeholder="'.__( 'From WooCommerce', "BeRocket_AJAX_domain" ).'"'
-                    ),
                     'products_only' => array(
                         "label"     => __( 'Display products', "BeRocket_AJAX_domain" ),
                         "type"      => "checkbox",
@@ -1010,13 +1003,6 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "value"    => '',
                         "label_for" => __('On the Category, Tag, and Attribute page filter with the same taxonomy will remove the page\'s value or leave only it.', 'BeRocket_AJAX_domain'),
                     ),
-                    'reload_changed_filters' => array(
-                        "label"     => __( 'Load products when URL changed', "BeRocket_AJAX_domain" ),
-                        "type"      => "checkbox",
-                        "name"      => "reload_changed_filters",
-                        "value"     => '1',
-                        'label_for' => __('Load products again if some filters are missing after filtering', 'BeRocket_AJAX_domain'),
-                    ),
                     'purge_cache' => array(
                         "section"   => "purge_cache",
                         "value"     => "",
@@ -1034,22 +1020,18 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "value"     => '1',
                         'label_for' => __("If you want to hide filters without losing current configuration just turn them off", 'BeRocket_AJAX_domain'),
                     ),
-                    'disable_admin_bar_panel' => array(
-                        "tr_class"  => "bapf_tools_fields bapf_tools_fields_hide",
-                        "label"     => __( 'Disable admin bar', "BeRocket_AJAX_domain" ),
-                        "type"     => "selectbox",
-                        "options"  => array(
-                            array('value' => 'enable', 'text' => __('Enable', 'BeRocket_AJAX_domain')),
-                            array('value' => 'disable', 'text' => __('Disable', 'BeRocket_AJAX_domain')),
-                        ),
-                        "name"      => "disable_admin_bar_panel",
-                        "value"     => '1',
-                        'label_for' => __("Disable panel in WordPress Admin Bar", 'BeRocket_AJAX_domain'),
-                    ),
                     'header_part_fixes' => array(
                         'section' => 'header_part',
                         "tr_class"  => "bapf_incompatibility_fixes_header",
                         "value"   => __('Incompatibility Fixes', 'BeRocket_AJAX_domain').'<i class="fa fa-chevron-down"></i>',
+                    ),
+                    'reload_changed_filters' => array(
+                        "tr_class"  => "bapf_incompatibility_fixes bapf_incompatibility_fixes_hide",
+                        "label"     => __( 'Load products when URL changed', "BeRocket_AJAX_domain" ),
+                        "type"      => "checkbox",
+                        "name"      => "reload_changed_filters",
+                        "value"     => '1',
+                        'label_for' => __('Load products again if some filters are missing after filtering', 'BeRocket_AJAX_domain'),
                     ),
                     'styles_in_footer' => array(
                         "tr_class"  => "bapf_incompatibility_fixes bapf_incompatibility_fixes_hide",
@@ -1252,24 +1234,6 @@ class BeRocket_AAPF extends BeRocket_Framework {
                     ),
                 ),
                 'JavaScript/CSS' => array(
-                    'global_font_awesome_disable' => array(
-                        "label"     => __( 'Disable Font Awesome', "BeRocket_AJAX_domain" ),
-                        "type"      => "checkbox",
-                        "name"      => "fontawesome_frontend_disable",
-                        "value"     => '1',
-                        'label_for' => __('Don\'t load CSS files for Font Awesome on the site\'s front end. Use it only if you don\'t use Font Awesome icons in widgets or have Font Awesome in your theme.', 'BeRocket_AJAX_domain'),
-                    ),
-                    'global_fontawesome_version' => array(
-                        "label"    => __( 'Font Awesome Version', "BeRocket_AJAX_domain" ),
-                        "name"     => "fontawesome_frontend_version",
-                        "type"     => "selectbox",
-                        "options"  => array(
-                            array('value' => '', 'text' => __('Font Awesome 4', 'BeRocket_AJAX_domain')),
-                            array('value' => 'fontawesome5', 'text' => __('Font Awesome 5', 'BeRocket_AJAX_domain')),
-                        ),
-                        "value"    => '',
-                        "label_for" => __('A version of Font Awesome that will be used on the front end. Please select the version that you have in your theme', 'BeRocket_AJAX_domain'),
-                    ),
                     'after_update' => array(
                         "label"     => __( 'After Update:', "BeRocket_AJAX_domain" ),
                         "type"      => "textarea",

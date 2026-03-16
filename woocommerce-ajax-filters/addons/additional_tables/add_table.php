@@ -274,8 +274,8 @@ class BeRocket_aapf_variations_tables {
                     $wpdb->query($sql);
                 }
             }
-            $wpdb->query($sql);
             $sql = "DELETE FROM {$wpdb->prefix}braapf_variable_attributes WHERE post_id={$product_id};";
+            $wpdb->query($sql);
             $product_attribute = get_post_meta($product_id, '_product_attributes', true);
             $insert_values = array();
             if( is_array($product_attribute) ) {

@@ -36,7 +36,7 @@
 
     <p class="docs_title braapf_color_image_block_size"><?=__('Size of blocks', 'BeRocket_AJAX_domain')?></p>
     <p class="braapf_color_image_block_size"><?=__('Set the block size for Color and Image.', 'BeRocket_AJAX_domain')?></p>
-
+<?php do_action('bapf_single_filter_docs_additional_after'); ?>
     <div class="show_on_advanced">
         <p></p>
         <p class="docs_title braapf_description"><?=__('Description', 'BeRocket_AJAX_domain')?></p>

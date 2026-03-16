@@ -222,7 +222,7 @@ function bapf_settings_get_selectors_preset($wptheme = false) {
             )
         ),
         'BlogHash' => array(
-            'name'      => 'Woodmart',
+            'name'      => 'BlogHash',
             'options'   => array(
                 'products_holder_id'                => 'ul.products',
                 'woocommerce_result_count_class'    => '.woocommerce-result-count',
@@ -235,7 +235,7 @@ function bapf_settings_get_selectors_preset($wptheme = false) {
             )
         ),
         'OceanWP' => array(
-            'name'      => 'Woodmart',
+            'name'      => 'OceanWP',
             'options'   => array(
                 'products_holder_id'                => 'ul.products',
                 'woocommerce_result_count_class'    => '.result-count',
@@ -345,12 +345,9 @@ function bapf_update_selectors_preset_woodmart($selector_name = false) {
         }
         $options['icons_font_display'] = 'block';
         update_option('xts-woodmart-options', $options);
-        $global_option = get_option('berocket_framework_option_global');
-        if( ! is_array($global_option) ) {
-            $global_option = array();
-        }
+        $global_option = BeRocket_Framework::get_global_option();
         $global_option['fontawesome_frontend_version'] = 'fontawesome5';
-        update_option('berocket_framework_option_global', $global_option);
+        BeRocket_Framework::save_global_option($global_option);
     }
 }
 add_action('bapf_update_selectors_preset', 'bapf_update_selectors_preset_woodmart', 10, 1);

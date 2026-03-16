@@ -16,12 +16,16 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
 
         public static function init() {
             add_action( 'admin_init', array(__CLASS__, 'admin_init') );
-            $options          = self::get_options();
+            $options = get_option( 'BeRocket_account_option' );
+            if( ! is_array($options) ) {
+                $options = array();
+            }
             self::$debug_mode = ! empty( $options[ 'debug_mode' ] );
         }
 
         public static function admin_init() {
             add_filter('woocommerce_addons_sections', array(__CLASS__, 'woocommerce_addons_sections'));
+            add_filter( 'is_berocket_settings_page', array( __CLASS__, 'is_settings_page' ) );
             if( isset($_GET['page']) && isset($_GET['section']) && $_GET['page'] == 'wc-addons' && ( $_GET['section'] == 'berocket' || ! empty($_GET['search']) ) ) {
                 add_action('admin_footer', array(__CLASS__, 'woocommerce_addons_berocket'));
             }
@@ -56,8 +60,12 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             }
             $update = false;
             foreach ( $plugin as $plug_id => $plug ) {
-                self::$slugs[ $plug[ 'id' ] ] = $plug[ 'slug' ];
-                self::$free_slugs[ $plug[ 'id' ] ] = $plug[ 'free_slug' ];
+                if( ! empty($plug[ 'slug' ]) ) {
+                    self::$slugs[ $plug[ 'id' ] ] = $plug[ 'slug' ];
+                }
+                if( ! empty($plug[ 'free_slug' ]) ) {
+                    self::$free_slugs[ $plug[ 'id' ] ] = $plug[ 'free_slug' ];
+                }
                 if ( isset( $options[ 'plugin_key' ][ $plug[ 'id' ] ] ) && $options[ 'plugin_key' ][ $plug[ 'id' ] ] != '' ) {
                     $plugin[ $plug_id ][ 'key' ] = $options[ 'plugin_key' ][ $plug[ 'id' ] ];
                 } elseif ( isset( $plugin[ $plug_id ][ 'key' ] ) && $plugin[ $plug_id ][ 'key' ] != '' ) {
@@ -66,7 +74,7 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                 }
             }
             if ( is_multisite() ) {
-                $options_ms = get_site_option( 'BeRocket_account_option' );
+                $options_ms = BeRocket_Framework::get_global_option(true);
                 if( ! empty($options_ms) && is_array($options_ms) && isset($options_ms['plugin_key']) && is_array($options_ms['plugin_key']) ) {
                     foreach ( $plugin as $plug_id => $plug ) {
                         if ( isset( $options_ms[ 'plugin_key' ][ $plug[ 'id' ] ] ) && $options_ms[ 'plugin_key' ][ $plug[ 'id' ] ] != '' ) {
@@ -155,7 +163,7 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                 if ( $item[ 0 ] == 'BeRocket' ) {
                     $BeRocket_item = $item;
                     continue;
-                } elseif ( $item[ 0 ] == __('Account Keys', 'BeRocket_domain') ) {
+                } elseif ( $item[ 0 ] == __('Setting & Keys', 'BeRocket_domain') ) {
                     $account_keys_item = $item;
                     continue;
                 }
@@ -249,11 +257,19 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                         $not_activated_notices[] = array(
                             'start'         => 0,
                             'end'           => 0,
+                            'type'          => 'error',
                             'name'          => $plugin[ 'name' ],
-                            'html'          => __('Please', 'BeRocket_domain'). ' ' . __('activate plugin', 'BeRocket_domain') . ' ' . $plugin[ 'name' ] . ' ' . __('with help of plugin/account key from', 'BeRocket_domain'). ' '
-                                               . '<a href="' . BeRocket_main_path . 'user' . $meta_data . '" target="_blank">' . __('BeRocket account', 'BeRocket_domain') . '</a>. '
-                                               . __('You can activate plugin in', 'BeRocket_domain')
-                                               . '<a class="berocket_button" href="' . ( is_network_admin() ? admin_url( 'network/admin.php?page=berocket_account' ) : admin_url( 'admin.php?page=berocket_account' ) ) . '">' . __('BeRocket Account settings', 'BeRocket_domain') . '</a>
+                            'html'          => '<p style="margin-right: 225px;">' .
+                                               __('Please', 'BeRocket_domain'). ' ' .
+                                               __('activate plugin', 'BeRocket_domain') . ' ' . $plugin[ 'name' ] . ' ' .
+                                               __('with help of plugin/account key from', 'BeRocket_domain'). ' '
+                                               . '<a href="' . BeRocket_main_path . 'my-account' . $meta_data . '" target="_blank">' .
+                                               __('BeRocket account', 'BeRocket_domain') . '</a>. '
+                                               . __('You can activate plugin in', 'BeRocket_domain') .
+                                               '</p>'
+                                               . '<a class="button notice-action-link not_berocket_button" href="' .
+                                               ( is_network_admin() ? admin_url( 'network/admin.php?page=berocket_account' ) : admin_url( 'admin.php?page=berocket_account' ) ) . '">' .
+                                               __('BeRocket Account settings', 'BeRocket_domain') . '</a>
                                 ',
                             'righthtml'     => '',
                             'rightwidth'    => 0,
@@ -557,7 +573,7 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
         }
 
         public static function account_page() {
-            add_submenu_page( 'berocket_account', __('BeRocket Account Settings', 'BeRocket_domain'), __('Account Keys', 'BeRocket_domain'), 'manage_berocket_account', 'berocket_account', array(
+            add_submenu_page( 'berocket_account', __('BeRocket Account Settings', 'BeRocket_domain'), __('Setting & Keys', 'BeRocket_domain'), 'manage_berocket_account', 'berocket_account', array(
                     __CLASS__,
                     'account_form'
                 ) );
@@ -581,10 +597,11 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             <div class="wrap">
                 <form method="post" action="options.php" class="account_key_send br_framework_settings">
                     <?php
-                    $options = get_option( 'BeRocket_account_option' );
+                    $options = BeRocket_Framework::get_global_option();
                     self::inside_form( $options );
                     ?>
                 </form>
+                <?php do_action('BeRocket_framework_updater_account_form_after', self::$plugin_info); ?>
             </div>
             <?php
         }
@@ -595,15 +612,15 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                 <form method="post" action="edit.php?page=berocket_account" class="account_key_send br_framework_settings">
                     <?php
                     if ( isset( $_POST[ 'BeRocket_account_option' ] ) ) {
-                        $previous_options = get_site_option( 'BeRocket_account_option' );
+                        $previous_options = BeRocket_Framework::get_global_option(true);
                         $option = berocket_sanitize_array( $_POST[ 'BeRocket_account_option' ], array('BeRocket_account_option'), $previous_options );
-                        update_site_option( 'BeRocket_account_option', $option );
+                        BeRocket_Framework::save_global_option($option, true);
                         self::update_check_set('');
                         delete_site_transient( 'update_plugins' );
                         delete_transient('berocket_plugin_paid_info');
                     }
 
-                    $options = get_site_option( 'BeRocket_account_option' );
+                    $options = BeRocket_Framework::get_global_option(true);
                     self::inside_form( $options );
                     ?>
                 </form>
@@ -658,12 +675,6 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             <h2><?php _e('BeRocket Account Settings', 'BeRocket_domain'); ?></h2>
             <div>
                 <table>
-                    <tr>
-                        <td><h3><?php _e('DEBUG MODE', 'BeRocket_domain'); ?></h3></td>
-                        <td colspan=3><label><input type="checkbox" name="BeRocket_account_option[debug_mode]"
-                                                    value="1"<?php if ( ! empty( $options[ 'debug_mode' ] ) )
-                                    echo ' checked' ?>><?php _e('Enable debug mode', 'BeRocket_domain'); ?></label></td>
-                    </tr>
                     <tr<?php if(empty( $options[ 'account_key' ] )) { echo ' style="display:none!important;"';}?>>
                         <td><h3><?php _e('Account key', 'BeRocket_domain'); ?></h3></td>
                         <td><input type="text" id="berocket_account_key" name="BeRocket_account_option[account_key]"
@@ -696,6 +707,49 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                 </table>
             </div>
             <div class="berocket_test_result"></div>
+            <h2><?php _e('Troubleshooting & Tools', 'BeRocket_domain'); ?></h2>
+            <div>
+                <table>
+                    <tr>
+                        <td><h3><?php _e('DEBUG MODE', 'BeRocket_domain'); ?></h3></td>
+                        <td colspan=3><label><input type="checkbox" name="BeRocket_account_option[debug_mode]"
+                                                    value="1"<?php if ( ! empty( $options[ 'debug_mode' ] ) )
+                                    echo ' checked' ?>><?php _e('Enable debug mode', 'BeRocket_domain'); ?></label></td>
+                    </tr>
+                    <tr>
+                        <td><h3><?php _e('Products per page', 'BeRocket_domain'); ?></h3></td>
+                        <td colspan=3><input type="number" name="BeRocket_account_option[framework_products_per_page]" value="<?php echo (empty($options['framework_products_per_page']) ? '' : $options['framework_products_per_page']); ?>" placeholder="<?php _e('From WooCommerce', 'BeRocket_domain'); ?>"></td>
+                    </tr>
+                    <tr>
+                        <td><h3><?php _e('Admin bar status', 'BeRocket_domain'); ?></h3></td>
+                        <td colspan=3><select name="BeRocket_account_option[disable_admin_bar_panel]">
+                            <option value="enable"<?php 
+                            if( ! empty($options['disable_admin_bar_panel']) && $options['disable_admin_bar_panel'] == 'enable' ) echo ' selected';
+                            ?>><?php _e('Enable', 'BeRocket_domain') ?></option>
+                            <option value="disable"<?php 
+                            if( ! empty($options['disable_admin_bar_panel']) && $options['disable_admin_bar_panel'] == 'disable' ) echo ' selected';
+                            ?>><?php _e('Disable', 'BeRocket_domain') ?></option>
+                        </select><?php _e('Enable panel in WordPress Admin Bar', 'BeRocket_domain'); ?></td>
+                    </tr>
+                    <tr>
+                        <td><h3><?php _e('Disable Font Awesome', 'BeRocket_domain'); ?></h3></td>
+                        <td colspan=3><label><input type="checkbox" name="BeRocket_account_option[fontawesome_frontend_disable]"
+                                                    value="1"<?php if ( ! empty( $options[ 'fontawesome_frontend_disable' ] ) )
+                                    echo ' checked' ?>><?php _e('Don\'t load CSS files for Font Awesome on the site\'s front end. Use it only if you don\'t use Font Awesome icons in widgets or have Font Awesome in your theme.', 'BeRocket_domain'); ?></label></td>
+                    </tr>
+                    <tr>
+                        <td><h3><?php _e('Font Awesome Version', 'BeRocket_domain'); ?></h3></td>
+                        <td colspan=3><select name="BeRocket_account_option[fontawesome_frontend_version]">
+                            <option value=""<?php 
+                            if( empty($options['fontawesome_frontend_version']) ) echo ' selected';
+                            ?>><?php _e('Enable', 'BeRocket_domain') ?></option>
+                            <option value="fontawesome5"<?php 
+                            if( ! empty($options['fontawesome_frontend_version']) && $options['fontawesome_frontend_version'] == 'fontawesome5' ) echo ' selected';
+                            ?>><?php _e('Font Awesome 5', 'BeRocket_domain') ?></option>
+                        </select></td>
+                    </tr>
+                </table>
+            </div>
             <button type="submit" class="button"><?php _e('Save Changes', 'BeRocket_domain'); ?></button>
 
             <div class="berocket_debug_errors">
@@ -995,11 +1049,8 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                 require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
             }
 
-            if ( is_multisite() && is_plugin_active_for_network( plugin_basename( __FILE__ ) ) ) {
-                $options = get_site_option( 'BeRocket_account_option' );
-            } else {
-                $options = get_option( 'BeRocket_account_option' );
-            }
+            $multisite = (is_multisite() && is_plugin_active_for_network( plugin_basename( __FILE__ ) ) );
+            $options = BeRocket_Framework::get_global_option($multisite);
 
             if( empty($options) || ! is_array($options) ) {
                 $options = array();
@@ -1014,11 +1065,11 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             }
 
             $options = self::restore_keys($options);
-            if ( is_multisite() && is_plugin_active_for_network( plugin_basename( __FILE__ ) ) ) {
-                update_site_option( 'BeRocket_account_option', $options );
+            $multisite = ( is_multisite() && is_plugin_active_for_network( plugin_basename( __FILE__ ) ) );
+            BeRocket_Framework::save_global_option($options, $multisite);
+            if ( $multisite ) {
                 delete_site_transient('br_plugin_activation');
             } else {
-                update_option( 'BeRocket_account_option', $options );
                 delete_transient('br_plugin_activation');
             }
             delete_transient('berocket_plugin_paid_info');
@@ -1026,18 +1077,22 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             delete_site_transient( 'update_plugins' );
         }
         public static function admin_notice_is_display_notice($display_notice, $item, $search_data) {
-            if( ! empty($item['for_plugin']) && is_array($item['for_plugin']) && ! empty($item['for_plugin']['id']) && ! empty($item['for_plugin']['version']) ) {
-                $has_free = false;
+            if( ! $display_notice ) {
+                return $display_notice;
+            }
+            if( ! empty($item['conditions']) && is_array($item['conditions'])
+                && isset($item['conditions']['plugin_version_capability']) && isset($item['conditions']['plugin_id']) ) {
+                $from = min($item['conditions']['plugin_version_capability']);
+                $to = max($item['conditions']['plugin_version_capability']);
+                $plugin_exist = false;
                 foreach ( self::$plugin_info as $plugin ) {
-                    if( version_compare($plugin[ 'version' ], '2.0', '<') ) {
-                        $has_free = true;
-                    }
-                    if ( $plugin[ 'id' ] == $item['for_plugin']['id'] && version_compare($plugin[ 'version' ], $item['for_plugin']['version'], '>=') ) {
-                        $display_notice = false;
+                    if ( $plugin[ 'id' ] == $item['conditions']['plugin_id'] ) {
+                        $display_notice = ($plugin['version_capability'] >= $from && $plugin['version_capability'] < $to);
+                        $plugin_exist = true;
                         break;
                     }
                 }
-                if( ! $has_free && ! empty($item['for_plugin']['onlyfree']) ) {
+                if( ! $plugin_exist ) {
                     $display_notice = false;
                 }
             }
@@ -1346,6 +1401,12 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
 
 		    return $res;
 	    }
+        public static function is_settings_page($is_page) {
+            if ( ! empty( $_GET[ 'page' ] ) && $_GET[ 'page' ] == 'berocket_account' ) {
+                return true;
+            }
+            return $is_page;
+        }
     }
 
     BeRocket_updater::init();

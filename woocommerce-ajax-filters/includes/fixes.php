@@ -9,3 +9,10 @@ if( ! function_exists('berocket_aapf_wcshortcode_is_filtering_fix_custom') ) {
     }
 }
 add_filter('berocket_aapf_wcshortcode_is_filtering', 'berocket_aapf_wcshortcode_is_filtering_fix_custom');
+function berocket_enable_woocommerce_brand_order($args) {
+    if( $args['taxonomy'] == 'product_brand' && empty($args['orderby']) ) {
+        $args['force_menu_order_sort'] = true;
+    }
+    return $args;
+}
+add_filter('berocket_aapf_get_terms_class_args', 'berocket_enable_woocommerce_brand_order');

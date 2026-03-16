@@ -195,6 +195,13 @@ var berocket_admin_filter_types_by_attr = {
             //$("html, body").stop().animate({scrollTop:$parent.offset().top-20}, 300);
             $(this).hide(300);
         });
+        function berocket_hide_seo_per_page_addon() {
+            if( jQuery('.berocket_addon_label .seo_per_page').parents('.berocket_addon_label').find('.berocket_addon_is_active').length 
+            && ! jQuery('.berocket_addon_label .seo_per_page').parents('.berocket_addon_label').find('.berocket_addon_is_active').prop('checked') ) {
+                jQuery('.berocket_addon_label .seo_per_page').parents('.berocket_addon_label').hide();
+            }
+        }
+        berocket_hide_seo_per_page_addon();
     })
 })(jQuery);
 function berocket_change_seo_friendly_urls() {
