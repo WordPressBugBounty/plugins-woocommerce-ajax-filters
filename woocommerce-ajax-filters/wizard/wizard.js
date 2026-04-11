@@ -389,8 +389,10 @@ var BeRocket_wizard_check = function(category_page_url, input_data,execute_funct
 }
 var BeRocket_autoselector_stop = false;
 var BeRocket_current_autoselector_block = jQuery('<div></div>');
+var berocket_wizard_selector_nonce = '';
 jQuery(document).on('click', '.berocket_autoselector', function(event) {
     event.preventDefault();
+    berocket_wizard_selector_nonce = jQuery(this).data('nonce');
     if( jQuery('.berocket_wizard_autoselectors_popup').length > 0 ) {
         jQuery('.berocket_wizard_autoselectors_popup').show();
     } else {
@@ -410,7 +412,7 @@ function BeRocket_run_autoselector($element) {
     BeRocket_current_autoselector_block = $element.parents('.berocket_wizard_autoselectors');
     jQuery('.berocket_wizard_autoselectors ol li').find('.with-fa').removeClass('with-fa');
     BeRocket_init_autoselectors();
-    jQuery.get(berocket_wizard_autoselect.ajaxurl, {action:"berocket_wizard_selector_start"}, function(url) {
+    jQuery.get(berocket_wizard_autoselect.ajaxurl, {action:"berocket_wizard_selector_start", nonce:berocket_wizard_selector_nonce}, function(url) {
         if( BeRocket_autoselector_stop ) {
             berocket_wizard_autoselector(true);
             return;
@@ -499,10 +501,10 @@ function berocket_wizard_autoselector(status) {
     }
 }
 function berocket_wizard_autoselector_end(function_after_end) {
-    jQuery.get(berocket_wizard_autoselect.ajaxurl, {action:"berocket_wizard_selector_end"}, function() {
+    jQuery.get(berocket_wizard_autoselect.ajaxurl, {action:"berocket_wizard_selector_end", nonce: berocket_wizard_selector_nonce}, function() {
         function_after_end();
     }).error(function(){
-        jQuery.get(berocket_wizard_autoselect.ajaxurl, {action:"berocket_wizard_selector_end"}, function() {
+        jQuery.get(berocket_wizard_autoselect.ajaxurl, {action:"berocket_wizard_selector_end", nonce: berocket_wizard_selector_nonce}, function() {
             function_after_end();
         }).error(function(){
             berocket_wizard_autoselector_end_error();

@@ -10,7 +10,7 @@ if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
             add_action('BeRocket_wizard_ended_check', array($this, 'remove_products_ended'));
             add_filter('BeRocket_wizard_category_link', array($this, 'category_link'));
             add_action( 'wp_ajax_berocket_wizard_selector_start', array( $this, 'wizard_selector_start' ) );
-            add_action( 'wp_ajax_berocket_wizard_selector_end', array( $this, 'remove_products' ) );
+            add_action( 'wp_ajax_berocket_wizard_selector_end', array( $this, 'remove_products_ajax' ) );
             add_action( 'wp_ajax_berocket_wizard_selector_ended', array( $this, 'remove_products_ended_check' ) );
             $status = get_option('BeRocket_selector_wizard_status');
             if( $status == 'started' ) {
@@ -62,6 +62,10 @@ if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
         }
         
         public function wizard_selector_start() {
+            $nonce = (empty($_REQUEST['nonce']) ? '' : $_REQUEST['nonce']);
+            if( ! wp_verify_nonce($nonce, 'bapf_wizard_autoselector') || ! current_user_can( 'manage_options' ) ) {
+                wp_die( -1, 403 );
+            }
             $this->import_products();
             echo $this->category_link('');
             wp_die();
@@ -160,11 +164,22 @@ if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
             remove_action('pre_get_posts', array($this, 'products_per_page_more'), 9999999);
         }
         function remove_products_ended_check() {
+            $nonce = (empty($_REQUEST['nonce']) ? '' : $_REQUEST['nonce']);
+            if( ! wp_verify_nonce($nonce, 'bapf_wizard_autoselector') || ! current_user_can( 'manage_options' ) ) {
+                wp_die( -1, 403 );
+            }
             $status = get_option('BeRocket_selector_wizard_status');
             if( $status == 'ended' ) {
                 do_action('BeRocket_wizard_ended_check');
             }
             wp_die();
+        }
+        function remove_products_ajax() {
+            $nonce = (empty($_REQUEST['nonce']) ? '' : $_REQUEST['nonce']);
+            if( ! wp_verify_nonce($nonce, 'bapf_wizard_autoselector') || ! current_user_can( 'manage_options' ) ) {
+                wp_die( -1, 403 );
+            }
+            $this->remove_products();
         }
         function remove_products() {
             remove_filter('loop_shop_per_page', array($this, 'loop_shop_per_page'), 9999999 );
@@ -233,7 +248,7 @@ if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
                 <button type="button" class="berocket_wizard_popup_next button">' . $output_text['popup_before_run_next'] . '</button></div>';
         }
         $html .= ($status ? '<div class="berocket_selectors_was_runned"><strong style="color: red;">'.$output_text['was_runned'].'</strong></div>' : '').'
-            <button type="button" data-seoplugins="'.implode(', ', $activated_plugins).'" class="'.(count($activated_plugins) ? 'berocket_autoselector_seo' : 'berocket_autoselector').' button berocket_autoselector_load" type="button"'.($status ? ' disabled' : '').'><span class="berocket_line"></span><span class="berocket_autoselector_action" data-text="'.$output_text['run_button'].'">'.$output_text['run_button'].'</span></button>
+            <button type="button" data-nonce="'.wp_create_nonce('bapf_wizard_autoselector').'" data-seoplugins="'.implode(', ', $activated_plugins).'" class="'.(count($activated_plugins) ? 'berocket_autoselector_seo' : 'berocket_autoselector').' button berocket_autoselector_load" type="button"'.($status ? ' disabled' : '').'><span class="berocket_line"></span><span class="berocket_autoselector_action" data-text="'.$output_text['run_button'].'">'.$output_text['run_button'].'</span></button>
             <span class="berocket_autoselect_spin"'.($status ? '' : 'style="display:none;').'"><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i><button class="berocket_autoselector_stop button" type="button">'.$output_text['was_runned_stop'].'</button></span>
             <span class="berocket_autoselect_ready" style="display:none;"><i class="fa fa-check fa-3x fa-fw"></i></span>
             <span class="berocket_autoselect_error" style="display:none;"><i class="fa fa-times fa-3x fa-fw"></i></span>
@@ -247,7 +262,7 @@ if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
             </div>
         </div>
         <script>jQuery(document).ready(function(){
-            jQuery.get(berocket_wizard_autoselect.ajaxurl, {action:"berocket_wizard_selector_ended"});
+            jQuery.get(berocket_wizard_autoselect.ajaxurl, {action:"berocket_wizard_selector_ended", nonce: "' . wp_create_nonce('bapf_wizard_autoselector') . '"});
         });</script>';
         return $html;
     }

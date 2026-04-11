@@ -16,6 +16,7 @@ if( ( ! defined("BAPF_VER_BUSINESS_DISABLE") || ! BAPF_VER_BUSINESS_DISABLE ) &&
 }
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 require_once dirname( __FILE__ ) . '/wizard/main.php';
+include_once(plugin_dir_path( __FILE__ ) . "includes/admin/funnels.php");
 include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/product-table.php");
 include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/jet_smart_filters.php");
 include_once(plugin_dir_path( __FILE__ ) . "includes/compatibility/wp-rocket.php");

@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce AJAX Products Filter
  * Plugin URI: https://berocket.com/woocommerce-ajax-products-filter?utm_source=paid_plugin&utm_medium=plugins&utm_campaign=ajax_filters
  * Description: Unlimited AJAX product filters to make your shop perfect
- * Version: 3.1.9.8
+ * Version: 3.1.9.9
  * Author: BeRocket
  * Requires at least: 6.3
  * Tested up to: 6.9.3
@@ -14,6 +14,6 @@
  * Domain Path: /languages/
  * WC tested up to: 10.6
  */
-define( "BeRocket_AJAX_filters_version", '3.1.9.8' );
+define( "BeRocket_AJAX_filters_version", '3.1.9.9' );
 define( "BeRocket_AJAX_filters_file", __FILE__ );
 include_once('main.php');
