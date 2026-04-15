@@ -4,8 +4,8 @@ Contributors: dholovnia, berocket
 Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=donate&utm_campaign=ajax_filters
 Tags: product filters, ajax product filters, woocommerce filters, wc filters, category filter
 Requires at least: 5.0
-Tested up to: 6.9.3
-Stable tag: 3.1.9.9
+Tested up to: 6.9.4
+Stable tag: 3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,12 @@ Give your customers the power to find products instantly.
 **WooCommerce Ajax Products Filter** lets users filter, sort, and search products without reloading the page. Fast, flexible, and compatible with most themes and page builders.  
 
 Already packed with features in the free version, and even more powerful with [Pro and Business versions](https://berocket.com/woocommerce-ajax-products-filter/).
+
+= 🚀 Spring Premium Days is LIVE! =
+**Save 30%** on Pro & Business. 
+**Pro:** *Better filters mean better UX — and more conversions.*
+**Business:** *Use **Intelligent Filters** to let shoppers filter multiple attributes in a single click (like Red + iPhone + Model X).*
+🌿 Improve your store today. [**Limited time offer!**](https://berocket.com/woocommerce-ajax-products-filter/?utm_source=free_plugin&utm_medium=wporg&utm_campaign=spring_2026&utm_content=top_ad_cta&utm_term=ajax_filters)
 
 = ✨ Free Features =
 Everything you need to create professional product filters:
@@ -177,6 +183,10 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Changelog ==
+
+= 3.2 =
+* Enhancement - Compatibility version: Wordpress 6.9.4 and WooCommerce 10.6.2
+* Fix - PHP warning in admin area
 
 = 3.1.9.9 =
 * Enhancement - Compatibility with other BeRocket plugins
