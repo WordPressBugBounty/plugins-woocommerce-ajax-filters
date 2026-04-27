@@ -18,12 +18,6 @@ Give your customers the power to find products instantly.
 
 Already packed with features in the free version, and even more powerful with [Pro and Business versions](https://berocket.com/woocommerce-ajax-products-filter/).
 
-= 🚀 Spring Premium Days is LIVE! =
-**Save 30%** on Pro & Business. 
-**Pro:** *Better filters mean better UX — and more conversions.*
-**Business:** *Use **Intelligent Filters** to let shoppers filter multiple attributes in a single click (like Red + iPhone + Model X).*
-🌿 Improve your store today. [**Limited time offer!**](https://berocket.com/woocommerce-ajax-products-filter/?utm_source=free_plugin&utm_medium=wporg&utm_campaign=spring_2026&utm_content=top_ad_cta&utm_term=ajax_filters)
-
 = ✨ Free Features =
 Everything you need to create professional product filters:
 
