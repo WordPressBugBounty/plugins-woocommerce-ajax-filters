@@ -10,6 +10,10 @@ $compatibility_features = array(
         'check' => defined('ET_CORE_VERSION'),
         'file' => 'divi-theme-builder.php'
     ),
+    'DiviBuilder5' => array(
+        'check' => function_exists('et_builder_d5_enabled') && et_builder_d5_enabled(),
+        'file' => 'divi-5-theme-builder.php'
+    ),
     'BeaverBuilder' => array(
         'check' => defined('FL_BUILDER_VERSION'),
         'file' => 'beaver-builder.php'

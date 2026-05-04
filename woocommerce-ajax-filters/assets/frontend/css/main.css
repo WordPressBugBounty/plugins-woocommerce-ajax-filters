@@ -1328,12 +1328,12 @@ body .berocket_ajax_filters_sidebar_back.brapf_sidefl_linegrey {
     border-color: #ddd;
     color: #111;
 }
-.berocket_single_filter_widget .bapf-clean-rounded li.checked label {
+.berocket_single_filter_widget .bapf-clean-rounded li input:checked + label {
     border-color: #3781df;
     color: #0d59b9;
     padding-left: 26px;
 }
-.berocket_single_filter_widget .bapf-clean-rounded li.checked label:before {
+.berocket_single_filter_widget .bapf-clean-rounded li input:checked + label:before {
     border-bottom: 2px solid;
     border-left: 2px solid;
     border-color: #0d59b9;

@@ -349,6 +349,7 @@ function braapf_filtered_filters_set() {
     braapf_update_url_history_api_from_current = function(data, textStatus, jqXHR, url, type) {
         if( the_ajax_script.seo_friendly_urls ) {
             url_filtered = braapf_get_url_with_filters_selected();
+            braapf_set_manual_scroll_restoration();
             history.replaceState(history.state, "BeRocket Rules", url_filtered);
             if( url != url_filtered && the_ajax_script.reload_changed_filters ) {
                 setTimeout(function() {
@@ -686,8 +687,14 @@ function braapf_filtered_filters_set() {
         }
     }
     //Add url HTML5
+    braapf_set_manual_scroll_restoration = function() {
+        if( 'scrollRestoration' in history ) {
+            history.scrollRestoration = 'manual';
+        }
+    }
     braapf_change_url_history_api = function(new_url, data) {
         if( typeof(data) != 'undefined' && data.replace ) {
+            braapf_set_manual_scroll_restoration();
             var stateParameters = { BeRocket: "Rules" };
             history.replaceState(stateParameters, "");
             history.pushState(stateParameters, "", new_url);
@@ -1305,15 +1312,41 @@ braapf_show_hide_values_set;
             || (the_ajax_script.scroll_shop_top == 2 && $(window).width() < mobile_width)
             || (the_ajax_script.scroll_shop_top == 3 && $(window).width() >= mobile_width) )
         ) ) ) {
-            var top_scroll_offset = 0;
+            var top_scroll_offset = 0,
+                scroll_top_px = parseInt(the_ajax_script.scroll_shop_top_px, 10) || 0,
+                $scroll_target = false;
             if( $( the_ajax_script.products_holder_id ).length ) {
-                top_scroll_offset = $( the_ajax_script.products_holder_id ).offset().top + parseInt(the_ajax_script.scroll_shop_top_px);
-                if(top_scroll_offset < 0) top_scroll_offset = 0;
+                $scroll_target = $( the_ajax_script.products_holder_id ).first();
             } else if( $( '.bapf_no_products' ).length ) {
-                top_scroll_offset = $( '.bapf_no_products' ).offset().top + parseInt(the_ajax_script.scroll_shop_top_px);
+                $scroll_target = $( '.bapf_no_products' ).first();
+            }
+            if( $scroll_target && $scroll_target.length ) {
+                top_scroll_offset = $scroll_target.get(0).getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) + scroll_top_px;
                 if(top_scroll_offset < 0) top_scroll_offset = 0;
             }
-            $("html, body").animate({ scrollTop: top_scroll_offset }, "slow");
+            var scroll_element = document.scrollingElement || document.documentElement || document.body,
+                is_ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            //iOS fix
+            if( is_ios && window.requestAnimationFrame ) {
+                var start_scroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0,
+                    scroll_change = top_scroll_offset - start_scroll,
+                    scroll_duration = 600,
+                    scroll_start_time = null;
+                var animate_scroll = function(timestamp) {
+                    if( scroll_start_time === null ) scroll_start_time = timestamp;
+                    var progress = Math.min((timestamp - scroll_start_time) / scroll_duration, 1),
+                        ease_progress = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+                    window.scrollTo(0, start_scroll + scroll_change * ease_progress);
+                    if( progress < 1 ) {
+                        window.requestAnimationFrame(animate_scroll);
+                    }
+                };
+                window.requestAnimationFrame(animate_scroll);
+            } else if( scroll_element ) {
+                $(scroll_element).animate({ scrollTop: top_scroll_offset }, "slow");
+            } else {
+                window.scrollTo(0, top_scroll_offset);
+            }
         }
         return data;
     }
@@ -1523,6 +1556,7 @@ brapf_jet_smart_filters;
     });
 })(jQuery);
 jQuery(document).trigger('bapf_js_loaded');
+
 var braapf_init_ion_slidr,
 braapf_ion_slidr_same,
 braapf_jqrui_slidr_ion_value_wc_price,
