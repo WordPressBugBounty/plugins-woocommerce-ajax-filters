@@ -571,6 +571,9 @@ td.br_colorpicker_field.colorpicker_removed:after {
     margin-top: 20px;
 }
 /*Conditions*/
+#conditions .inside {
+    padding-top: 6px;
+}
 #conditions #submitpost.bapf_conditions {
     display: flex;
     flex-direction: row-reverse;
@@ -597,6 +600,8 @@ td.br_colorpicker_field.colorpicker_removed:after {
 .br_framework_settings .wp-list-table input[type=button].button.tiny-button {
     margin-top: 5px;
     margin-bottom: 0;
+    min-height: 30px;
+    line-height: 30px;
 }
 .br_framework_settings .button.berocket_purge_cache {
     margin: 0;
@@ -696,6 +701,7 @@ td.br_colorpicker_field.colorpicker_removed:after {
     border-inline-start: 2px solid #999;
     line-height: 1.4;
     color: #6c6c6c;
+    margin-bottom: 15px;
 }
 #conditions #submitpost .berocket_conditions_block_docs_content p + p {
     margin: 0;
@@ -710,13 +716,16 @@ td.br_colorpicker_field.colorpicker_removed:after {
     margin-left: 0;
     margin-right: 0;
 }
-#poststuff #conditions .inside {
+.post-type-br_product_filter #poststuff #conditions .inside,
+.post-type-br_filters_group  #poststuff #conditions .inside {
     padding: 0;
 }
-#poststuff #conditions .berocket_conditions_block {
+.post-type-br_product_filter #poststuff #conditions .berocket_conditions_block,
+.post-type-br_filters_group  #poststuff #conditions .berocket_conditions_block {
     padding: 0 12px;
 }
-.br_conditions {
+.post-type-br_product_filter .br_conditions,
+.post-type-br_filters_group  .br_conditions {
     padding: 6px 0 4px;
     text-align: center;
 }
@@ -735,6 +744,13 @@ td.br_colorpicker_field.colorpicker_removed:after {
     line-height: 0;
     border-radius: 5px;
 }
+.br_conditions .button.br_add_group:hover,
+.br_conditions .button.br_remove_group:hover,
+.br_conditions .button.berocket_add_condition:hover,
+.br_conditions .button.berocket_remove_condition:hover {
+    background-color: #f24027;
+    color: white;
+}
 .br_conditions .button.br_add_group:after,
 .br_conditions .button.br_remove_group:after,
 .br_conditions .button.berocket_add_condition:after,
@@ -749,6 +765,12 @@ td.br_colorpicker_field.colorpicker_removed:after {
     line-height: 0;
     font-size: 24px;
     margin: -3px;
+}
+.br_conditions .button.br_add_group:hover:after,
+.br_conditions .button.br_remove_group:hover:after,
+.br_conditions .button.berocket_add_condition:hover:after,
+.br_conditions .button.berocket_remove_condition:hover:after {
+    color: white;
 }
 .br_conditions .button.br_remove_group:after,
 .br_conditions .button.berocket_remove_condition:after {
@@ -784,6 +806,7 @@ td.br_colorpicker_field.colorpicker_removed:after {
     min-height: 14px;
     border-radius: 3px;
     border: 1px solid #d1d3d7;
+    background: white !important;
 }
 .br_current_cond label input[type="checkbox"] {
     margin-right: 5px;
@@ -817,7 +840,7 @@ td.br_colorpicker_field.colorpicker_removed:after {
     content: "";
 }
 .br_current_cond label input[type="checkbox"]:checked:before {
-    margin: .2rem 0 0 .15rem;
+    margin: 3px 0 0 2px;
 }
 
 .br_conditions .br_html_condition {
@@ -835,6 +858,9 @@ td.br_colorpicker_field.colorpicker_removed:after {
     background-color: #f7f7f7;
     border-radius: 5px;
     padding: 16px 8px 16px 12px;
+    display: flex;
+    gap: 5px;
+    align-items: flex-start;
 }
 .br_conditions .br_html_condition .br_cond_select:before,
 .br_conditions .br_html_condition:before{
@@ -856,9 +882,9 @@ td.br_colorpicker_field.colorpicker_removed:after {
     color: #3c3c3c;
     border: 1px solid #dcdfe3;
     border-radius: 5px;
-    padding: 3px 24px 3px 14px;
+    padding: 3px 30px 3px 14px;
     padding-inline-start: 14px;
-    padding-inline-end: 24px;
+    padding-inline-end: 30px;
 }
 .br_conditions .br_html_condition .br_current_cond {
     margin-top: 0;
@@ -885,7 +911,7 @@ td.br_colorpicker_field.colorpicker_removed:after {
 }
 .br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_woo_category {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     max-width: 100%;
 }
 .br_conditions .br_html_condition .br_cond_select .br_cond_woo_category label {
@@ -1038,6 +1064,7 @@ td.br_colorpicker_field.colorpicker_removed:after {
     border-radius: 3px;
     border: 1px solid #d1d3d7;
     box-shadow: none;
+    background: white;
 }
 #settings .berocket_filter_groups input[type="checkbox"]:hover,
 #settings .berocket_filter_groups input[type="checkbox"]:focus {
@@ -1500,6 +1527,7 @@ td.br_colorpicker_field.colorpicker_removed:after {
     border-radius: 3px;
     border: 1px solid #d1d3d7;
     box-shadow: none;
+    background: white;
 }
 #search_box .berocket_groups_search input[type="checkbox"]:hover,
 #search_box .berocket_groups_search input[type="checkbox"]:focus {
@@ -1717,4 +1745,73 @@ td.br_colorpicker_field.colorpicker_removed:after {
     .berocket_seo_meta_title_elements label {
         line-height: 3em;
     }
+}
+
+
+/* Design fixes for Labels 2026 */
+.br_conditions {
+    text-align: center;
+}
+.br_conditions input[type="checkbox"]:checked{
+    background: white;
+}
+.br_conditions #conditions .inside {
+    margin: 6px 0;
+}
+.br_conditions .br_cond.br_cond_product .br_framework_settings {
+    margin: 0 5px;
+}
+.br_conditions .br_cond.br_cond_product .br_framework_settings .berocket_products_search {
+    padding: 0;
+    border: 0;
+    background: none;
+    position: relative;
+    top: 0;
+}
+.br_conditions .br_cond.br_cond_product .br_framework_settings .berocket_products_search li {
+    margin: 0 !important;
+    background: none;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond {
+    align-items: flex-start;
+    padding-left: 5px;
+}
+.br_conditions .br_cond.br_cond_product .br_framework_settings .berocket_products_search input,
+.br_conditions .br_html_condition .br_cond_select .br_cond input[type="number"],
+.br_conditions .br_html_condition .br_cond_select .br_cond.br_cond_date_time input {
+    color: #3c3c3c;
+    border: 1px solid #dcdfe3;
+    border-radius: 5px;
+    padding: 2px 14px 2px 14px;
+    padding-inline-start: 14px;
+    padding-inline-end: 14px;
+    font-size: 14px;
+    line-height: 2;
+    min-height: 40px;
+    box-sizing: content-box;
+}
+.br_conditions .br_html_condition .br_cond_select .br_cond > label + input[type="number"],
+.br_conditions .br_html_condition .br_cond_select .br_cond > label + select {
+    margin-left: 0;
+}
+.br_conditions .br_cond.br_cond_product .br_framework_settings .button:not(.not_berocket_button),
+.br_conditions .br_cond.br_cond_product .br_framework_settings .button:not(.not_berocket_button):hover {
+    color: black;
+}
+.br_conditions .br_cond > label {
+    line-height: 46px;
+    display: flex;
+    align-items: center;
+}
+.br_conditions .br_cond.br_cond_page_id > div,
+.br_conditions .br_cond.br_cond_category > div {
+    margin-left: 4px;
+    margin-top: 0;
+    color: #3c3c3c;
+    border: 1px solid #dcdfe3;
+    border-radius: 5px;
+    padding: 3px 24px 3px 14px;
+    padding-inline-start: 14px;
+    padding-inline-end: 24px;
+    background: white;
 }

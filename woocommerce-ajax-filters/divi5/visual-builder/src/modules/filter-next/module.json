@@ -1,0 +1,14 @@
+{
+  "name": "bapf/filter-next",
+  "d4Shortcode": "et_pb_braapf_filter_next",
+  "title": "BeRocket Filter Next Product",
+  "titles": "BeRocket Filter Next Products",
+  "category": "module",
+  "moduleClassName": "et_pb_braapf_filter_next",
+  "moduleOrderClassName": "et_pb_braapf_filter_next",
+  "attributes": {
+    "module": { "type": "object", "selector": "{{selector}}", "settings": { "meta": { "adminLabel": {} }, "decoration": { "layout": {}, "background": {}, "sizing": {}, "spacing": {}, "border": {}, "boxShadow": {}, "filters": {}, "transform": {}, "animation": {}, "overflow": {}, "disabledOn": {}, "transition": {}, "position": {}, "zIndex": {}, "scroll": {}, "sticky": {} } } }
+  },
+  "settings": { "content": "auto", "design": "auto", "advanced": "auto" },
+  "defaultAttrs": {}
+}

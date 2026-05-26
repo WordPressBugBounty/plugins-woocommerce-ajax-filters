@@ -1,0 +1,20 @@
+{
+  "advanced": {
+    "admin_label": "module.meta.adminLabel",
+    "background": "module.decoration.background",
+    "disabled_on": "module.decoration.disabledOn",
+    "module": "module.advanced.htmlAttributes"
+  },
+  "module": {
+    "group_id": "group_id.innerContent.*",
+    "display_inline": "display_inline.innerContent.*",
+    "display_inline_count": "display_inline_count.innerContent.*",
+    "min_filter_width_inline": "min_filter_width_inline.innerContent.*",
+    "hidden_clickable": "hidden_clickable.innerContent.*",
+    "hidden_clickable_hover": "hidden_clickable_hover.innerContent.*",
+    "group_is_hide": "group_is_hide.innerContent.*",
+    "group_is_hide_theme": "group_is_hide_theme.innerContent.*",
+    "group_is_hide_icon_theme": "group_is_hide_icon_theme.innerContent.*",
+    "title_level": "title_level.innerContent.*"
+  }
+}

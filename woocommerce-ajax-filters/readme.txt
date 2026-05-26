@@ -4,8 +4,8 @@ Contributors: dholovnia, berocket
 Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=donate&utm_campaign=ajax_filters
 Tags: product filters, ajax product filters, woocommerce filters, wc filters, category filter
 Requires at least: 5.0
-Tested up to: 6.9.4
-Stable tag: 3.2.0.2
+Tested up to: 7.0
+Stable tag: 3.2.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -177,6 +177,17 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Changelog ==
+
+= 3.2.0.3 =
+* Enhancement - Compatibility version: Wordpress 7.0
+* Enhancement - Divi 5 modules
+* Fix - caching options
+* Fix - Conditions styles
+* Fix - Premium addon's font-size on wizard screen
+* Fix - conditions styles when with labels
+* Fix - making conditions better when filters are activated
+* Fix - framework with wp-admin menu icon
+* Fix - Styles issues with Wordpress 7
 
 = 3.2.0.2 =
 * Enhancement - Compatibility with Divi 5 elements

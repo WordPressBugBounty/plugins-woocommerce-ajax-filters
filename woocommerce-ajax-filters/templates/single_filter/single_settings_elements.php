@@ -62,6 +62,7 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                         }
                         echo ' value="'.$filter_type_key.'"'.($filter_type == $filter_type_key ? ' selected' : '').'>'.$filter_type_val['name'].'</option>';
                     }
+                    do_action('berocket_filter_option_filter_by_after');
                     echo '</select>';
                 echo '</div>';
                 //ATTRIBUTE
@@ -203,6 +204,7 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
             $styles = apply_filters('BeRocket_AAPF_getall_Template_Styles', array());
             $style_setting = br_get_value_from_array($braapf_filter_settings, 'style', '');
             $templates = braapf_convert_filter_styles_to_templates($styles, $settings_name.'[style]', $style_setting);
+	        $templates = apply_filters( 'br_filter_settings_style_templates', $templates );
             $templates_data = self::get_all_style_template_data();
             echo '<div class="braapf_templates_list">';
             foreach($templates as $template_slug => $template_data) {
@@ -216,13 +218,13 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                     }
                     echo '<h4>'.$template_name.'</h4>';
                     echo '<div class="braapf_style">';
-                        $template_html = implode($template_data['html']);
-                        echo $template_html;
+                        echo implode( $template_data['html'] );
                     echo '</div>';
                     echo '<script>jQuery(document).on("brsbs_style", function() {';
                         ?>berocket_show_element('.braapf_template_<?php echo $template_slug; ?>', '!braapf_current_template_styles! == "<?php echo $template_slug; ?>"', true, braapf_sort_styles);<?php
                     echo '});</script>';
                 echo '</div>';
+	            do_action( 'br_filter_settings_style_template_after', $template_slug );
             }
             echo '</div>';
             echo '<script>jQuery(document).on("brsbs_style", function() {';

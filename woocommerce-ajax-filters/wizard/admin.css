@@ -992,7 +992,7 @@ h4 {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 3.6em;
+    font-size: 25px;
     line-height: 1em;
     display: block;
     color: gold;

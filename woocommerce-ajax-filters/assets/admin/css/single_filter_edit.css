@@ -246,6 +246,7 @@
     min-height: 16px;
     border-radius: 3px;
     border: 1px solid #d1d3d7;
+    background: white !important;
 }
 #settings .berocket_sbs_step input[type="checkbox"]:hover,
 #settings .berocket_sbs_step input[type="checkbox"]:focus {
@@ -1230,4 +1231,12 @@
     text-align: center;
     line-height: 26px;
     width: 26px;
+}
+.berocket_sbs .braapf_flex_elements {
+    position: relative;
+}
+.berocket_sbs .braapf_flex_elements #braapf_searchf_suggest_height + .braapf_size_ext {
+    position: absolute;
+    right: 5px;
+    top: 9px;
 }

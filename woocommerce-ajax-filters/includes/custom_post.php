@@ -47,11 +47,10 @@ class BeRocket_conditions_AAPF extends BeRocket_conditions {
     public static function condition_user_status($html, $name, $options) {
         $def_options = array('not_logged_page' => '', 'customer_page' => '', 'logged_page' => '');
         $options = array_merge($def_options, $options);
-        $html .= '<p>
+        $html .= '
             <label><input type="checkbox" name="'.$name.'[not_logged_page]"'.(empty($options['not_logged_page']) ? '' : ' checked').'>'.__('Not Logged In', 'BeRocket_products_of_day_domain').'</label>
             <label><input type="checkbox" name="'.$name.'[customer_page]"'.(empty($options['customer_page']) ? '' : ' checked').'>'.__('Logged In Customers', 'BeRocket_products_of_day_domain').'</label>
-            <label><input type="checkbox" name="'.$name.'[logged_page]"'.(empty($options['logged_page']) ? '' : ' checked').'>'.__('Logged In Not Customers', 'BeRocket_products_of_day_domain').'</label>
-        </p>';
+            <label><input type="checkbox" name="'.$name.'[logged_page]"'.(empty($options['logged_page']) ? '' : ' checked').'>'.__('Logged In Not Customers', 'BeRocket_products_of_day_domain').'</label>';
         return $html;
     }
     public static function check_condition_user_status($show, $condition, $additional) {

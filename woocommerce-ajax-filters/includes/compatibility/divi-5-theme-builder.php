@@ -17,7 +17,7 @@ if( ! class_exists('BeRocket_AAPF_compat_Divi_5_theme_builder') ) {
             add_filter('render_block', array($this, 'render_block'), 1000, 2);
             add_filter('bapf_isoption_ajax_site', array($this, 'enable_for_builder'));
             add_filter('aapf_localize_widget_script', array($this, 'modify_products_selector'));
-            if( defined('DOING_AJAX') && in_array(berocket_isset($_REQUEST['action']), array('brapf_get_single_filter', 'brapf_get_group_filter')) ) {
+            if( defined('DOING_AJAX') && in_array(berocket_isset($_REQUEST['action']), array('brapf_get_single_filter', 'brapf_get_group_filter', 'bapf_divi5_preview')) ) {
                 add_filter('braapf_check_widget_by_instance_single', array($this, 'disable_conditions'));
                 add_filter('braapf_check_widget_by_instance_group', array($this, 'disable_conditions'));
             }
@@ -302,7 +302,7 @@ if( ! class_exists('BeRocket_AAPF_compat_Divi_5_theme_builder') ) {
         }
         function is_builder_request() {
             return br_get_value_from_array($_GET, 'et_fb') == 1
-                || (defined('DOING_AJAX') && in_array(berocket_isset($_REQUEST['action']), array('brapf_get_single_filter', 'brapf_get_group_filter')))
+                || (defined('DOING_AJAX') && in_array(berocket_isset($_REQUEST['action']), array('brapf_get_single_filter', 'brapf_get_group_filter', 'bapf_divi5_preview')))
                 || (! empty($_REQUEST['post_type']) && $_REQUEST['post_type'] == 'et_body_layout');
         }
         function apply_styles() {

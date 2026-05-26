@@ -32,7 +32,8 @@ class BeRocket_aapf_add_postmeta_filters {
                     'sameas' => 'custom_postmeta',
                     'optionsameas' => 'custom_taxonomy',
                     'templates' => array('checkbox', 'select'),
-                    'specific'  => array('', 'color', 'image')
+                    'specific'  => array('', 'color', 'image'),
+                    'positions' => array('10000', '20000'),
                 ),
             )
         );

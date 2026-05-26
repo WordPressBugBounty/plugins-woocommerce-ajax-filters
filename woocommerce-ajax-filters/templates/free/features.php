@@ -11,7 +11,7 @@
                 </li>
             </ul>
             <div class="homepage-buy-now-block">
-                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=first"
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=read_more_first&utm_term=filters"
                    class="button">Read more</a>
                 <a href="https://woocommerce-products-filter.berocket.com/shop/" target="_blank" rel="noopener">Demo site</a>
             </div>
@@ -43,7 +43,7 @@
                 <li>Show product filters collapsed to titles only, in-line above products, or collapsed into a button</li>
             </ul>
             <div class="homepage-buy-now-block">
-                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=second"
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=read_more_second&utm_term=filters"
                    class="button">Read more</a>
                 <a href="https://woocommerce-products-filter.berocket.com/product-category/chocolates/" target="_blank" rel="noopener">Demo site</a>
             </div>
@@ -71,7 +71,7 @@
                 <li class="business">Shortcode for <b>custom H1</b></li>
             </ul>
             <div class="homepage-buy-now-block">
-                <a href="https://berocket.com/woocommerce-ajax-products-filter/?utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=business1"
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=business1&utm_term=filters"
                    class="button">Read more</a>
                 <a href="https://woocommerce-products-filter.berocket.com/shop/filters/price/465_1913/color/red/" target="_blank" rel="noopener">Demo site</a>
             </div>
@@ -90,7 +90,7 @@
                 <li class="business">Line chart of price filter with most used ranges</li>
             </ul>
             <div class="homepage-buy-now-block">
-                <a href="https://berocket.com/woocommerce-ajax-products-filter/?utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=business2"
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=business2&utm_term=filters"
                    class="button">Read more</a>
             </div>
         </div>
@@ -108,7 +108,7 @@
                 <li>Customise your filter pointer word and URL structure in a few clicks</li>
             </ul>
             <div class="homepage-buy-now-block">
-                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=third"
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=read_more_third&utm_term=filters"
                    class="button">Read more</a>
                 <a href="https://woocommerce-products-filter.berocket.com/shop/filters/price/465_1913/color/red/" target="_blank" rel="noopener">Demo site</a>
             </div>
@@ -133,7 +133,7 @@
                 <li>Together with the Custom Slug add-on, you can use the same filter multiple times with different values on the same page</li>
             </ul>
             <div class="homepage-buy-now-block">
-                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=fourth"
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=read_more_fourth&utm_term=filters"
                    class="button">Read more</a>
                 <a href="https://woocommerce-products-filter.berocket.com/product-category/all-products/" target="_blank" rel="noopener">Demo site</a>
             </div>
@@ -159,7 +159,7 @@
                 <li>An image filter works excellent here, but any other filter layouts can be used as well</li>
             </ul>
             <div class="homepage-buy-now-block">
-                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=fifth"
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=read_more_fifth&utm_term=filters"
                    class="button">Read more</a>
                 <a href="https://woocommerce-products-filter.berocket.com/woocommerce-products-filter-demo-5/" target="_blank" rel="noopener">Demo site</a>
             </div>
@@ -184,7 +184,7 @@
                 <li>Show hidden values under the Show Values button, hide empty filters, hide user-selected values, and/or show only the first X values</li>
             </ul>
             <div class="homepage-buy-now-block">
-                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=sixth"
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=read_more_sixth&utm_term=filters"
                    class="button">Read more</a>
                 <a href="https://woocommerce-products-filter.berocket.com/shop/" target="_blank" rel="noopener">Demo site</a>
             </div>
@@ -209,7 +209,7 @@
                 <li>Sliders take up much less space and can be used for text and number values</li>
             </ul>
             <div class="homepage-buy-now-block">
-                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=seventh"
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=read_more_seventh&utm_term=filters"
                    class="button">Read more</a>
                 <a href="https://woocommerce-products-filter.berocket.com/woocommerce-products-filter-demo-2/" target="_blank" rel="noopener">Demo site</a>
             </div>
@@ -235,7 +235,7 @@
                     will get as a result of his selection</li>
             </ul>
             <div class="homepage-buy-now-block">
-                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=eighth"
+                <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=read_more_eighth&utm_term=filters"
                    class="button">Read more</a>
                 <a href="https://woocommerce-products-filter.berocket.com/product-category/all-products/" target="_blank" rel="noopener">Demo site</a>
             </div>
@@ -254,9 +254,9 @@
     </div>
 
     <div class="buy-now-block homepage-buy-now-block">
-        <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=nineth#buy_now"
+        <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=read_more_nineth&utm_term=filters#buy_now"
            class="button">Buy now with up to 62% discount</a>
-        <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=free_plugin&utm_medium=upgrade&utm_campaign=ajax_filters&utm_content=read_more&utm_term=tenth" target="_blank" rel="noopener">Read more</a>
+        <a href="https://berocket.com/woocommerce-ajax-products-filter/?coupon=pfum3vap&utm_source=plugin&utm_medium=upgrade_page&utm_campaign=upgrade&utm_content=read_more_tenth&utm_term=filters" target="_blank" rel="noopener">Read more</a>
     </div>
 </div>
 <style>

@@ -7,7 +7,7 @@ $compatibility_features = array(
     ),
 //Builder compatibility
     'DiviBuilder' => array(
-        'check' => defined('ET_CORE_VERSION'),
+        'check' => defined('ET_CORE_VERSION') && ( ! function_exists('et_builder_d5_enabled') || ! et_builder_d5_enabled() ),
         'file' => 'divi-theme-builder.php'
     ),
     'DiviBuilder5' => array(

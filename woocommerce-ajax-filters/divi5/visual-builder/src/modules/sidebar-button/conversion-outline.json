@@ -1,0 +1,13 @@
+{
+  "advanced": {
+    "admin_label": "module.meta.adminLabel",
+    "background": "module.decoration.background",
+    "disabled_on": "module.decoration.disabledOn",
+    "module": "module.advanced.htmlAttributes"
+  },
+  "module": {
+    "theme": "theme.innerContent.*",
+    "icon-theme": "icon-theme.innerContent.*",
+    "title": "title.innerContent.*"
+  }
+}

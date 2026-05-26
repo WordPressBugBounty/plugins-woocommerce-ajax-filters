@@ -80,6 +80,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
             'key'               => '',
             'name'              => '',
             'plugin_name'       => 'ajax_filters',
+            'plugin_sku'        => 'filters',
             'full_name'         => 'WooCommerce AJAX Products Filter',
             'norm_name'         => 'Product Filters',
             'price'             => '',
@@ -195,7 +196,17 @@ class BeRocket_AAPF extends BeRocket_Framework {
             update_option($this->values['settings_name'], $option_fix);
             unset($option_fix);
         }
-        $this->feature_list = array();
+        $this->feature_list = array(
+			'Intelligent One-Click Filters',
+			'SEO-Friendly & Nice URLs',
+			'Mobile-Friendly Floating Filters',
+			'Filter Usage Statistics',
+			'Advanced Filter Styles & Layouts',
+			'Faster Product Search Experience',
+			'Color, Image & Slider Filters',
+			'Custom Taxonomies & Stock Filters',
+			'Show Variation Images & Prices',
+        );
         $this->framework_data['fontawesome_frontend'] = true;
         $this->active_libraries = apply_filters('bapf_active_libraries', array('addons', 'feature', 'tippy', 'popup', 'tutorial'));
 
@@ -249,6 +260,9 @@ class BeRocket_AAPF extends BeRocket_Framework {
                     }
 
                     add_action( 'divi_extensions_init', array($this, 'divi_extensions_init') );
+                    add_action( 'et_builder_ready', array($this, 'divi_initialize_current_modules') );
+                    add_action( 'divi_module_library_modules_dependency_tree', array($this, 'divi_initialize_divi5_modules') );
+                    add_action( 'divi_visual_builder_assets_before_enqueue_scripts', array($this, 'divi_enqueue_divi5_assets') );
                     add_action( 'admin_init', array( $this, 'admin_init' ) );
                     add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
                     add_action( 'init', array( $this, 'create_metadata_table' ), 999999999 );
@@ -817,7 +831,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                         "value"     => $this->defaults["products_holder_id"],
                         "class"     => "berocket_aapf_products_selector",
                         "tr_class"  => "berocket_disable_ajax_loading_hide",
-                        'label_for' => '<br>' . __("Selector for a tag that is holding products. Don't change it if you don't know what it is", 'BeRocket_AJAX_domain'),
+                        'label_for' => __("Selector for a tag that is holding products. Don't change it if you don't know what it is", 'BeRocket_AJAX_domain'),
                     ),
                     'result_count' => array(
                         "label"     => __( 'Products Quantity Selector', "BeRocket_AJAX_domain" ),
@@ -827,7 +841,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                                 "name"      => 'woocommerce_result_count_class',
                                 "value"     => $this->defaults["woocommerce_result_count_class"],
                                 "class"     => "berocket_aapf_product_count_selector",
-                                'label_for' => '<br>' . __('Selector for a tag with product result count("Showing 1–8 of 61 results"). Don\'t change it if you don\'t know what it is', 'BeRocket_AJAX_domain') . '<br>',
+                                'label_for' => __('Selector for a tag with product result count("Showing 1–8 of 61 results"). Don\'t change it if you don\'t know what it is', 'BeRocket_AJAX_domain') . '<br>',
                             ),
                         ),
                         "tr_class"  => "berocket_disable_ajax_loading_hide"
@@ -839,7 +853,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                                 "type"      => "text",
                                 "name"      => 'woocommerce_ordering_class',
                                 "value"     => $this->defaults["woocommerce_ordering_class"],
-                                'label_for' => '<br>' . __("Selector for order by form with drop-down menu. Don't change it if you don't know what it is", 'BeRocket_AJAX_domain') . '<br>',
+                                'label_for' => __("Selector for order by form with drop-down menu. Don't change it if you don't know what it is", 'BeRocket_AJAX_domain') . '<br>',
                             ),
                             'control_sorting' => array(
                                 "label"     => __( 'Sorting drop-down control', "BeRocket_AJAX_domain" ),
@@ -859,7 +873,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                                 "name"      => 'woocommerce_pagination_class',
                                 "value"     => $this->defaults["woocommerce_pagination_class"],
                                 "class"     => "berocket_aapf_pagination_selector",
-                                'label_for' => '<br>' . __("Selector for a tag that is holding products. Don't change it if you don't know what it is", 'BeRocket_AJAX_domain') . '<br>',
+                                'label_for' => __("Selector for a tag that is holding products. Don't change it if you don't know what it is", 'BeRocket_AJAX_domain') . '<br>',
                             ),
                             'pagination_ajax' => array(
                                 "type"      => "checkbox",
@@ -1397,7 +1411,8 @@ class BeRocket_AAPF extends BeRocket_Framework {
             }
         }
         $templates = braapf_convert_filter_styles_to_templates($sfa_styles, 'br_filters_options[selected_filters_template]', $style_setting);
-        $html .= '<div class="braapf_templates_list_sfa">';
+	    $templates = apply_filters( 'brfr_filters_settings_item_selected_filters_template_custom', $templates );
+		$html .= '<div class="braapf_templates_list_sfa">';
         foreach($templates as $template_slug => $template_data) {
             $html .= '<div class="braapf_template_'.$template_data['template'].'_'.$template_data['specific'].'">';
                 $template_name = br_get_value_from_array($templates_data, array($template_data['template'], (empty($template_data['specific']) ? 0 : $template_data['specific'])));
@@ -1696,6 +1711,7 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
     function ajax_functions() {
         add_action( 'setup_theme', array( $this, 'WPML_fix' ) );
         add_action( "wp_ajax_aapf_color_set", array ( 'BeRocket_AAPF_Widget_functions', 'color_listener' ) );
+        add_action( 'wp_ajax_bapf_divi5_preview', array( $this, 'divi5_preview_ajax' ) );
         BeRocket_AAPF_Widget_functions::br_widget_ajax_set();
     }
     function not_ajax_functions() {
@@ -2663,9 +2679,126 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
         do_action('bapf_wp_footer');
     }
     public function divi_extensions_init() {
-        if( class_exists('DiviExtension') ) {
+        if( class_exists('DiviExtension') && ! $this->is_divi5_enabled() ) {
             include_once dirname( __FILE__ ) . '/divi/includes/FiltersExtension.php';
         }
+    }
+    public function divi_initialize_current_modules() {
+        if( class_exists('ET_Builder_Module') && ! $this->is_divi5_enabled() ) {
+            require_once dirname( __FILE__ ) . '/divi/includes/loader.php';
+        }
+    }
+    public function divi_initialize_divi5_modules( $dependency_tree ) {
+        if( $this->is_divi5_enabled() && class_exists('ET\Builder\Packages\ModuleLibrary\ModuleRegistration') ) {
+            require_once dirname( __FILE__ ) . '/divi5/includes/loader.php';
+            bapf_divi5_register_modules( $dependency_tree );
+        }
+    }
+    public function divi_enqueue_divi5_assets() {
+        if( ! $this->is_divi5_enabled() || ! class_exists('ET\Builder\VisualBuilder\Assets\PackageBuildManager') ) {
+            return;
+        }
+
+        $asset_path = plugin_dir_path( __FILE__ ) . 'divi5/visual-builder/build/woocommerce-ajax-products-filter-divi5.js';
+        if( ! file_exists( $asset_path ) ) {
+            return;
+        }
+
+        \ET\Builder\VisualBuilder\Assets\PackageBuildManager::register_package_build(
+            array(
+                'name'    => 'woocommerce-ajax-products-filter-divi5-visual-builder',
+                'version' => BeRocket_AJAX_filters_version . '-' . filemtime( $asset_path ),
+                'script'  => array(
+                    'src'                => add_query_arg(
+                        array(
+                            'bapf_ajax_url' => rawurlencode( admin_url( 'admin-ajax.php' ) ),
+                            'bapf_action'   => 'bapf_divi5_preview',
+                            'bapf_nonce'    => wp_create_nonce( 'bapf_divi5_preview' ),
+                            'bapf_filters'  => rawurlencode( wp_json_encode( $this->divi5_get_select_options( 'br_product_filter', __( '--Please create filter first--', 'BeRocket_AJAX_domain' ) ) ) ),
+                            'bapf_groups'   => rawurlencode( wp_json_encode( $this->divi5_get_select_options( 'br_filters_group', __( '--Please create group first--', 'BeRocket_AJAX_domain' ), array( '0' => __( 'Build In Divi', 'BeRocket_AJAX_domain' ) ) ) ) ),
+                            'bapf_build'    => filemtime( $asset_path ),
+                        ),
+                        plugin_dir_url( __FILE__ ) . 'divi5/visual-builder/build/woocommerce-ajax-products-filter-divi5.js'
+                    ),
+                    'deps'               => array( 'divi-module-library', 'divi-vendor-wp-hooks' ),
+                    'enqueue_top_window' => false,
+                    'enqueue_app_window' => true,
+                ),
+            )
+        );
+    }
+    public function divi5_get_select_options( $post_type, $empty_label, $prepend = array() ) {
+        $query = new WP_Query(array('post_type' => $post_type, 'nopaging' => true, 'fields' => 'ids'));
+        $posts = $query->get_posts();
+        $options = is_array($prepend) ? $prepend : array();
+
+        if ( is_array($posts) && count($posts) ) {
+            foreach($posts as $post_id) {
+                $options[strval($post_id)] = get_the_title($post_id) . ' (ID:' . $post_id . ')';
+            }
+        } elseif( empty($options) ) {
+            $options = array('0' => $empty_label);
+        }
+
+        return $options;
+    }
+    public function divi5_preview_ajax() {
+        if( ! check_ajax_referer( 'bapf_divi5_preview', 'nonce', false ) ) {
+            wp_send_json_error( array( 'message' => __( 'Security check failed.', 'BeRocket_AJAX_domain' ) ), 403 );
+        }
+
+        if( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_pages' ) && ! current_user_can( 'edit_theme_options' ) ) {
+            wp_send_json_error( array( 'message' => __( 'You do not have permission to preview this module.', 'BeRocket_AJAX_domain' ) ), 403 );
+        }
+
+        $module_name = empty( $_POST['module'] ) ? '' : sanitize_text_field( wp_unslash( $_POST['module'] ) );
+        $attrs_json  = empty( $_POST['attrs'] ) ? '{}' : wp_unslash( $_POST['attrs'] );
+        $attrs       = json_decode( $attrs_json, true );
+        $filters_json = empty( $_POST['filters'] ) ? '[]' : wp_unslash( $_POST['filters'] );
+        $filters      = json_decode( $filters_json, true );
+
+        if( ! is_array( $attrs ) ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid module attributes.', 'BeRocket_AJAX_domain' ) ), 400 );
+        }
+
+        if( is_array( $filters ) && ! empty( $filters ) ) {
+            $attrs['filters'] = array_values(
+                array_filter(
+                    array_map(
+                        function( $filter ) {
+                            if( is_numeric( $filter ) ) {
+                                return absint( $filter );
+                            }
+
+                            if( is_string( $filter ) && preg_match( '/(?:ID:)?\s*(\d+)/', $filter, $matches ) ) {
+                                return absint( $matches[1] );
+                            }
+
+                            return 0;
+                        },
+                        $filters
+                    )
+                )
+            );
+        }
+
+        require_once plugin_dir_path( __FILE__ ) . 'divi5/includes/modules.php';
+        require_once plugin_dir_path( __FILE__ ) . 'divi5/includes/ModuleRenderer.php';
+
+        $module = bapf_divi5_get_modules( $module_name );
+        if( empty( $module ) ) {
+            wp_send_json_error( array( 'message' => __( 'Unknown Divi module.', 'BeRocket_AJAX_domain' ) ), 404 );
+        }
+
+        $renderer = new BAPF_Divi5_Module_Renderer( $module );
+        wp_send_json_success(
+            array(
+                'html' => $renderer->render_module( $attrs ),
+            )
+        );
+    }
+    public function is_divi5_enabled() {
+        return function_exists('et_builder_d5_enabled') && et_builder_d5_enabled();
     }
     public function activation() {
         include_once(__DIR__ . "/includes/admin_settings/functions.php");
