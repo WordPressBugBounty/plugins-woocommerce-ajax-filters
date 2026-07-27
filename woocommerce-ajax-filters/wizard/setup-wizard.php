@@ -41,6 +41,11 @@ if( ! class_exists('BeRocket_Setup_Wizard_v2') ) {
             if ( empty( $_GET['page'] ) || $this->page_id !== $_GET['page'] ) {
                 return;
             }
+            // This runs on admin_init, before admin.php performs its menu
+            // capability check, so enforce the wizard capability explicitly.
+            if (!current_user_can('manage_woocommerce')) {
+                wp_die(esc_html__('Sorry, you are not allowed to access this page.'), '', array('response' => 403));
+            }
             do_action('before_wizard_run_'.$this->page_id, $this);
             $this->step = isset( $_GET['step'] ) ? sanitize_key( $_GET['step'] ) : current( array_keys( $this->steps ) );
 
@@ -97,7 +102,7 @@ if( ! class_exists('BeRocket_Setup_Wizard_v2') ) {
                 var brwiz_admin_ajax_url = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
                 </script>
             </head>
-            <body class="wp-admin wp-core-ui js">
+            <body class="wp-admin wp-core-ui js br-setup-step-<?php echo esc_attr( sanitize_html_class( $this->step ) ); ?>">
                 <div class="br_framework_settings br_setup_wizard">
                     <div class="body">
             <?php
@@ -109,7 +114,7 @@ if( ! class_exists('BeRocket_Setup_Wizard_v2') ) {
         public function setup_wizard_footer() {
             ?>
                         <div class="br_setup_wizard_bottom_links"><?php
-                            if ( $this->step != 'wizard_end' ) {
+                            if ( $this->step != 'wizard_end' && empty( $this->steps[$this->step]['hide_skip_link'] ) ) {
                                 ?>
                             <a class="wc-return-to-dashboard" href="<?php echo esc_url( $this->get_next_step_link() ); ?>"><?php
                                 esc_html_e( 'Skip this step', 'BeRocket_domain' ); ?></a>

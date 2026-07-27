@@ -190,7 +190,18 @@ class BeRocket_aapf_variations_tables {
                     foreach($attributes as $attribute) {
                         $term = get_term_by('slug', $attribute, $taxonomy);
                         if( $term !== false ) {
-                            $sql = "INSERT IGNORE INTO {$wpdb->prefix}braapf_product_variation_attributes (post_id, parent_id, meta_key, meta_value_id, stock_status) VALUES({$product_id}, {$parent_id}, '{$taxonomy}', {$term->term_id}, '{$stock_status}')";
+                            $table = $wpdb->prefix . 'braapf_product_variation_attributes';
+
+                            $sql = $wpdb->prepare(
+                                "INSERT IGNORE INTO {$table}
+                                (post_id, parent_id, meta_key, meta_value_id, stock_status)
+                                VALUES (%d, %d, %s, %d, %d)",
+                                $product_id,
+                                $parent_id,
+                                $taxonomy,
+                                $term->term_id,
+                                $stock_status
+                            );
                             $wpdb->query($sql);
                         }
                     }
@@ -263,7 +274,14 @@ class BeRocket_aapf_variations_tables {
                             }
                             $term = $terms_cache[$taxonomy][$attribute];
                             if( $term !== false ) {
-                                $insert_values[] = "({$child_id}, {$product_id}, '{$taxonomy}', {$term->term_id}, '{$stock_status}')";
+                                $insert_values[] = $wpdb->prepare(
+                                    "(%d, %d, %s, %d, %d)",
+                                    $child_id,
+                                    $product_id,
+                                    $taxonomy,
+                                    $term->term_id,
+                                    $stock_status
+                                );
                             }
                         }
                     }
@@ -281,7 +299,11 @@ class BeRocket_aapf_variations_tables {
             if( is_array($product_attribute) ) {
                 foreach($product_attribute as $attribute) {
                     if( ! empty($attribute['is_variation']) ) {
-                        $insert_values[] = "({$product_id}, '".$attribute['name']."')";
+                        $insert_values[] = $wpdb->prepare(
+                            "(%d, %s)",
+                            $product_id,
+                            $attribute['name']
+                        );
                     }
                 }
             }

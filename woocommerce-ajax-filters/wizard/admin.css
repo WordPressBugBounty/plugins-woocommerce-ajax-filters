@@ -227,6 +227,7 @@ h4 {
     min-height: 400px;
     padding: 0 30px 20px 30px;
     width: 100%;
+    position: relative;
 }
 
 .br_framework_settings .body ul.side li {

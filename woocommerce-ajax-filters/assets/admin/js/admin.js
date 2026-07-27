@@ -368,7 +368,7 @@ function br_widget_set() {
         jQuery(this).parent().animate({'left': -2-parseInt(jQuery(this).position().left)}, 250);
 
         $device_selection = jQuery(this).closest('label').next();
-        $top = jQuery(this).data('device') == 'desktop' ? 0 : jQuery(this).data('device') == 'tablet' ? 28 : 56;
+        $top = jQuery(this).data('device') == 'desktop' ? 0 : jQuery(this).data('device') == 'tablet' ? 34 : 70;
         $device_selection.find('> div').animate({'top': -$top}, 250);
         jQuery(this).parent().parent().removeClass('active');
     });

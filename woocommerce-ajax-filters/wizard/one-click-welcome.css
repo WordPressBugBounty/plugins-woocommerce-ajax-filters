@@ -1,0 +1,306 @@
+.br-setup-step-wizard_one_click_welcome .br_framework_settings .body ul.side {
+    display: none;
+}
+
+.br-setup-step-wizard_one_click_welcome .br_framework_settings .body .content {
+    max-width: 900px;
+    margin: 20px auto 0;
+    padding-bottom: 50px;
+}
+.br-setup-step-wizard_one_click_welcome .br_framework_settings .body .content + .br_setup_wizard_bottom_links {
+    right: 200px;
+}
+
+.brapf-one-click-card {
+    box-sizing: border-box;
+    padding: 48px;
+    border: 1px solid #d9e2ea;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgba(44, 59, 72, .08);
+}
+
+.brapf-one-click-filter-list-page {
+    max-width: 900px;
+    margin: 20px 20px 20px 0;
+}
+
+.brapf-one-click-filter-list-page--pending {
+    display: none;
+}
+
+.wp-list-table .no-items .brapf-one-click-filter-list-page {
+    width: 100%;
+    max-width: 900px;
+    margin: 20px auto;
+    text-align: left;
+}
+
+.wp-list-table .no-items > td:has(.brapf-one-click-filter-list-page) {
+    padding: 0;
+}
+
+.brapf-one-click-kicker {
+    color: #2271b1;
+    font-weight: 600;
+}
+
+.brapf-one-click-kicker .fa {
+    margin-right: 7px;
+}
+
+.brapf-one-click-card h1 {
+    max-width: 650px;
+    margin: 12px 0 14px;
+    padding: 0 !important;
+    color: #1d2d3d;
+    font-size: 32px;
+    line-height: 1.2;
+}
+
+.brapf-one-click-summary {
+    color: #52616f !important;
+    font-size: 18px !important;
+}
+
+/* This UI is also rendered on the Filters list, where paid-only assets may
+ * not be available. Keep the store-type control self-contained here. */
+.brapf-one-click-card .brapf-store-type-control:not(.brapf-store-type-control--locked) {
+    float: none !important;
+    margin: 18px 0 0;
+    padding: 0;
+    border: 0;
+}
+
+.brapf-one-click-card .brapf-store-type-control:not(.brapf-store-type-control--locked) legend {
+    margin-bottom: 6px;
+    padding: 0;
+    color: #1d2d3d;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.brapf-one-click-card .brapf-store-type-control:not(.brapf-store-type-control--locked) select {
+    display: block;
+    width: 100%;
+    max-width: 360px;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 28px 0 8px;
+    background-color: #f6f7f7 !important;
+    background-repeat: no-repeat !important;
+    background-position: right 8px center !important;
+}
+
+.brapf-one-click-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 45px;
+    margin: 35px 0 20px;
+    padding: 28px 0;
+    border-top: 1px solid #edf0f2;
+    border-bottom: 1px solid #edf0f2;
+    clear: both;
+}
+
+.brapf-one-click-columns h2 {
+    margin: 0 0 15px;
+    padding: 0 !important;
+    color: #1d2d3d;
+    font-size: 17px;
+}
+
+.brapf-one-click-recommendations {
+    margin: 0;
+}
+
+.brapf-one-click-recommendations li {
+    margin: 0 0 10px;
+}
+
+.brapf-one-click-recommendations .fa {
+    display: inline-block;
+    width: 20px;
+    color: #00a32a;
+}
+
+.brapf-one-click-recommendations .brapf-one-click-recommendation--locked {
+    color: #6c4e00;
+}
+
+.brapf-one-click-recommendations .brapf-one-click-recommendation--locked .fa {
+    color: #dba617;
+}
+
+.brapf-one-click-upgrade-link {
+    font-weight: 600;
+}
+
+.brapf-one-click-card .brapf-store-type-control--locked {
+    margin: 18px 0 0 !important;
+    padding: 14px 16px !important;
+    border: 1px solid #ead49b;
+    border-radius: 6px;
+    background: #fffaf0;
+}
+
+.brapf-one-click-card .brapf-store-type-control--locked legend {
+    padding: 0 4px !important;
+    color: #1d2d3d !important;
+    font-size: 17px !important;
+    font-weight: 600 !important;
+}
+
+.brapf-one-click-card .brapf-store-type-control--locked select {
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    min-width: 220px;
+    color: #50575e;
+}
+
+.brapf-one-click-upgrade-copy,
+.brapf-one-click-mobile-upgrade {
+    margin: 10px 0 0 !important;
+    color: #5e4b17 !important;
+    padding-bottom: 0;
+}
+
+.brapf-one-click-mobile-upgrade {
+    padding: 10px 12px;
+    border-left: 3px solid #dba617;
+    background: #fffaf0;
+}
+
+.brapf-one-click-placement {
+    margin: 0;
+}
+
+.brapf-one-click-placement div {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.brapf-one-click-placement dt {
+    color: #52616f;
+}
+
+.brapf-one-click-placement dd {
+    margin: 0;
+    color: #1d2d3d;
+    font-weight: 600;
+    text-align: right;
+}
+
+.brapf-one-click-placement dd small {
+    display: block;
+    margin-top: 4px;
+    color: #8a4b00;
+    font-weight: 400;
+}
+
+.brapf-one-click-note {
+    color: #52616f;
+}
+
+.brapf-one-click-update-preview {
+    margin: 24px 0 0;
+    padding: 14px 18px;
+    border-left: 3px solid #2271b1;
+    background: #f0f6fc;
+}
+
+.brapf-one-click-update-preview h2,
+.brapf-one-click-update-preview p {
+    margin: 0 0 8px;
+}
+
+.brapf-one-click-update-preview ul {
+    margin: 0 0 0 18px;
+    list-style: disc;
+}
+
+.brapf-one-click-progress-bar {
+    width: 100%;
+    height: 10px;
+    overflow: hidden;
+    border-radius: 6px;
+    background: #dcdcde;
+}
+
+.brapf-one-click-progress-bar span {
+    display: block;
+    height: 100%;
+    transition: width .25s ease;
+    background: #2271b1;
+}
+
+.brapf-one-click-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 30px;
+}
+
+.brapf-one-click-actions .button[disabled] {
+    cursor: not-allowed;
+    opacity: .65;
+}
+
+.brapf-one-click-actions .button.brapf-one-click-is-loading {
+    pointer-events: none;
+}
+
+.brapf-one-click-button-spinner {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    margin: -2px 7px 0 0;
+    vertical-align: middle;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: brapf-one-click-spinner .7s linear infinite;
+}
+
+@keyframes brapf-one-click-spinner {
+    to { transform: rotate(360deg); }
+}
+
+.brapf-one-click-access-notice {
+    margin: 18px 0 0;
+    color: #50575e;
+}
+
+.brapf-one-click-actions .button-hero {
+    height: auto;
+    padding: 10px 18px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.brapf-one-click-actions .button-hero .fa {
+    margin-right: 8px;
+}
+
+@media (max-width: 700px) {
+    .brapf-one-click-card {
+        padding: 28px;
+    }
+
+    .brapf-one-click-columns {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .brapf-one-click-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .brapf-one-click-actions .button {
+        text-align: center;
+    }
+}

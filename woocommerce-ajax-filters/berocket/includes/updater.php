@@ -600,6 +600,19 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             <div class="wrap">
                 <form method="post" action="options.php" class="account_key_send br_framework_settings">
                     <?php
+                    if ( ! empty( $_POST[ 'BeRocket_account_option' ] ) and
+                         ( is_super_admin() or ! is_network_admin() and current_user_can( 'manage_options' ) ) and
+                         ! empty( $_POST['_wpnonce'] ) and
+                         wp_verify_nonce( $_POST['_wpnonce'], 'BeRocket_account_option_settings-options' )
+                    ) {
+	                    $previous_options = BeRocket_Framework::get_global_option();
+	                    $option = berocket_sanitize_array( $_POST[ 'BeRocket_account_option' ], array('BeRocket_account_option'), $previous_options );
+	                    BeRocket_Framework::save_global_option($option);
+	                    self::update_check_set('');
+	                    delete_site_transient( 'update_plugins' );
+	                    delete_transient('berocket_plugin_paid_info');
+                    }
+
                     $options = BeRocket_Framework::get_global_option();
                     self::inside_form( $options );
                     ?>
@@ -614,7 +627,11 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             <div class="wrap">
                 <form method="post" action="edit.php?page=berocket_account" class="account_key_send br_framework_settings">
                     <?php
-                    if ( isset( $_POST[ 'BeRocket_account_option' ] ) ) {
+                    if ( ! empty( $_POST[ 'BeRocket_account_option' ] ) and
+                         ( is_super_admin() or ! is_network_admin() and current_user_can( 'manage_options' ) ) and
+                         ! empty( $_POST['_wpnonce'] ) and
+                         wp_verify_nonce( $_POST['_wpnonce'], 'BeRocket_account_option_settings-options' )
+                    ) {
                         $previous_options = BeRocket_Framework::get_global_option(true);
                         $option = berocket_sanitize_array( $_POST[ 'BeRocket_account_option' ], array('BeRocket_account_option'), $previous_options );
                         BeRocket_Framework::save_global_option($option, true);

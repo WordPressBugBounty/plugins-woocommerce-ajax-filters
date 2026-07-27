@@ -4,8 +4,8 @@ Contributors: dholovnia, berocket
 Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=donate&utm_campaign=ajax_filters
 Tags: product filters, ajax product filters, woocommerce filters, wc filters, category filter
 Requires at least: 5.0
-Tested up to: 7.0
-Stable tag: 3.2.0.3
+Tested up to: 7.0.2
+Stable tag: 3.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -177,6 +177,21 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Changelog ==
+= 3.2.1 =
+* New: Set up relevant product filters in one click from the setup wizard or the empty Product Filters page.
+* New: One-click setup analyzes the catalog and recommends useful filters such as Price, Categories, Brands, Color, Size, Availability, On sale, Rating, and Tags.
+* New: One-click setup creates responsive desktop and mobile filter groups while reusing the same filter definitions.
+* New: Improved automatic placement detection for shop sidebars, with reliable plugin-controlled fallbacks.
+* New: Pro and Business store type presets: Fashion, Electronics, Furniture, Auto parts, Cosmetics, and General store.
+* New: Smooth Check filter style for Pro and Business.
+* Improved: One-click Categories use the Smooth Check style in Pro and Business, with Grey Check fallback in Free.
+* Improved: Better default styles for color, brand, checkbox, price, and category filters created through one-click setup.
+* Improved: Faster and more reliable Additional Tables generation for large catalogs.
+* Improved: Better handling of existing one-click filters and groups without duplicate filter definitions.
+* Security: Hardened Product Filter editor output against stored cross-site scripting.
+* Security: Hardened Additional Tables attribute handling against SQL injection.
+* Security: Hardened WPBakery compatibility output against reflected cross-site scripting.
+* Fix: Prevented Additional Tables generation status from repeatedly resetting during generation.
 
 = 3.2.0.3 =
 * Enhancement - Compatibility version: Wordpress 7.0

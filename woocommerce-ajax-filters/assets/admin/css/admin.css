@@ -712,7 +712,7 @@ td.br_colorpicker_field.colorpicker_removed:after {
 }
 #conditions .section_conditions_hide_this_on {
     background-color: white;
-    padding-bottom: 6px;
+    padding: 3px 9px 6px;
     margin-left: 0;
     margin-right: 0;
 }

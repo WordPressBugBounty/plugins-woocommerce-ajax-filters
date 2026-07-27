@@ -78,6 +78,7 @@ if ( isset($this->plugin_version_capability) && $this->plugin_version_capability
             <h3>OUR NEWSLETTER</h3>
             <p>Get awesome content delivered straight to your inbox.</p>
             <input type="hidden" name="berocket_action" value="berocket_subscribe_email">
+            <input type="hidden" name="wp_nonce" value="<?php echo wp_create_nonce('berocket_subscribe_email'); ?>">
             <input class="berocket_subscribe_email" type="email" name="email" placeholder="Enter your email address" value="<?php echo $user_email; ?>">
             <p class="error" style="display: none;">Incorrect EMail. Please check it and try again</p>
             <input type="submit" class="button-primary button berocket_notice_submit" value="SUBSCRIBE">

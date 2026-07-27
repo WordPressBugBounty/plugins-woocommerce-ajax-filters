@@ -1,0 +1,335 @@
+/* MIXINS */
+@mixin icon-background($theme, $property) {
+  .berocket_ajax_filters_toggle.theme-#{$theme} span i,
+  .berocket_ajax_filters_toggle.theme-#{$theme} span i:after,
+  .berocket_ajax_filters_toggle.theme-#{$theme} span i:before,
+  .berocket_ajax_filters_toggle.theme-#{$theme}:hover i,
+  .berocket_ajax_filters_toggle.theme-#{$theme}:hover i:after,
+  .berocket_ajax_filters_toggle.theme-#{$theme}:hover i:before,
+  .berocket_ajax_filters_toggle.theme-#{$theme}.active i,
+  .berocket_ajax_filters_toggle.theme-#{$theme}.active i:after,
+  .berocket_ajax_filters_toggle.theme-#{$theme}.active i:before{
+    background-color: $property;
+  }
+}
+@mixin icon-border($theme, $property, $property2) {
+  .berocket_ajax_filters_toggle.theme-#{$theme} span b,
+  .berocket_ajax_filters_toggle.theme-#{$theme} span b:after,
+  .berocket_ajax_filters_toggle.theme-#{$theme} span b:before,
+  .berocket_ajax_filters_toggle.theme-#{$theme}:hover b,
+  .berocket_ajax_filters_toggle.theme-#{$theme}:hover b:after,
+  .berocket_ajax_filters_toggle.theme-#{$theme}:hover b:before,
+  .berocket_ajax_filters_toggle.theme-#{$theme}.active b,
+  .berocket_ajax_filters_toggle.theme-#{$theme}.active b:after,
+  .berocket_ajax_filters_toggle.theme-#{$theme}.active b:before,
+  .berocket_ajax_filters_toggle.theme-#{$theme} span s,
+  .berocket_ajax_filters_toggle.theme-#{$theme} span s:after,
+  .berocket_ajax_filters_toggle.theme-#{$theme} span s:before,
+  .berocket_ajax_filters_toggle.theme-#{$theme}:hover s,
+  .berocket_ajax_filters_toggle.theme-#{$theme}:hover s:after,
+  .berocket_ajax_filters_toggle.theme-#{$theme}:hover s:before,
+  .berocket_ajax_filters_toggle.theme-#{$theme}.active s,
+  .berocket_ajax_filters_toggle.theme-#{$theme}.active s:after,
+  .berocket_ajax_filters_toggle.theme-#{$theme}.active s:before{
+    border-color: $property2;
+    background-color: $property;
+  }
+}
+
+/* COMMON */
+.berocket_ajax_filters_toggle {
+  &,
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+
+  &,
+  * {
+    box-sizing: border-box !important;
+  }
+  span {
+    position: relative;
+    display: inline-block;
+    z-index: 20;
+  }
+}
+
+
+/* THEME 1 */
+.berocket_ajax_filters_toggle.theme-1 {
+  background: white;
+  border: 1px solid #ebebeb;
+  height: 40px;
+  line-height: 32px;
+  text-align: center;
+  padding: 1px 0;
+  font-weight: 400;
+
+  span {
+    left: -10px;
+  }
+}
+@include icon-background(1, #2a2a2a);
+
+/* THEME 2 */
+
+.berocket_ajax_filters_toggle.theme-2 {
+  background: white;
+  border: 1px solid #ebebeb;
+  height: 40px;
+  line-height: 32px;
+  text-align: center;
+  padding: 1px 0;
+  font-weight: 400;
+  box-shadow: 0 0 6px 0 #dedede;
+
+  span {
+    left: -10px;
+  }
+}
+@include icon-background(1, #2a2a2a);
+
+/* THEME 3 */
+
+.berocket_ajax_filters_toggle.theme-3 {
+  background: #ff4e3d;
+  height: 40px;
+  line-height: 32px;
+  text-align: center;
+  padding: 4px 0 4px 36px;
+  font-weight: 400;
+  color: white;
+
+  &:before {
+    background: #d43f34;
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+  }
+
+  span {
+    position: absolute;
+    left: 11px;
+    top: 1px;
+  }
+}
+
+@include icon-background(3, white);
+@include icon-border(3, #d43f34, white);
+
+/* THEME 4 */
+
+.berocket_ajax_filters_toggle.theme-4 {
+  background: white;
+  height: 40px;
+  line-height: 32px;
+  text-align: center;
+  padding: 4px 0;
+  font-weight: 400;
+  color: #79c7a5;
+  box-shadow: 0 5px 5px 0 #c7e8dbc7;
+
+  span {
+    left: -10px;
+
+    i,
+    i:after,
+    i:before{
+      border-color: #79c7a5;
+    }
+  }
+
+  &:hover {
+    span {
+      i {
+        &,
+        &:after,
+        &:before {
+          border-color: #47b585;
+        }
+      }
+    }
+  }
+}
+
+@include icon-background(4, #79c7a5);
+@include icon-border(4, white, #79c7a5);
+
+/* THEME 5 */
+
+.berocket_ajax_filters_toggle.theme-5 {
+  height: 40px;
+  line-height: 32px;
+  text-align: center;
+  padding: 4px 0;
+  font-weight: 400;
+  color: white;
+  border-radius: 20px;
+  background: rgb(101,214,208);
+  background: linear-gradient(90deg, rgba(101,214,208,1) 0%, rgba(57,180,239,1) 56%, rgba(42,161,245,1) 100%);
+
+  &:before {
+    content: '';
+    height: 34px;
+    width: 34px;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    border: 1px solid white;
+    box-sizing: border-box;
+    border-radius: 50%;
+  }
+
+  span {
+    position: absolute;
+    left: 11px;
+    top: 1px;
+  }
+}
+
+@include icon-background(5, white);
+@include icon-border(5, white, rgb(101,214,208));
+
+/* THEME 6 */
+
+.berocket_ajax_filters_toggle.theme-6 {
+  height: 50px;
+  line-height: 29px;
+  text-align: center;
+  padding: 10px 0 10px 12px;
+  font-weight: 400;
+  color: white;
+  border-radius: 6px;
+  background: #ed5153;
+  border-bottom: 4px solid #e14043;
+
+  span {
+    position: absolute;
+    left: 13px;
+    top: 5px;
+  }
+}
+
+@include icon-background(6, white);
+@include icon-border(6, #ed5153, white);
+
+/* SEVEN */
+
+.berocket_ajax_filters_toggle.theme-7 {
+  height: 50px;
+  line-height: 29px;
+  text-align: center;
+  padding: 10px 0 10px 44px;
+  font-weight: 400;
+  color: white;
+  border-radius: 6px;
+  background: #a39cff;
+  border: 0 none;
+
+  &:after {
+    content: "";
+    background: white;
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+    position: absolute;
+    width: 44px;
+    display: block;
+    z-index: 10;
+    border-radius: 6px;
+  }
+
+  span {
+    position: absolute;
+    left: 17px;
+    top: 6px;
+  }
+}
+
+@include icon-background(7, #6d5ceb);
+@include icon-border(7, white, #6d5ceb);
+
+/* EIGHT */
+
+.berocket_ajax_filters_toggle.theme-8 {
+  height: 50px;
+  line-height: 29px;
+  text-align: center;
+  padding: 10px 0 10px 12px;
+  font-weight: 400;
+  color: #333333;
+  border-radius: 6px;
+  background: white;
+  border: 0 none;
+  box-shadow: 0 2px 2px 2px #ccc;
+
+  span {
+    position: absolute;
+    left: 17px;
+    top: 5px;
+  }
+}
+@include icon-background(8, #333333);
+@include icon-border(8, white, #333333);
+
+/* NINE */
+
+.berocket_ajax_filters_toggle.theme-9 {
+  height: 50px;
+  line-height: 29px;
+  text-align: center;
+  padding: 10px 0 10px 12px;
+  font-weight: 400;
+  color: white;
+  border-radius: 6px;
+  background: rgb(79,80,85);
+  background: radial-gradient(circle, rgba(79,80,85,1) 0%, rgba(135,136,141,1) 100%);
+  border: 0 none;
+
+  span {
+    position: absolute;
+    left: 17px;
+    top: 5px;
+  }
+}
+@include icon-background(9, white);
+@include icon-border(9, rgba(135,136,141,1), white);
+
+/* TEN */
+
+.berocket_ajax_filters_toggle.theme-10 {
+  height: 50px;
+  line-height: 29px;
+  text-align: center;
+  padding: 10px 0 10px 12px;
+  font-weight: 400;
+  color: white;
+  border-radius: 8px;
+  background: #db0071;
+  border: 0 none;
+
+  &:after {
+    content: "";
+    top: 50%;
+    left: 15%;
+    right: 15%;
+    bottom: 0;
+    position: absolute;
+    display: block;
+    z-index: -1;
+    border-radius: 6px;
+    box-shadow: 0 0 35px 1px #db0071;
+  }
+
+  span {
+    position: absolute;
+    left: 17px;
+    top: 5px;
+  }
+}
+@include icon-background(10, white);
+@include icon-border(10, #db0071, white);

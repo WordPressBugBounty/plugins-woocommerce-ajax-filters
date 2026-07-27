@@ -49,6 +49,19 @@ class BeRocket_AAPF_Wizard {
             }
         }
     }
+
+    private function can_create_wizard_post( $post_type ) {
+        $post_type_object = get_post_type_object( $post_type );
+        if ( empty( $post_type_object ) || empty( $post_type_object->cap ) ) {
+            return false;
+        }
+        $capability = ! empty( $post_type_object->cap->create_posts ) ? $post_type_object->cap->create_posts : $post_type_object->cap->edit_posts;
+        return current_user_can( $capability );
+    }
+
+    private function wizard_ajax_forbidden() {
+        wp_die( 'false', '', array( 'response' => 403 ) );
+    }
     public function wp_redirect() {
         if( current_user_can( 'manage_options' ) ) {
             $redirect_to_wizard = get_option('berocket_filter_open_wizard_on_settings');
@@ -575,6 +588,9 @@ class BeRocket_AAPF_Wizard {
             echo 'false';
             wp_die();
         }
+		if ( ! current_user_can( 'install_plugins' ) || ! current_user_can( 'activate_plugins' ) ) {
+			$this->wizard_ajax_forbidden();
+		}
         $plugins_to_install = $this->get_plugins_list();
         $plugin_slug = empty($_POST['plugin']) ? '' : $_POST['plugin'];
         $status = false;
@@ -885,6 +901,9 @@ class BeRocket_AAPF_Wizard {
             if( is_array($filters) ) {
                 $is_group_posts = $this->get_wizard_group_posts();
                 $is_group_exist = count($is_group_posts) > 0;
+				if ( ( ! $is_group_exist && ! $this->can_create_wizard_post( 'br_filters_group' ) ) || ( $is_group_exist && ! current_user_can( 'edit_post', $is_group_posts[0]->ID ) ) ) {
+					$this->wizard_ajax_forbidden();
+				}
 
                 $filters_for_group = array();
                 $option = BeRocket_AAPF::get_aapf_option();
@@ -933,6 +952,9 @@ class BeRocket_AAPF_Wizard {
                 }
             }
         } elseif( $filter_slug == 'add_to_sidebar' ) {
+			if ( ! current_user_can( 'edit_theme_options' ) ) {
+				$this->wizard_ajax_forbidden();
+			}
             $sidebar = empty($_POST['value']) ? '' : $_POST['value'];
             $is_group_posts = $this->get_wizard_group_posts();
             $is_group_exist = count($is_group_posts) > 0;
@@ -962,6 +984,9 @@ class BeRocket_AAPF_Wizard {
                 }
             }
         } else {
+			if ( ! $this->can_create_wizard_post( 'br_product_filter' ) ) {
+				$this->wizard_ajax_forbidden();
+			}
             $filter_value = sanitize_text_field($_POST['value']);
             if( isset($filters_list[$filter_slug]) ) {
                 $current_filter = $filters_list[$filter_slug];

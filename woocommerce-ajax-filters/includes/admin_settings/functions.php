@@ -214,7 +214,7 @@ function bapf_settings_get_selectors_preset($wptheme = false) {
                 'products_holder_id'                => 'div.products',
                 'woocommerce_result_count_class'    => '.woocommerce-result-count',
                 'woocommerce_ordering_class'        => '.woocommerce-ordering',
-                'woocommerce_pagination_class'      => 'nav.woocommerce-pagination',
+                'woocommerce_pagination_class'      => 'nav.woocommerce-pagination, .products-footer',
                 'woocommerce_removes'               => array('pagination_ajax' => true),
             ),
             'themes' => array(

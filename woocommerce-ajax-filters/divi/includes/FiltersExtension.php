@@ -12,8 +12,9 @@ class BAPF_DiviExtension extends DiviExtension {
 		parent::__construct( $name, $args );
         add_action('wp_ajax_brapf_get_single_filter', array($this, 'get_single_filter'));
         add_action('wp_ajax_brapf_get_group_filter', array($this, 'get_group_filter'));
-	}
+    }
     public function get_single_filter() {
+        check_ajax_referer( 'bapf_divi_render', 'bapf_divi_nonce' );
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die();
         }
@@ -32,6 +33,7 @@ class BAPF_DiviExtension extends DiviExtension {
         wp_die();
     }
     public function get_group_filter() {
+        check_ajax_referer( 'bapf_divi_render', 'bapf_divi_nonce' );
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die();
         }
@@ -102,8 +104,12 @@ class BAPF_DiviExtension extends DiviExtension {
 		// Enqueue builder bundle's data.
 		if ( et_core_is_fb_enabled() && ! empty( $this->_builder_js_data ) ) {
 			wp_localize_script( "{$this->name}-builder-bundle", "{$extension_name}BuilderData", $this->_builder_js_data );
+			wp_add_inline_script( "{$this->name}-builder-bundle", $this->get_divi_nonce_script(), 'before' );
 		}
-	}
+    }
+    private function get_divi_nonce_script() {
+        return '(function(){var addNonce=function(){if(!window.et_fb_options||!window.et_fb_options.ajaxurl||window.et_fb_options.ajaxurl.indexOf("bapf_divi_nonce=")!==-1){return;}window.et_fb_options.ajaxurl+=(window.et_fb_options.ajaxurl.indexOf("?")===-1?"?":"&")+"bapf_divi_nonce="+encodeURIComponent(' . wp_json_encode( wp_create_nonce( 'bapf_divi_render' ) ) . ');};addNonce();if(window.jQuery){window.jQuery(window).on("et_builder_api_ready",addNonce);}})();';
+    }
     public static function convert_on_off($atts) {
         foreach($atts as &$attr) {
             if( $attr === 'on' || $attr === 'off' ) {

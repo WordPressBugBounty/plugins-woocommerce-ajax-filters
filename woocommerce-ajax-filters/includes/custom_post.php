@@ -512,6 +512,7 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
         return $options;
     }
     public function wc_save_product_without_check( $post_id, $post ) {
+		$this->normalize_price_ranges_on_save();
         parent::wc_save_product_without_check( $post_id, $post );
         delete_site_transient('BeRocket_products_label_style_generate');
         $instance = $_POST[$this->post_name];
@@ -590,6 +591,37 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
             $_SESSION['braapf_widget_wizard'] = true;
         }
     }
+
+    private function normalize_price_ranges_on_save() {
+		if ( empty( $_POST[ $this->post_name ] ) || ! is_array( $_POST[ $this->post_name ] ) || empty( $_POST[ $this->post_name ]['ranges'] ) || ! is_array( $_POST[ $this->post_name ]['ranges'] ) ) {
+			return;
+		}
+		if ( empty( $_POST[ $this->post_name ]['filter_type'] ) || 'attribute' !== $_POST[ $this->post_name ]['filter_type'] || empty( $_POST[ $this->post_name ]['attribute'] ) || 'price' !== $_POST[ $this->post_name ]['attribute'] ) {
+			return;
+		}
+
+		$ranges = array();
+		$labels = isset( $_POST[ $this->post_name ]['ranges_label'] ) && is_array( $_POST[ $this->post_name ]['ranges_label'] ) ? $_POST[ $this->post_name ]['ranges_label'] : array();
+		$normalized_labels = array();
+		$previous_range = -1;
+		foreach ( $_POST[ $this->post_name ]['ranges'] as $index => $range ) {
+			if ( ! is_scalar( $range ) || ! is_numeric( $range ) ) {
+				continue;
+			}
+			$range = (float) $range;
+			if ( ! is_finite( $range ) || $range <= $previous_range ) {
+				continue;
+			}
+			$ranges[] = $range;
+			if ( count( $ranges ) > 1 ) {
+				$normalized_labels[] = isset( $labels[ $index - 1 ] ) ? $labels[ $index - 1 ] : '';
+			}
+			$previous_range = $range;
+		}
+
+		$_POST[ $this->post_name ]['ranges'] = $ranges;
+		$_POST[ $this->post_name ]['ranges_label'] = $normalized_labels;
+	}
 
     public function fix_multiple_post_meta($i, $options) {
         if( is_array($options) && ! empty($options['widget_type']) ) {

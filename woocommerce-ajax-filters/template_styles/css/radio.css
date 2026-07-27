@@ -1,0 +1,19 @@
+.bapf_asradio2 ul li input[type=checkbox] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    display: inline-block;
+    vertical-align: middle;
+    border: 2px solid #555;
+    width: 15px;
+    height: 15px;
+    outline: none;
+    border-radius: 10px;
+    padding: 2px;
+    margin-right: 5px;
+}
+.bapf_asradio2 ul li input[type="checkbox"]:checked {
+    background: #555;
+    background-clip: content-box;
+}

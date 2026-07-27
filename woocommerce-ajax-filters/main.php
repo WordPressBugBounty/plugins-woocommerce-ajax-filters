@@ -446,6 +446,9 @@ class BeRocket_AAPF extends BeRocket_Framework {
         wp_register_script('braapf-single-filter-edit',
             plugins_url( '/assets/admin/js/single_filter_edit.js', BeRocket_AJAX_filters_file ),
             array('jquery', 'braapf-javascript-hide') );
+        wp_localize_script( 'braapf-single-filter-edit', 'braapf_taxonomy_preview', array(
+            'nonce' => wp_create_nonce( 'bapf_taxonomy_preview' ),
+        ) );
         wp_register_style( 'braapf-single-filter-edit',
             plugins_url( '/assets/admin/css/single_filter_edit.css', BeRocket_AJAX_filters_file ));
         

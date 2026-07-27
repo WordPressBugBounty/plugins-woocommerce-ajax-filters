@@ -1,0 +1,15 @@
+/* THEME 1 */
+#berocket-ajax-filters-sidebar.sidebar-theme-1 {
+  box-shadow: 8px 0 10px 0 #eee;
+  &.active + #berocket-ajax-filters-sidebar-shadow {
+    display: none;
+  }
+}
+
+/* THEME 2 */
+#berocket-ajax-filters-sidebar.sidebar-theme-2 {
+  box-shadow: 8px 0 10px 0 #eee;
+  &.active + #berocket-ajax-filters-sidebar-shadow {
+    background-color: white;
+  }
+}

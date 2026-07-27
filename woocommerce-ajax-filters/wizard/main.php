@@ -1,5 +1,26 @@
 <?php
 
+require_once dirname( __FILE__ ) . '/one-click-setup.php';
+require_once dirname( __FILE__ ) . '/one-click-capabilities.php';
+require_once dirname( __FILE__ ) . '/one-click-catalog-analyzer.php';
+require_once dirname( __FILE__ ) . '/one-click-attribute-analyzer.php';
+require_once dirname( __FILE__ ) . '/one-click-recommendation-ranker.php';
+require_once dirname( __FILE__ ) . '/one-click-analysis-cache.php';
+require_once dirname( __FILE__ ) . '/one-click-analysis-job.php';
+require_once dirname( __FILE__ ) . '/one-click-telemetry.php';
+require_once dirname( __FILE__ ) . '/one-click-filter-definitions.php';
+require_once dirname( __FILE__ ) . '/one-click-desktop-placement.php';
+require_once dirname( __FILE__ ) . '/one-click-mobile-placement.php';
+require_once dirname( __FILE__ ) . '/filter-recommendations.php';
+require_once dirname( __FILE__ ) . '/one-click-health-check.php';
+require_once dirname( __FILE__ ) . '/one-click-setup-rollback.php';
+require_once dirname( __FILE__ ) . '/one-click-setup-orchestrator.php';
+require_once dirname( __FILE__ ) . '/one-click-free-upgrade.php';
+require_once dirname( __FILE__ ) . '/one-click-welcome.php';
+require_once dirname( __FILE__ ) . '/one-click-filter-list-page.php';
+
+add_action('admin_init', array('BeRocket_AAPF_One_Click_Filter_Definitions', 'migrate_legacy_post_titles'), 20);
+
 if( ! class_exists('BeRocket_selector_wizard_woocommerce_v2') ) {
     class BeRocket_selector_wizard_woocommerce_v2{
         function __construct() {

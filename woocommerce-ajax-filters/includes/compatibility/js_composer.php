@@ -188,7 +188,10 @@ function bapf_wpbakery_get_all_filters() {
 function bapf_init_wpbakery_grid_filters() {
     jQuery('.brapf_wpb_replace_grid.vc_grid-container').each(function() {
         var data = jQuery(this).data('vc-grid-settings');
-        data.brfilter = "<?php echo $data['fullline']; ?>";
+        data.brfilter = <?php echo wp_json_encode(
+            (string) $data['fullline'],
+            JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        ); ?>;
         data.brfilter_list = bapf_wpbakery_get_all_filters();
         jQuery(this).data('vc-grid-settings', data);
     });
@@ -244,4 +247,3 @@ if ( typeof(berocket_add_filter) == 'function' ) {
     }
     new BeRocket_AAPF_compat_js_composer();
 }
-    

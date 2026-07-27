@@ -86,10 +86,10 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                             echo '<option';
                             foreach($data as $data_key => $data_val) {
                                 if( $data_val !== "" ) {
-                                    echo ' data-'.$data_key.'="'.$data_val.'"';
+                                    echo ' data-'.esc_attr($data_key).'="'.esc_attr($data_val).'"';
                                 }
                             }
-                            echo ( $attribute == $value ? ' selected' : '' ) . ' value="' . $value . '">' . $data['name'] . '</option>';
+                            echo ( $attribute == $value ? ' selected' : '' ) . ' value="' . esc_attr($value) . '">' . esc_html($data['name']) . '</option>';
                         }
                         echo '</select>';
                     } else {
@@ -103,15 +103,15 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                 echo '<div class="braapf_custom_taxonomy braapf_half_select_full">';
                     echo '<label for="braapf_custom_taxonomy">' . __('Custom Taxonomies', 'BeRocket_AJAX_domain') . '</label>';
                     echo '<select id="braapf_custom_taxonomy" name="'.$settings_name.'[custom_taxonomy]">';
-                    foreach ( $custom_taxonomies_list as $value => $data ) {
-                        echo '<option';
-                        foreach($data as $data_key => $data_val) {
-                            if( $data_val !== "" ) {
-                                echo ' data-'.$data_key.'="'.$data_val.'"';
+                        foreach ( $custom_taxonomies_list as $value => $data ) {
+                            echo '<option';
+                            foreach($data as $data_key => $data_val) {
+                                if( $data_val !== "" ) {
+                                    echo ' data-'.esc_attr($data_key).'="'.esc_attr($data_val).'"';
+                                }
                             }
+                            echo ( $custom_taxonomy == $value ? ' selected' : '' ) . ' value="' . esc_attr($value) . '">' . esc_html($data['name']) . '</option>';
                         }
-                        echo ( $custom_taxonomy == $value ? ' selected' : '' ) . ' value="' . $value . '">' . $data['name'] . '</option>';
-                    }
                     echo '</select>';
                 echo '</div>';
             echo '</div>';
@@ -183,7 +183,7 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                          . '</label>';
                     echo '<select id="braapf_cat_value_limit" name="'.$settings_name.'[cat_value_limit]">';
                         echo '<option value="">' . __('Use all attribute values', 'BeRocket_AJAX_domain') . '</option>';
-                        echo '<optgroup label="'.__('Limit by category:', 'BeRocket_AJAX_domain').'">';
+                        echo '<optgroup label="'.esc_attr__('Limit by category:', 'BeRocket_AJAX_domain').'">';
                         foreach($hrterms as $hrterm) {
                             echo '<option value="'.urldecode($hrterm->slug).'"'.($cat_value_limit == urldecode($hrterm->slug) ? ' selected' : '').'>';
                             for( $i = 0; $i < $hrterm->depth; $i++ ) {

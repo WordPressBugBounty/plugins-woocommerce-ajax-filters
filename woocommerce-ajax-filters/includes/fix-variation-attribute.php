@@ -68,6 +68,9 @@ class BRapf_fix_variation_attribute {
         if( ! wp_verify_nonce($nonce, 'brapf_fix_varattr') ) {
             wp_die();
         }
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die( -1, '', array( 'response' => 403 ) );
+        }
         global $wpdb;
         $count = $wpdb->get_var("SELECT count(ID) as products FROM `{$wpdb->posts}` WHERE post_type = 'product'");
         update_option('brapf_variation_attr_fix', true);
@@ -79,6 +82,9 @@ class BRapf_fix_variation_attribute {
         $nonce = (empty($_REQUEST['nonce']) ? '' : $_REQUEST['nonce']);
         if( ! wp_verify_nonce($nonce, 'brapf_fix_varattr') ) {
             wp_die();
+        }
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die( -1, '', array( 'response' => 403 ) );
         }
         $isfix = get_option('brapf_variation_attr_fix', false);
         $isfix_data = get_option('brapf_variation_attr_fix_data', false);

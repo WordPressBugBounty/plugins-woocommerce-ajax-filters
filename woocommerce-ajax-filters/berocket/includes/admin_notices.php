@@ -174,7 +174,7 @@ if ( ! class_exists( 'berocket_admin_notices' ) ) {
                 return false;
             }
 
-	        $notices = get_option('berocket_admin_notices');
+	        $notices = get_option('berocket_admin_notices', []);
 
             // search if $current_notice exists, start and end time should be ignored, use priority and name only
 	        if ( is_array( $notices ) and ! empty( $notices[ $options['priority'] ] ) ) {
@@ -443,6 +443,7 @@ if ( ! class_exists( 'berocket_admin_notices' ) ) {
                 $notice['html'] .=
                 '<div><form class="berocket_subscribe_form" method="POST" action="' . admin_url( 'admin-ajax.php' ) . '">
                     <input type="hidden" name="berocket_action" value="berocket_subscribe_email">
+                    <input type="hidden" name="wp_nonce" value="' . wp_create_nonce('berocket_subscribe_email') . '">
                     <input class="berocket_subscribe_email" type="email" name="email" value="' . $user_email . '">
                     <input type="submit" class="button-primary button berocket_notice_submit" value="Subscribe">
                 </form></div>';
@@ -1135,10 +1136,11 @@ if ( ! class_exists( 'berocket_admin_notices' ) ) {
                                 var data = $this.serialize();
                                 data = data+"&action="+$this.find("[name=\'berocket_action\']").val();
                             } else {
+                                var wpNonce = $this.find("[name=\'wp_nonce\']").val() || "";
                                 if( jQuery(".berocket_plugin_id_subscribe").length ) {
-                                    var data = {email:email, action: $this.find("[name=\'berocket_action\']").val(), plugin:jQuery(".berocket_plugin_id_subscribe").val()};
+                                    var data = {email:email, action: $this.find("[name=\'berocket_action\']").val(), plugin:jQuery(".berocket_plugin_id_subscribe").val(), wp_nonce:wpNonce};
                                 } else {
-                                    var data = {email:email, action: $this.find("[name=\'berocket_action\']").val()};
+                                    var data = {email:email, action: $this.find("[name=\'berocket_action\']").val(), wp_nonce:wpNonce};
                                 }
                             }
                             var url = $this.attr("action");
@@ -1225,7 +1227,8 @@ if ( ! class_exists( 'berocket_admin_notices' ) ) {
             wp_die();
         }
         public static function subscribe() {
-            if ( ! ( current_user_can( 'manage_options' ) ) ) {
+	        $wp_nonce = ( empty($_POST['wp_nonce']) ? '' : $_POST['wp_nonce'] );
+            if ( ! ( current_user_can( 'manage_options' ) ) || ! wp_verify_nonce( $wp_nonce, 'berocket_subscribe_email' ) ) {
                 echo __( 'Do not have access for this feature', 'BeRocket_domain' );
                 wp_die();
             }

@@ -51,15 +51,15 @@ class BeRocket_aapf_add_postmeta_filters {
             echo '<label for="braapf_custom_postmeta">' . __('Custom Post Meta', 'BeRocket_AJAX_domain') . '</label>';
             echo '<select id="braapf_custom_postmeta" name="'.$settings_name.'[custom_postmeta]">';
             foreach( $custom_postmeta_list as $opt => $postmeta_list ) {
-                echo '<optgroup label="'.$this->get_opt_name($opt).'">';
+                echo '<optgroup label="'.esc_attr($this->get_opt_name($opt)).'">';
                 foreach ( $postmeta_list as $value => $data ) {
                     echo '<option';
                     foreach($data as $data_key => $data_val) {
                         if( $data_val !== "" ) {
-                            echo ' data-'.$data_key.'="'.$data_val.'"';
+                            echo ' data-'.esc_attr($data_key).'="'.esc_attr($data_val).'"';
                         }
                     }
-                    echo ( $custom_postmeta == $value ? ' selected' : '' ) . ' value="' . $value . '">' . $data['name'] . '</option>';
+                    echo ( $custom_postmeta == $value ? ' selected' : '' ) . ' value="' . esc_attr($value) . '">' . esc_html($data['name']) . '</option>';
                 }
                 echo '</optgroup>';
             }

@@ -1,0 +1,61 @@
+.bapf_sfilter.bapf_button_berocket .bapf_button {
+    font-size: 20px;
+    padding: 8px 30px;
+    border: 0;
+    line-height: 28px;
+    font-weight: 600;
+    display: inline-block;
+    color: #fff;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    background-color: #f16543;
+}
+.bapf_sfilter.bapf_button_berocket .bapf_button:hover {
+    background-color: #d94825;
+}
+
+/* Dark & rounded button */
+.bapf_sfilter.bapf_button_dark_rounded .bapf_button {
+    background: #000;
+    color: #fff;
+    border: 0;
+    border-radius: 7px;
+    padding: 12px 15px;
+    width: 100%;
+    max-width: 240px;
+    font-weight: 600;
+    font-size: 16px;
+    position: relative;
+}
+.bapf_sfilter.bapf_button_dark_rounded .bapf_button:after{
+    content: "";
+    box-shadow: 0 7px 0 -3px #ccc;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 7px;
+}
+.bapf_sfilter.bapf_button_dark_rounded .bapf_button:hover:after {
+    opacity: 1;
+}
+
+/* Light button */
+.bapf_sfilter.bapf_button_light .bapf_button {
+    background: #fff;
+    border: 2px solid #a000aa;
+    color: #a000aa;
+    border-radius: 7px;
+    padding: 10px 15px;
+    max-width: 100%;
+    font-weight: 500;
+    font-size: 16px;
+}
+.bapf_sfilter.bapf_button_light .bapf_button:hover {
+    border-color: #bd12c8;
+    color: #bd12c8;
+}

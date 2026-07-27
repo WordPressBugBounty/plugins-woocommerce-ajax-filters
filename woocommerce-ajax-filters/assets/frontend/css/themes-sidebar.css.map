@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,6FAA8F;EAC5F,OAAO,EAAE,IAAI",
+"sources": ["themes-sidebar.scss"],
+"names": [],
+"file": "themes-sidebar.css"
+}

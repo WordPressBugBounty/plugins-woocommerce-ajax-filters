@@ -1,0 +1,44 @@
+/* Clean & rounded checkbox */
+.berocket_single_filter_widget .bapf-clean-rounded ul {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.berocket_single_filter_widget .bapf-clean-rounded li input {
+    display: none;
+}
+.berocket_single_filter_widget .bapf-clean-rounded li label {
+    display: inline-block !important;
+    border: 2px solid #ccc;
+    padding: 3px 15px;
+    font-weight: 600;
+    border-radius: 14px;
+    color: #333;
+    position: relative;
+}
+.berocket_single_filter_widget .bapf-clean-rounded li label:hover {
+    border-color: #ddd;
+    color: #111;
+}
+.berocket_single_filter_widget .bapf-clean-rounded li input:checked + label {
+    border-color: #3781df;
+    color: #0d59b9;
+    padding-left: 26px;
+}
+.berocket_single_filter_widget .bapf-clean-rounded li input:checked + label:before {
+    border-bottom: 2px solid;
+    border-left: 2px solid;
+    border-color: #0d59b9;
+    content: "";
+    width: 10px;
+    height: 4px;
+    rotate: -45deg;
+    display: block;
+    position: absolute;
+    left: 8px;
+    top: 11px;
+}
+.berocket_single_filter_widget .bapf-clean-rounded .bapf_show_hide {
+    padding-top: 10px;
+    display: block;
+}

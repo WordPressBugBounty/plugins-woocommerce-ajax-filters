@@ -11,8 +11,7 @@ class BeRocket_aapf_add_custom_postmeta extends BeRocket_framework_addon_lib {
             foreach($active_addons as $active_addon) {
                 if( strpos($active_addon, 'additional_tables') !== FALSE ) {
                     $tables_active = true;
-                    include_once('additional_tables.php');
-                    new BeRocket_aapf_variations_tables_postmeta_addon();
+                    break;
                 }
             }
         }

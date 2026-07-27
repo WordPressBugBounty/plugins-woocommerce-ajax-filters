@@ -1,0 +1,28 @@
+.bapf_ckbox_sqchck input[type=checkbox] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    display: inline-block;
+    vertical-align: middle;
+    border: 2px solid #555;
+    width: 20px;
+    height: 20px;
+    outline: none;
+    padding: 4px;
+    margin-right: 5px;
+    position: relative;
+}
+
+.bapf_ckbox_sqchck input[type="checkbox"]:checked:after {
+    content: "";
+    width: 8px;
+    height: 12px;
+    border-bottom: 2px solid #333;
+    border-right: 2px solid #333;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 4px;
+    transform: rotate(45deg);
+}

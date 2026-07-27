@@ -87,6 +87,10 @@ $compatibility_features = array(
         'check' => defined( 'SEARCHWP_WOOCOMMERCE_VERSION'),
         'file' => 'wpsearch_wc_compatibility.php'
     ),
+    'MultivendorX' => array(
+        'check' => defined( 'MULTIVENDORX_PLUGIN_VERSION' ),
+        'file' => 'multivendorx.php'
+    ),
 );
 $compatibility_features = apply_filters('bapf_compatibility_include', $compatibility_features);
 foreach($compatibility_features as $compatibility_feature) {

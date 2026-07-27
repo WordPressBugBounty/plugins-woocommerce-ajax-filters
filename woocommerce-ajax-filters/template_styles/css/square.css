@@ -1,0 +1,19 @@
+.bapf_ckbox_square input[type=checkbox] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    display: inline-block;
+    vertical-align: middle;
+    border: 2px solid #555;
+    width: 20px;
+    height: 20px;
+    outline: none;
+    padding: 4px;
+    margin-right: 5px;
+}
+
+.bapf_ckbox_square input[type="checkbox"]:checked {
+    background: #555;
+    background-clip: content-box;
+}

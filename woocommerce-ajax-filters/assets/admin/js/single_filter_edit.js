@@ -144,7 +144,7 @@ braapf_checked_style_parent;
                 clrimg_use_attrval = 0;
             }
             var postID = $('#post_ID').val();
-            var data = 'action=berocket_aapf_color_listener&br_product_filter[filter_id]='+postID+'&tax_color_name='+taxonomy_name+'&type='+specific+'&'+filtertype+'&br_product_filter[clrimg_use_attrval]='+clrimg_use_attrval;
+            var data = 'action=berocket_aapf_color_listener&br_product_filter[filter_id]='+postID+'&tax_color_name='+taxonomy_name+'&type='+specific+'&'+filtertype+'&br_product_filter[clrimg_use_attrval]='+clrimg_use_attrval+'&nonce='+encodeURIComponent(braapf_taxonomy_preview.nonce);
             if ( specific == 'color' || specific == 'image' ) {
                 $.post(ajaxurl, data, function(data) {
                     $('.braapf_widget_color_pick').html(data);

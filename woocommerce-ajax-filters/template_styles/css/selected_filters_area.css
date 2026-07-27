@@ -1,0 +1,74 @@
+.bapf_sfa_inline .berocket_aapf_widget_selected_area ul li{
+    display: inline-block;
+    margin-left: 3px!important;
+    margin-right: 3px!important;
+}
+.bapf_sfa_valueonly .bapf_sfa_taxonomy > span {
+    display: none;
+}
+
+/* Grey & rounded selected filters area */
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area ul {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding: 0 !important;
+    margin: 0;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area ul li {
+    display: inline-block;
+}
+
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area .berocket_aapf_widget_selected_filter {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area .bapf_sfa_taxonomy span {
+    display: none;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a {
+    display: inline-block !important;
+    border: 2px solid #ccc;
+    padding: 3px 30px 3px 15px;
+    font-weight: 600;
+    border-radius: 14px;
+    color: #333;
+    position: relative;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a:hover,
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a:focus {
+    border-color: #ddd;
+    color: #111;
+    outline: 0 none;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a:before {
+    color: #ccc;
+    content: "+";
+    width: 10px;
+    height: 10px;
+    rotate: -45deg;
+    display: block;
+    position: absolute;
+    right: 17px;
+    top: 7px;
+    font-size: 32px;
+    font-weight: 100;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a i.fa-times {
+    display: none !important;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area a.braapf_unselect_all {
+    border: 0;
+    padding: 0;
+    color: #848484;
+}
+.bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area a.braapf_unselect_all::before {
+    display: none !important;
+}
+/* theme storefront fixes */
+.theme-storefront .bapf-sfa-grey-rounded .berocket_aapf_widget_selected_area li a:before {
+    right: 24px !important;
+    top: -2px !important;
+}

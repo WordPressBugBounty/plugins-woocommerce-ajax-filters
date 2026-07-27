@@ -132,9 +132,14 @@ if( ! class_exists('BeRocket_AAPF_addon_woocommerce_seo_title') ) {
                 add_filter('bapf_page_title_text_custom', array($this, 'header_set_specific'), 10, 1);
                 do_action('braapf_seo_meta_header', $this);
             }
+            if( ! empty($options['seo_element_title']) ) {
+                add_filter('seopress_social_og_title', array($this, 'seopress_social_title'));
+                add_filter('seopress_social_twitter_card_title', array($this, 'seopress_social_title'));
+            }
             if( ! empty($options['seo_element_description']) ) {
                 add_filter('wpseo_metadesc', array($this, 'meta_description'));
                 add_filter('aioseop_description_full', array($this, 'meta_description'));
+                add_filter('seopress_titles_desc', array($this, 'meta_description'));
                 add_action('wp_head', array($this, 'wp_head_description'), 9000);
                 do_action('braapf_seo_meta_description', $this);
             }
@@ -326,6 +331,14 @@ if( ! class_exists('BeRocket_AAPF_addon_woocommerce_seo_title') ) {
             }
             $this->ready_elements['title'] = true;
             return $title;
+        }
+        function seopress_social_title($html) {
+            return preg_replace_callback('/content=(["\'])(.*?)\1/', array($this, 'seopress_social_title_content'), $html);
+        }
+        function seopress_social_title_content($matches) {
+            $title = html_entity_decode($matches[2], ENT_QUOTES, get_bloginfo('charset'));
+            $title = $this->wpseo_title($title);
+            return 'content=' . $matches[1] . esc_attr($title) . $matches[1];
         }
         function meta_description($description) {
             remove_action('wp_head', array($this, 'wp_head_description'));

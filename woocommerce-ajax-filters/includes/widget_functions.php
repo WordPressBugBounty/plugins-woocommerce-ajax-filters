@@ -36,6 +36,28 @@ class BeRocket_AAPF_Widget_functions {
             add_action( 'wp_ajax_br_include_exclude_list', array( __CLASS__, 'ajax_include_exclude_list' ) );
         }
     }
+
+    public static function get_taxonomy_preview_filter() {
+		check_ajax_referer( 'bapf_taxonomy_preview', 'nonce' );
+		$br_product_filter = ! empty( $_POST['br_product_filter'] ) && is_array( $_POST['br_product_filter'] ) ? $_POST['br_product_filter'] : array();
+		$filter_id = isset( $br_product_filter['filter_id'] ) ? absint( $br_product_filter['filter_id'] ) : 0;
+		if ( $filter_id ) {
+			if ( 'br_product_filter' !== get_post_type( $filter_id ) || ! current_user_can( 'edit_post', $filter_id ) ) {
+				wp_die( -1, '', array( 'response' => 403 ) );
+			}
+		} else {
+			$post_type = get_post_type_object( 'br_product_filter' );
+			if ( empty( $post_type ) || empty( $post_type->cap ) ) {
+				wp_die( -1, '', array( 'response' => 403 ) );
+			}
+			$capability = ! empty( $post_type->cap->create_posts ) ? $post_type->cap->create_posts : $post_type->cap->edit_posts;
+			if ( ! current_user_can( $capability ) ) {
+				wp_die( -1, '', array( 'response' => 403 ) );
+			}
+		}
+
+		return $br_product_filter;
+	}
     
     public static function apply_price_slider($set_query_var_title, $type, $instance, $args = false, $terms = false) {
         if($args === false || $terms === false) {
@@ -157,19 +179,27 @@ class BeRocket_AAPF_Widget_functions {
     }
 
     public static function color_listener() {
-        $br_product_filter = (empty($_POST['br_product_filter']) ? array() : $_POST['br_product_filter']);
+        $br_product_filter = self::get_taxonomy_preview_filter();
         echo self::color_image_view($br_product_filter, $_POST['type'], true);
         wp_die();
     }
     
     public static function ajax_include_exclude_list() {
-        $br_product_filter = (empty($_POST['br_product_filter']) ? array() : $_POST['br_product_filter']);
+        $br_product_filter = self::get_taxonomy_preview_filter();
         echo self::include_exclude_view($br_product_filter);
         wp_die();
     }
 
     public static function get_product_categories( $current_product_cat = '', $parent = 0, $data = array(), $depth = 0, $max_count = 9, $follow_hierarchy = false ) {
         return br_get_sub_categories( $parent, 'id', array( 'return' => 'hierarchy_objects', 'max_depth' => $max_count ) );
+    }
+
+    private static function normalize_price_range_value( $value ) {
+        if ( ! is_scalar( $value ) || ! is_numeric( $value ) ) {
+            return false;
+        }
+        $value = (float) $value;
+        return is_finite( $value ) ? $value : false;
     }
 
     public static function get_price_ranges($price_ranges = FALSE) {
@@ -199,9 +229,25 @@ class BeRocket_AAPF_Widget_functions {
         if( $price_ranges !== false && is_array($price_ranges) ) {
             $case_values = array();
             foreach($price_ranges as $price_range) {
-                $from = isset($price_range['real_from']) ? $price_range['real_from'] : $price_range['from'];
-                $to = isset($price_range['real_to']) ? $price_range['real_to'] : $price_range['to'];
-                $case_values[] = "WHEN bapf_custom_price.min_price >= {$from} and bapf_custom_price.max_price < {$to} THEN '{$price_range['from']}-{$price_range['to']}'";
+				if ( ! is_array( $price_range ) || ! isset( $price_range['from'], $price_range['to'] ) ) {
+					continue;
+				}
+                $from = self::normalize_price_range_value( isset( $price_range['real_from'] ) ? $price_range['real_from'] : $price_range['from'] );
+                $to = self::normalize_price_range_value( isset( $price_range['real_to'] ) ? $price_range['real_to'] : $price_range['to'] );
+                $label_from = self::normalize_price_range_value( $price_range['from'] );
+                $label_to = self::normalize_price_range_value( $price_range['to'] );
+                if ( false === $from || false === $to || false === $label_from || false === $label_to || $to <= $from ) {
+                    continue;
+                }
+                $case_values[] = $wpdb->prepare(
+                    'WHEN bapf_custom_price.min_price >= %f AND bapf_custom_price.max_price < %f THEN %s',
+                    $from,
+                    $to,
+                    $label_from . '-' . $label_to
+                );
+            }
+            if ( empty( $case_values ) ) {
+                return array();
             }
             $query['select']['elements']['price_range'] = "CASE ". implode(" ", $case_values). " END price_range";
             $query['select']['elements']['price_range_count'] = "count(distinct($wpdb->posts.ID)) as product_count";
