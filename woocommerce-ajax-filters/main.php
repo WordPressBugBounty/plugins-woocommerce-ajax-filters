@@ -375,7 +375,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
     function include_once_files() {
         parent::include_once_files();
 
-		include_once "includes/admin/docs.php";
+		include_once __DIR__ . '/includes/admin/docs.php';
     }
     function init_validation() {
         return parent::init_validation() && ( ( is_plugin_active( 'woocommerce/woocommerce.php' ) || is_plugin_active_for_network( 'woocommerce/woocommerce.php' ) ) &&
@@ -1349,7 +1349,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
     }
     public function section_tutorials ( $item, $options ) {
         if( ! function_exists('berocket_tutorial_tab') ) {
-            include_once('berocket/includes/tutorial.php');
+            include_once __DIR__ . '/berocket/includes/tutorial.php';
         }
         ob_start();
         include AAPF_TEMPLATE_PATH.'settings/tutorial_tab.php';

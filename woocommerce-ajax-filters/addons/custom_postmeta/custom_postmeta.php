@@ -16,7 +16,7 @@ class BeRocket_aapf_add_custom_postmeta extends BeRocket_framework_addon_lib {
             }
         }
         if( $tables_active ) {
-            include_once('additional_tables.php');
+            include_once __DIR__ . '/additional_tables.php';
             new BeRocket_aapf_variations_tables_postmeta_addon();
         } elseif( is_admin() ) {
             $this->deactivate();

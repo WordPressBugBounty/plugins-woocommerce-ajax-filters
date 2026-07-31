@@ -48,6 +48,9 @@ class BeRocket_AAPF_One_Click_Filter_Definitions {
                 'recommendation_key' => isset($recommendation['key']) ? sanitize_key($recommendation['key']) : '',
                 'created' => $created,
             );
+            // Extensions may migrate their own generated definition after a
+            // stable-identity reuse. They must never alter its identity.
+            do_action('brapf_one_click_filter_definition_resolved', $filter_id, $definition, $setup_id, $created);
             if ($created) {
                 $result['created_ids'][] = $filter_id;
             } else {
@@ -85,6 +88,9 @@ class BeRocket_AAPF_One_Click_Filter_Definitions {
         if ($type === 'tag') {
             return 'taxonomy:product_tag';
         }
+        if ($type === 'grouped_taxonomy' && !empty($settings['_brapf_one_click_featured_values'])) {
+            return 'grouped:one_click_featured_values';
+        }
         if ($type) {
             return 'type:' . $type;
         }
@@ -114,7 +120,14 @@ class BeRocket_AAPF_One_Click_Filter_Definitions {
         return array(
             'identity' => $identity,
             'title' => $this->get_filter_title($recommendation),
+            'post_title' => !empty($recommendation['post_title'])
+                ? sanitize_text_field($recommendation['post_title'])
+                : $this->get_filter_title($recommendation),
+            'post_name' => !empty($recommendation['post_name'])
+                ? sanitize_title($recommendation['post_name'])
+                : '',
             'settings' => $settings,
+            'details' => isset($recommendation['details']) && is_array($recommendation['details']) ? $recommendation['details'] : array(),
         );
     }
 
@@ -159,11 +172,15 @@ class BeRocket_AAPF_One_Click_Filter_Definitions {
     }
 
     protected function create_filter($definition, $setup_id) {
-        $filter_id = wp_insert_post(array(
-            'post_title' => sprintf(__('%s — 1-click', 'BeRocket_AJAX_domain'), $definition['title']),
+        $post_data = array(
+            'post_title' => sprintf(__('%s — 1-click', 'BeRocket_AJAX_domain'), $definition['post_title']),
             'post_type' => self::POST_TYPE,
             'post_status' => 'publish',
-        ));
+        );
+        if (!empty($definition['post_name'])) {
+            $post_data['post_name'] = $definition['post_name'];
+        }
+        $filter_id = wp_insert_post($post_data);
         if (is_wp_error($filter_id)) {
             return $filter_id;
         }
@@ -202,12 +219,17 @@ class BeRocket_AAPF_One_Click_Filter_Definitions {
                 continue;
             }
             $legacy_title = sprintf(__('Featured filter — %s', 'BeRocket_AJAX_domain'), $filter_title);
-            if (get_post_field('post_title', $filter_id) !== $legacy_title) {
+            $current_title = get_post_field('post_title', $filter_id);
+            $is_legacy_ai_featured = $current_title === __('Featured filter', 'BeRocket_AJAX_domain')
+                && !empty(get_post_meta($filter_id, '_brapf_one_click_ai_featured_origin', true));
+            if ($current_title !== $legacy_title && !$is_legacy_ai_featured) {
                 continue;
             }
             wp_update_post(array(
                 'ID' => $filter_id,
-                'post_title' => sprintf(__('%s — 1-click', 'BeRocket_AJAX_domain'), $filter_title),
+                'post_title' => $is_legacy_ai_featured
+                    ? sprintf(__('%s — 1-click', 'BeRocket_AJAX_domain'), __('Featured filter', 'BeRocket_AJAX_domain'))
+                    : sprintf(__('%s — 1-click', 'BeRocket_AJAX_domain'), $filter_title),
             ));
         }
     }
@@ -221,6 +243,7 @@ class BeRocket_AAPF_One_Click_Filter_Definitions {
             'on_sale' => __('On sale', 'BeRocket_AJAX_domain'),
             'rating' => __('Rating', 'BeRocket_AJAX_domain'),
             'tags' => __('Tags', 'BeRocket_AJAX_domain'),
+            'featured_values' => __('Featured products', 'BeRocket_AJAX_domain'),
         );
         if (strpos($key, 'brand:') === 0) {
             return __('Brands', 'BeRocket_AJAX_domain');
@@ -244,3 +267,5 @@ class BeRocket_AAPF_One_Click_Filter_Definitions {
         return array_values(array_unique(array_filter(array_map('absint', (array)$ids))));
     }
 }
+
+add_action('admin_init', array('BeRocket_AAPF_One_Click_Filter_Definitions', 'migrate_legacy_post_titles'));

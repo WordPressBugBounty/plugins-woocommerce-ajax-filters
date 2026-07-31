@@ -183,8 +183,9 @@ class BAPF_Divi5_Module_Renderer {
 
     public function header_replace( $template_content ) {
         $atts = $this->current_atts;
-        if ( ! empty( $atts['title_level'] ) ) {
-            $template_content['template']['content']['header']['content']['title']['tag'] = $atts['title_level'];
+        $title_level = empty( $atts['title_level'] ) ? '' : sanitize_key( $atts['title_level'] );
+        if ( in_array( $title_level, array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ), true ) ) {
+            $template_content['template']['content']['header']['content']['title']['tag'] = $title_level;
         }
 
         return $template_content;

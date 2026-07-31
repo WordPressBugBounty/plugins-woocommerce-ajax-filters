@@ -87,6 +87,7 @@ class BeRocket_AAPF_One_Click_Welcome {
         $can_create_setup = $can_manage_setup && !empty($desktop_placement['available']) && !empty($mobile_placement['available']);
         ?>
         <form method="post" class="brapf-one-click-welcome">
+            <input type="hidden" name="save_step" value="1">
             <div class="brapf-one-click-card">
                 <span class="brapf-one-click-kicker"><i class="fa fa-magic"></i> <?php esc_html_e('Quick setup', 'BeRocket_AJAX_domain'); ?></span>
                 <h1><?php esc_html_e('Set up relevant product filters in one click', 'BeRocket_AJAX_domain'); ?></h1>
@@ -191,8 +192,7 @@ class BeRocket_AAPF_One_Click_Welcome {
 
         foreach ($filter_ids as $filter_id) {
             if (get_post_type($filter_id) !== 'br_product_filter'
-                || get_post_status($filter_id) !== 'publish'
-                || !BeRocket_AAPF_One_Click_Setup::is_setup_post($filter_id, $state['setup_id'])) {
+                || get_post_status($filter_id) !== 'publish') {
                 return false;
             }
         }

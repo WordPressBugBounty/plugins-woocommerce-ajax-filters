@@ -1,6 +1,8 @@
 <?php
 class BeRocket_aapf_variations_tables {
     public $variation_attributes = FALSE;
+    /** @var array<string,bool> Per-request existence cache for variation taxonomies. */
+    protected $variation_attribute_status = array();
     function __construct() {
         add_filter('berocket_aapf_wcvariation_filtering_total_query', array($this, 'wcvariation_filtering_total_query'), 10, 4);
         add_filter('berocket_aapf_wcvariation_filtering_main_query', array($this, 'wcvariation_filtering_main_query'), 10, 2);
@@ -32,8 +34,24 @@ class BeRocket_aapf_variations_tables {
         return $result;
     }
     function check_is_taxonomy_variable($is_var, $taxonomy) {
-        $attributes = $this->get_current_variation_attributes();
-        return in_array($taxonomy, $attributes);
+        $taxonomy = sanitize_key($taxonomy);
+        if (!$taxonomy) {
+            return (bool)$is_var;
+        }
+        if (array_key_exists($taxonomy, $this->variation_attribute_status)) {
+            return $this->variation_attribute_status[$taxonomy];
+        }
+        global $wpdb;
+        // Do not load every row from braapf_variable_attributes into PHP just
+        // to answer a yes/no question. Large catalogs can contain hundreds of
+        // thousands of rows here; the indexed equality lookup is bounded and
+        // cached for the remainder of this request.
+        $exists = $wpdb->get_var($wpdb->prepare(
+            "SELECT 1 FROM {$wpdb->prefix}braapf_variable_attributes WHERE attribute = %s LIMIT 1",
+            $taxonomy
+        ));
+        $this->variation_attribute_status[$taxonomy] = $exists !== null;
+        return $this->variation_attribute_status[$taxonomy];
     }
     function wcvariation_filtering_main_query($query, $data) {
         $current_terms = array(0);

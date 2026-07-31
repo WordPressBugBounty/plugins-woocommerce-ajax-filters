@@ -1,5 +1,5 @@
 <?php
-include_once('single_settings_elements.php');
+include_once __DIR__ . '/single_settings_elements.php';
 $settings_name = $braapf_filter_setings['settings_name'];
 echo '<input type="hidden" name="'.$settings_name.'[version]" value="1.0">';
 $steps = apply_filters('braapf_new_widget_edit_page_all_steps', array(

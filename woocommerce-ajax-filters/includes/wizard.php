@@ -1355,7 +1355,7 @@ class BeRocket_AAPF_Wizard {
             include_once( ABSPATH . 'wp-admin/includes/misc.php' );
             include_once( ABSPATH . 'wp-admin/includes/class-wp-upgrader.php' );
             include_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
-            include_once( 'wizard/wizard_skin.php' );
+            include_once dirname( __DIR__ ) . '/wizard/wizard_skin.php';
             $api = plugins_api(
                 'plugin_information',
                 array(

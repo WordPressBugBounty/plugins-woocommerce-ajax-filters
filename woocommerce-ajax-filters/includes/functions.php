@@ -1,7 +1,7 @@
 <?php
 if( ! function_exists( 'bapf_template_styles_preview' ) ){
     function bapf_template_styles_preview() {
-        include_once('template_styles_preview.php');
+        include_once __DIR__ . '/template_styles_preview.php';
     }
 }
 if( ! function_exists( 'br_set_value_to_array' ) ){

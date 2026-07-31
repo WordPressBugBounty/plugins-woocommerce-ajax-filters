@@ -125,10 +125,16 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                 self::$error_log[ 'plugins' ]             = $plugins_list;
                 self::$error_log[ 'memory_limit' ]        = ini_get( 'memory_limit' );
                 self::$error_log[ 'WP_DEBUG' ]            = 'WP_DEBUG:' . ( defined( 'WP_DEBUG' ) ? ( WP_DEBUG ? 'true' : 'false' ) : 'false' ) . '; WP_DEBUG_DISPLAY:' . ( defined( 'WP_DEBUG_DISPLAY' ) ? ( WP_DEBUG_DISPLAY ? 'true' : 'false' ) : 'false' );
-                $error_log = unserialize(preg_replace('/R:\d+/', 's:18:"RECURSION DETECTED"', serialize(self::$error_log)));
+                $error_log_json = wp_json_encode(
+                    self::$error_log,
+                    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_PARTIAL_OUTPUT_ON_ERROR
+                );
+                if ( ! is_string( $error_log_json ) ) {
+                    $error_log_json = 'null';
+                }
                 ?>
                 <script>
-                    console.log(<?php echo json_encode( $error_log ); ?>);
+                    console.log(<?php echo $error_log_json; ?>);
                 </script>
                 <?php
             }
@@ -137,9 +143,16 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                 foreach(self::$plugin_info as $plugin_i) {
                     $plugin_versions[$plugin_i['plugin_name']] = array('name' => $plugin_i['name'], 'version' => $plugin_i['version']);
                 }
+                $plugin_versions_json = wp_json_encode(
+                    $plugin_versions,
+                    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_PARTIAL_OUTPUT_ON_ERROR
+                );
+                if ( ! is_string( $plugin_versions_json ) ) {
+                    $plugin_versions_json = 'null';
+                }
                 ?>
                 <script>
-                    console.log(<?php echo json_encode( $plugin_versions ); ?>);
+                    console.log(<?php echo $plugin_versions_json; ?>);
                 </script>
                 <?php
             }
@@ -303,7 +316,10 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
         }
 
         public static function allow_berocket_host( $allow, $host, $url ) {
-            if ( $host == 'berocket.com' ) {
+            // Keep the allow-list explicit for sites that define
+            // WP_HTTP_BLOCK_EXTERNAL. Business one-click AI talks only to the
+            // BeRocket-owned HTTPS gateway; arbitrary subdomains stay blocked.
+            if ( in_array(strtolower((string)$host), array('berocket.com', 'ai.berocket.com'), true) ) {
                 $allow = true;
             }
 

@@ -5,13 +5,25 @@ Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=w
 Tags: product filters, ajax product filters, woocommerce filters, wc filters, category filter
 Requires at least: 5.0
 Tested up to: 7.0.2
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Fast and flexible AJAX product filters for WooCommerce. Filter by categories, attributes, price, tags, rating, and more. No page reloads.
 
 == Description ==
+
+⚡ **WooCommerce product filters, ready in one click.**
+
+Advanced AJAX Product Filters analyzes your catalog, recommends useful filters, and creates responsive desktop and mobile filter groups automatically.
+No coding and no lengthy setup. You can edit every filter later.
+
+**New: One-click filter setup**
+* Detects useful product categories and attributes
+* Creates Price, Categories, Brands, Color, Size and other relevant filters
+* Places filters on desktop and mobile
+* Avoids duplicate filter definitions
+* Works with your existing WooCommerce catalog
 
 Give your customers the power to find products instantly.  
 **WooCommerce Ajax Products Filter** lets users filter, sort, and search products without reloading the page. Fast, flexible, and compatible with most themes and page builders.  
@@ -81,6 +93,7 @@ For large stores and professional needs:
 * **Custom SEO Meta per Page** – individual SEO control for each filter result.
 * **Advanced Filter Styling** – fine-tune filter design.
 * **Priority Support** – direct help from the BeRocket team.
+* **AI-powered Featured Products** — uses recent sales patterns to create shopper-friendly grouped filter options from real product attributes.
 
 = 📌 Live Demo & Docs =
 * [Pro & Business](https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=plugin_links&utm_campaign=ajax_filters)
@@ -167,16 +180,38 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Screenshots ==
-1. Example of AJAX filtering on a shop page.
-2. Filter builder interface in the admin panel.
-3. Custom sidebar with filters.
-4. Selected filters area showing active selections.
-5. Sliders with price and attributes.
-6. Group settings with added filters.
+1. One-click installation Wizard.
+2. Example of AJAX filtering on a shop page.
+3. Filter builder interface in the admin panel.
+4. Custom sidebar with filters.
+5. Selected filters area showing active selections.
+6. Sliders with price and attributes.
+7. Group settings with added filters.
 
 ---
 
 == Changelog ==
+= 3.2.2 =
+* New: Business AI recommendations for one-click filter setup.
+* New: Business AI can create a Featured Products intelligent filter from recent sales patterns.
+* New: Featured Products can include 5–7 diverse, sales-backed product combinations using real WooCommerce attributes.
+* New: Clean public URLs for Intelligent Filters without the internal `bgt_` prefix.
+* Improved: Featured Products use natural customer-facing labels and SEO-friendly value slugs.
+* Improved: Featured Products are placed after Brands, ahead of lower-priority filters such as Size and Material.
+* Improved: AI recommendations prioritize useful product diversity instead of creating multiple color variations of the same product profile.
+* Improved: The AI option clearly explains when recent sales data is insufficient and becomes available automatically when useful combinations are found.
+* Improved: Existing one-click setups can receive newly recommended filters without duplicating definitions or overwriting manually edited groups.
+* Improved: Legacy Intelligent Filter URLs with the `bgt_` prefix redirect to clean canonical URLs.
+* Improved: Reduced memory usage when processing variation attributes in large catalogs.
+* Improved: More reliable AI processing with caching, request locking, strict response validation and automatic fallback to standard recommendations.
+* Security: Hardened AJAX handlers, dynamic template output, database writes and filter setting validation.
+* Security: Improved validation of Product Table requests and Divi heading settings.
+* Fix: JavaScript-generated Intelligent Filter URLs no longer restore the internal `bgt_` prefix.
+* Fix: AI opt-in no longer invalidates the prepared catalog analysis before processing.
+* Fix: Reused filter definitions no longer incorrectly fail the one-click health check.
+* Fix: Featured Products now use the correct filter type, admin title, URL slug and placement in desktop and mobile groups.
+* Fix: Several filter style and compatibility issues.
+
 = 3.2.1 =
 * New: Set up relevant product filters in one click from the setup wizard or the empty Product Filters page.
 * New: One-click setup analyzes the catalog and recommends useful filters such as Price, Categories, Brands, Color, Size, Availability, On sale, Rating, and Tags.

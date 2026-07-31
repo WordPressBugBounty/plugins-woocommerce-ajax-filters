@@ -186,13 +186,30 @@ class BeRocket_AAPF_One_Click_Setup_Orchestrator {
         if (is_wp_error($definitions)) {
             return $definitions;
         }
+        $state['filters']['ids'] = $this->order_featured_after_brand(
+            $this->merge_ids($state['filters']['ids'], $definitions['ids']),
+            isset($definitions['definitions']) ? $definitions['definitions'] : array()
+        );
+
+        // A second run is additive only: it can introduce a newly eligible
+        // definition (for example the Business AI Featured filter after sales
+        // data becomes available).  Add it to a generated group only while
+        // that group's filter membership still exactly matches the stored
+        // one-click membership.  Any manual add, removal, or reorder leaves
+        // the group untouched.
+        $synced_groups = $this->sync_missing_filters_to_pristine_groups($state);
+        if (is_wp_error($synced_groups)) {
+            return $synced_groups;
+        }
+        $state = $synced_groups;
+
         if (empty($definitions['created_ids'])) {
-            // Nothing new was needed. Keep the stored state byte-for-byte
-            // intact so a manual configuration is never overwritten.
+            // Nothing new was needed. The only permitted state change above
+            // is repairing a previously-created generated definition that had
+            // not yet been placed in an otherwise pristine generated group.
             return $state;
         }
 
-        $state['filters']['ids'] = $this->merge_ids($state['filters']['ids'], $definitions['ids']);
         $state['analysis']['hash'] = isset($analysis['recommendation_hash'])
             ? sanitize_text_field($analysis['recommendation_hash'])
             : $state['analysis']['hash'];
@@ -202,6 +219,88 @@ class BeRocket_AAPF_One_Click_Setup_Orchestrator {
         $state['operation']['step'] = 'missing_filter_definitions_created';
         $state['operation']['completed_at'] = current_time('mysql', true);
         return BeRocket_AAPF_One_Click_Setup::save_state($state);
+    }
+
+    /**
+     * Append state-managed definitions to a group only when its membership is
+     * pristine. This makes repeat setup useful without overwriting a user's
+     * manual group edits.
+     */
+    protected function sync_missing_filters_to_pristine_groups($state) {
+        $desired_ids = $this->normalize_filter_ids(isset($state['filters']['ids']) ? $state['filters']['ids'] : array());
+        if (empty($desired_ids)) {
+            return $state;
+        }
+        $changed = false;
+        foreach (array('desktop', 'mobile') as $location) {
+            $group_state = isset($state['groups'][$location]) && is_array($state['groups'][$location])
+                ? $state['groups'][$location]
+                : array();
+            $group_id = isset($group_state['id']) ? absint($group_state['id']) : 0;
+            $stored_ids = $this->normalize_filter_ids(isset($group_state['filter_ids']) ? $group_state['filter_ids'] : array());
+            if (!$group_id || empty($stored_ids) || get_post_status($group_id) !== 'publish'
+                || !BeRocket_AAPF_One_Click_Setup::is_setup_post($group_id, $state['setup_id'])) {
+                continue;
+            }
+            $settings = get_post_meta($group_id, self::GROUP_SETTINGS_META, true);
+            if (!is_array($settings)) {
+                continue;
+            }
+            $current_ids = $this->normalize_filter_ids(isset($settings['filters']) ? $settings['filters'] : array());
+            if ($current_ids !== $stored_ids) {
+                continue;
+            }
+            // Follow the generated definition order for untouched groups. This
+            // places a newly introduced Featured filter directly after Brands
+            // and also repairs the old generated “Featured last” order.
+            $target_ids = $this->merge_ids($desired_ids, $current_ids);
+            if ($target_ids === $current_ids) {
+                continue;
+            }
+            $settings['filters'] = $target_ids;
+            if (!update_post_meta($group_id, self::GROUP_SETTINGS_META, $settings)) {
+                return new WP_Error('brapf_one_click_group_sync_failed', __('A generated filter group could not be updated.', 'BeRocket_AJAX_domain'));
+            }
+            $state['groups'][$location]['filter_ids'] = $settings['filters'];
+            $changed = true;
+        }
+        return $changed ? BeRocket_AAPF_One_Click_Setup::save_state($state) : $state;
+    }
+
+    /**
+     * Move only the AI Featured definition. All other generated definitions
+     * keep their existing order. Recommendation keys are used instead of
+     * guessing a Brand taxonomy from its stored settings.
+     */
+    protected function order_featured_after_brand($filter_ids, $definitions) {
+        $filter_ids = $this->normalize_filter_ids($filter_ids);
+        $featured_id = 0;
+        $brand_id = 0;
+        $fallback_id = 0;
+        foreach ((array)$definitions as $definition) {
+            if (!is_array($definition) || empty($definition['id'])) {
+                continue;
+            }
+            $key = isset($definition['recommendation_key']) ? (string)$definition['recommendation_key'] : '';
+            if ($key === 'featured_values') {
+                $featured_id = absint($definition['id']);
+            } elseif (strpos($key, 'brand:') === 0) {
+                $brand_id = absint($definition['id']);
+            } elseif ($key === 'categories') {
+                $fallback_id = absint($definition['id']);
+            } elseif ($key === 'price' && !$fallback_id) {
+                $fallback_id = absint($definition['id']);
+            }
+        }
+        if (!$featured_id || !in_array($featured_id, $filter_ids, true)) {
+            return $filter_ids;
+        }
+        $anchor_id = $brand_id ?: $fallback_id;
+        $filter_ids = array_values(array_diff($filter_ids, array($featured_id)));
+        $anchor_index = array_search($anchor_id, $filter_ids, true);
+        $position = $anchor_index === false ? 0 : $anchor_index + 1;
+        array_splice($filter_ids, $position, 0, array($featured_id));
+        return $filter_ids;
     }
 
     /** A repeat is additive only while both generated display groups still exist. */
@@ -503,6 +602,10 @@ class BeRocket_AAPF_One_Click_Setup_Orchestrator {
 
     protected function merge_ids($existing, $new) {
         return array_values(array_unique(array_filter(array_map('absint', array_merge((array)$existing, (array)$new)))));
+    }
+
+    protected function normalize_filter_ids($ids) {
+        return $this->merge_ids(array(), $ids);
     }
 
     protected function merge_widget_descriptors($existing, $attachments) {

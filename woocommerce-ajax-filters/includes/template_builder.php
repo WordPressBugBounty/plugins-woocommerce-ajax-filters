@@ -47,20 +47,26 @@ class BeRocket_AAPF_Template_Builder {
     //TYPES FUNCTIONS
     public static function type_tag_open($html, $element) {
         $html = '';
-        if( ! empty($element['tag']) ) {
-            $html .= '<' . htmlentities(trim($element['tag'])) . self::attribute_filter(berocket_isset($element['attributes'])) . '>';
+        $tag = self::sanitize_tag_name( isset( $element['tag'] ) ? $element['tag'] : '' );
+        if( $tag !== '' ) {
+            $html .= '<' . $tag . self::attribute_filter( isset( $element['attributes'] ) ? $element['attributes'] : array() ) . '>';
         }
         return $html;
     }
     public static function type_tag($html, $element) {
+        $tag = self::sanitize_tag_name( isset( $element['tag'] ) ? $element['tag'] : '' );
         $html = self::type_tag_open($html, $element);
-        if( !empty($html) && ! empty($element['tag']) ) {
+        if( !empty($html) && $tag !== '' ) {
             if( ! empty($element['content']) ) {
                 $html .= self::build($element['content']);
             }
-            $html .= '</' . htmlentities(trim($element['tag'])) . '>';
+            $html .= '</' . $tag . '>';
         }
         return $html;
+    }
+    public static function sanitize_tag_name( $tag ) {
+        $tag = is_scalar( $tag ) ? strtolower( trim( (string) $tag ) ) : '';
+        return preg_match( '/^[a-z][a-z0-9:-]*$/', $tag ) ? $tag : '';
     }
     public static function default_template() {
         $template_content = array(
