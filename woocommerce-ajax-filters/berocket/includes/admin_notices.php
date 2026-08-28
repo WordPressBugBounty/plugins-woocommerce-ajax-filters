@@ -1724,8 +1724,8 @@ if( ! class_exists( 'berocket_admin_notices_rate_stars' ) ) {
                     }
 
                     foreach ( $plugins as &$plugin ) {
-                        if ( $plugin[ 'plugin_id' ] == berocket_isset( $plugin_data[ 'id' ] ) && isset( $plugin_data[ 'price' ] ) ) {
-                            $plugin[ 'price' ] = $plugin_data[ 'price' ];
+                        if ( $plugin[ 'plugin_id' ] == berocket_isset( $plugin_data[ 'id' ] ) && isset( $plugin_data[ 'price' ] ) && is_scalar( $plugin_data[ 'price' ] ) ) {
+                            $plugin[ 'price' ] = sanitize_text_field( (string) $plugin_data[ 'price' ] );
                             break;
                         }
                     }
@@ -1790,7 +1790,7 @@ if( ! class_exists( 'berocket_admin_notices_rate_stars' ) ) {
                             <div>
                                 <h1>{$plugin['title']}</h1>
                                 <p>" . ( empty( $plugin['desc_top'] ) ? $plugin['desc'] : $plugin['desc_top'] ) . "</p>
-                                <a href='{$plugin['url']}" . ( str_contains( $plugin[ 'url' ], '?') ? '&' : '?' ) .
+                                <a href='{$plugin['url']}" . ( strpos( $plugin['url'], '?' ) !== false ? '&' : '?' ) .
                                     "utm_source=plugin&utm_medium=banner&utm_campaign=upgrade&utm_content=top_" . $banner_key .
                                     "&utm_term={$cur_plugin->info['plugin_sku']}' target='_blank'>" . $banner[ $banner_key ] .
                                 "</a>
@@ -2052,7 +2052,7 @@ if( ! class_exists( 'berocket_admin_notices_rate_stars' ) ) {
                             <h3>' . $plugin_data[ 'title' ] . '</h3>
                             <p>' . $plugin_data[ 'desc' ] . '</p>
                             <a class="brfirst" href="' . $plugin_data[ 'url' ]
-                                . ( str_contains( $plugin_data[ 'url' ], '?') ? '&' : '?' )
+                                . ( strpos( $plugin_data[ 'url' ], '?' ) !== false ? '&' : '?' )
                                 . 'utm_source=plugin&utm_medium=settings&utm_term=' . ( $plugin->info['plugin_sku'] ?? $plugin->info['plugin_name'] )
                                 . '&utm_campaign=upgrade&utm_content=sidebar"'
                                 . ' target="_blank">From: $' . $plugin_data[ 'price' ] . '</a>

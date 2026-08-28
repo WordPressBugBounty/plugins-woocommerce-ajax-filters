@@ -9,6 +9,13 @@
                 <key name="left" />
                 <key name="right" />
             </key>
+            <key name="seo_meta_business">
+                <key name="*">
+                    <key name="meta_title" />
+                    <key name="h1_title" />
+                    <key name="meta_desc" />
+                </key>
+            </key>
         </key>
 		<key name="berocket_nn_permalink_option">
             <key name="variable" />

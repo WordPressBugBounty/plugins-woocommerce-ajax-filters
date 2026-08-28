@@ -112,6 +112,7 @@
 
 .brapf-one-click-recommendations {
     margin: 0;
+    font-size: 16px;
 }
 
 .brapf-one-click-recommendations li {
@@ -174,6 +175,7 @@
 
 .brapf-one-click-placement {
     margin: 0;
+    font-size: 16px;
 }
 
 .brapf-one-click-placement div {
@@ -285,22 +287,341 @@
     margin-right: 8px;
 }
 
+/*
+ * One-click setup is rendered inside the admin UI supplied by the active
+ * theme/framework. Do not inherit its typography or generic form/button
+ * treatment: it varies substantially between admin themes and can make this
+ * otherwise self-contained screen look broken.
+ */
+.brapf-one-click-card,
+.brapf-one-click-card button,
+.brapf-one-click-card input,
+.brapf-one-click-card select,
+.brapf-one-click-card textarea {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+}
+
+.brapf-one-click-card,
+.brapf-one-click-card * {
+    box-sizing: border-box !important;
+}
+
+.brapf-one-click-card {
+    padding: 48px !important;
+    border: 1px solid #d9e2ea !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    box-shadow: 0 10px 30px rgba(44, 59, 72, .08) !important;
+    color: #1d2d3d !important;
+    font-size: 14px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    letter-spacing: normal !important;
+    line-height: 1.5 !important;
+    text-transform: none !important;
+}
+
+.brapf-one-click-card h1,
+.brapf-one-click-card h2,
+.brapf-one-click-card p,
+.brapf-one-click-card li,
+.brapf-one-click-card dt,
+.brapf-one-click-card dd,
+.brapf-one-click-card legend,
+.brapf-one-click-card label {
+    font-family: inherit !important;
+    font-style: normal !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+}
+
+.brapf-one-click-card h1 {
+    max-width: 650px !important;
+    margin: 12px 0 14px !important;
+    padding: 0 !important;
+    color: #1d2d3d !important;
+    font-size: 32px !important;
+    font-weight: 400 !important;
+    line-height: 1.2 !important;
+}
+
+.brapf-one-click-card h2 {
+    margin: 0 0 15px !important;
+    padding: 0 !important;
+    color: #1d2d3d !important;
+    font-size: 17px !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+}
+
+.brapf-one-click-card .brapf-store-type-control legend,
+.brapf-one-click-card .brapf-one-click-ai-consent legend {
+    margin: 0 0 6px !important;
+    padding: 0 4px !important;
+    color: #1d2d3d !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-summary {
+    color: #52616f !important;
+    font-size: 18px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-kicker {
+    color: #2271b1 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-kicker .fa {
+    color: inherit !important;
+}
+
+.brapf-one-click-card .brapf-store-type-control {
+    display: block !important;
+    float: none !important;
+    min-width: 0 !important;
+    margin: 18px 0 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.brapf-one-click-card .brapf-store-type-control--locked select {
+    display: inline-block !important;
+    width: auto !important;
+    min-width: 220px !important;
+    max-width: 100% !important;
+}
+
+.brapf-one-click-card .brapf-store-type-control select,
+.brapf-one-click-card .brapf-store-type-input {
+    appearance: auto !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 360px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 0 32px 0 10px !important;
+    border: 1px solid #8c8f94 !important;
+    border-radius: 4px !important;
+    background-color: #fff !important;
+    box-shadow: none !important;
+    color: #1d2d3d !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 1.4 !important;
+}
+
+.brapf-one-click-card .brapf-store-type-control select:hover,
+.brapf-one-click-card .brapf-store-type-input:hover {
+    border-color: #2271b1 !important;
+}
+
+.brapf-one-click-card .brapf-store-type-control select:focus,
+.brapf-one-click-card .brapf-store-type-input:focus {
+    border-color: #2271b1 !important;
+    box-shadow: 0 0 0 1px #2271b1 !important;
+    outline: 2px solid transparent !important;
+}
+
+.brapf-one-click-card .brapf-one-click-columns {
+    display: grid !important;
+    clear: both !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 45px !important;
+    margin: 35px 0 20px !important;
+    padding: 28px 0 !important;
+    border-top: 1px solid #edf0f2 !important;
+    border-bottom: 1px solid #edf0f2 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-recommendations {
+    padding: 0 !important;
+    color: #1d2d3d !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    list-style: none !important;
+}
+
+.brapf-one-click-card .brapf-one-click-recommendations li {
+    margin: 0 0 10px !important;
+    color: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+    list-style: none !important;
+}
+
+.brapf-one-click-card .brapf-one-click-placement,
+.brapf-one-click-card .brapf-one-click-placement dt,
+.brapf-one-click-card .brapf-one-click-placement dd {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-placement {
+    margin: 0 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-placement div {
+    display: flex !important;
+    justify-content: space-between !important;
+    gap: 15px !important;
+    margin-bottom: 10px !important;
+}
+
+.brapf-one-click-card .brapf-one-click-placement dt {
+    color: #52616f !important;
+    font-weight: 400 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-placement dd {
+    color: #1d2d3d !important;
+    font-weight: 600 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-note,
+.brapf-one-click-card .brapf-one-click-access-notice {
+    color: #52616f !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-actions .button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 18px !important;
+    border: 1px solid #00a198 !important;
+    border-radius: 3px !important;
+    background: #00a198 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .15) !important;
+    color: #fff !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    text-shadow: none !important;
+    transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease !important;
+}
+
+.brapf-one-click-card .brapf-one-click-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    margin-top: 30px !important;
+}
+
+.brapf-one-click-card .brapf-one-click-actions .button:hover,
+.brapf-one-click-card .brapf-one-click-actions .button:active {
+    border-color: #008f87 !important;
+    background: #008f87 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .2) !important;
+    color: #fff !important;
+}
+
+.brapf-one-click-card .brapf-one-click-actions .button:focus {
+    border-color: #007cba !important;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2271b1 !important;
+    color: #fff !important;
+    outline: 0 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-actions .button[disabled],
+.brapf-one-click-card .brapf-one-click-actions .button[aria-disabled="true"] {
+    border-color: #c3c4c7 !important;
+    background: #f6f7f7 !important;
+    box-shadow: none !important;
+    color: #8c8f94 !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-ai-consent {
+    clear: both !important;
+    margin: 18px 0 0 !important;
+    padding: 14px 16px !important;
+    border: 1px solid #c3d8ec !important;
+    border-radius: 6px !important;
+    background: #f0f6fc !important;
+    color: #1d2d3d !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-ai-consent--unavailable {
+    border-color: #dcdcde !important;
+    background: #f6f7f7 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-ai-consent--unavailable legend,
+.brapf-one-click-card .brapf-one-click-ai-consent--unavailable > label,
+.brapf-one-click-card .brapf-one-click-ai-consent--unavailable .brapf-one-click-ai-unavailable-note {
+    color: #8c8f94 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-ai-consent > label {
+    color: #1d2d3d !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-ai-consent > label input[type="checkbox"] {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    min-height: 20px !important;
+    accent-color: #2271b1 !important;
+}
+
+.brapf-one-click-card .brapf-one-click-ai-consent p {
+    color: #50575e !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+}
+
+.brapf-one-click-card a:not(.button) {
+    color: #2271b1 !important;
+    font-weight: 400 !important;
+    text-decoration: none !important;
+}
+
+.brapf-one-click-card a:not(.button):hover,
+.brapf-one-click-card a:not(.button):focus {
+    color: #135e96 !important;
+    text-decoration: underline !important;
+}
+
 @media (max-width: 700px) {
     .brapf-one-click-card {
-        padding: 28px;
+        padding: 28px !important;
     }
 
-    .brapf-one-click-columns {
-        grid-template-columns: 1fr;
-        gap: 25px;
+    .brapf-one-click-card .brapf-one-click-columns {
+        grid-template-columns: 1fr !important;
+        gap: 25px !important;
     }
 
-    .brapf-one-click-actions {
-        align-items: stretch;
-        flex-direction: column;
+    .brapf-one-click-card .brapf-one-click-actions {
+        align-items: stretch !important;
+        flex-direction: column !important;
     }
 
-    .brapf-one-click-actions .button {
-        text-align: center;
+    .brapf-one-click-card .brapf-one-click-actions .button {
+        text-align: center !important;
     }
 }

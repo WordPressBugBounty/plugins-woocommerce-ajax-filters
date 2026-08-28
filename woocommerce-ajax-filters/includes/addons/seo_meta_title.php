@@ -109,6 +109,11 @@ if( ! function_exists('BeRocket_AAPF_wcseo_title_visual5') ) {
         return $text_return;
     }
 }
+if( ! function_exists('BeRocket_AAPF_wcseo_title_visual6') ) {
+    function BeRocket_AAPF_wcseo_title_visual6($filters, $text, $section, $terms_filtered) {
+        return $text;
+    }
+}
 if( ! class_exists('BeRocket_AAPF_addon_woocommerce_seo_title') ) {
     class BeRocket_AAPF_addon_woocommerce_seo_title {
         public $terms_filtered = array();

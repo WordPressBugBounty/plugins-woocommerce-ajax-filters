@@ -229,8 +229,13 @@ function berocket_change_seo_friendly_urls() {
 function  berocket_change_seo_meta_title() {
     if( jQuery('.berocket_seo_meta_title').prop('checked') ) {
         jQuery('.berocket_seo_meta_title_elements').show();
+        jQuery('.berocket_per_page_seo').parents('tr').first().show();
     } else {
         jQuery('.berocket_seo_meta_title_elements').hide();
+        jQuery('.berocket_per_page_seo').parents('tr').first().hide();
+    }
+    if( typeof brapf_business_show_per_page_seo == 'function' ) {
+        brapf_business_show_per_page_seo();
     }
 }
 function  berocket_change_use_links_filters() {

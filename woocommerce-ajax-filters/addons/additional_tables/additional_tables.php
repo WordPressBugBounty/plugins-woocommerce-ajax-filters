@@ -227,6 +227,18 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
     }
     function get_charset_collate() {
         global $wpdb;
+
+        $table_status = $wpdb->get_row(
+            $wpdb->prepare(
+                'SHOW TABLE STATUS WHERE Name = %s',
+                $wpdb->posts
+            )
+        );
+        if( ! empty($table_status->Collation)
+            && preg_match('/^[a-zA-Z0-9_]+$/', $table_status->Collation) ) {
+            return 'COLLATE ' . $table_status->Collation;
+        }
+
         return $wpdb->has_cap('collation') ? $wpdb->get_charset_collate() : '';
     }
     function cron() {

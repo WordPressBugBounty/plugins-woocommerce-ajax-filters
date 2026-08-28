@@ -956,6 +956,7 @@ class BeRocket_AAPF extends BeRocket_Framework {
                             array('value' => 'BeRocket_AAPF_wcseo_title_visual3', 'text' => __('[attribute 1 values] {title} with [attribute] [values] and [attribute] [values]', 'BeRocket_AJAX_domain')),
                             array('value' => 'BeRocket_AAPF_wcseo_title_visual4', 'text' => __('{title} - [values] / [values]', 'BeRocket_AJAX_domain')),
                             array('value' => 'BeRocket_AAPF_wcseo_title_visual5', 'text' => __('[attribute]:[values];[attribute]:[values] - {title}', 'BeRocket_AJAX_domain')),
+                            array('value' => 'BeRocket_AAPF_wcseo_title_visual6', 'text' => __('Without changes - {title}', 'BeRocket_AJAX_domain')),
                         )),
                         "value"    => $this->defaults["seo_meta_title_visual"],
                     ),

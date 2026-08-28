@@ -636,7 +636,7 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
         public function display_admin_settings( $tabs_info = array(), $data = array(), $setup_style = array() ) {
 			$plugin_info = get_plugin_data( $this->cc->info[ 'plugin_file' ] );
             global $wp;
-            $settings_url = add_query_arg( NULL, NULL );
+            $settings_url = add_query_arg( array() );
             $settings_url = esc_url_raw($settings_url);
             $def_setup_style = array(
                 'settings_url'    => $settings_url,

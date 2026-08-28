@@ -3,9 +3,9 @@ Plugin Name: Advanced AJAX Product Filters
 Contributors: dholovnia, berocket
 Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=donate&utm_campaign=ajax_filters
 Tags: product filters, ajax product filters, woocommerce filters, wc filters, category filter
-Requires at least: 5.0
-Tested up to: 7.0.2
-Stable tag: 3.2.2
+Requires at least: 6.3
+Tested up to: 7.1
+Stable tag: 3.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -191,6 +191,15 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Changelog ==
+= 3.2.3 =
+* Enhancement - Added an SEO title template that leaves the page title unchanged and improved per-page SEO settings.
+* Enhancement - Added WPML translation support for Business SEO meta title, H1 title and meta description.
+* Enhancement - Updated Divi 5 filter module labels.
+* Enhancement - Updated framework.
+* Security - Hardened framework validation and output handling.
+* Fix - Correct Selected Filters Area visibility when filters yield no selections.
+* Fix - Use the product table collation when regenerating Additional Tables.
+
 = 3.2.2 =
 * New: Business AI recommendations for one-click filter setup.
 * New: Business AI can create a Featured Products intelligent filter from recent sales patterns.

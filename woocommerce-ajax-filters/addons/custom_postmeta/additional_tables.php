@@ -270,11 +270,17 @@ if( ! class_exists('BeRocket_aapf_variations_tables_postmeta_addon') ) {
                     $product_metas[$name][$val][intval($post_meta_val->id)] = true;
                     $definition_key = $name . "\0" . $val;
                     if( ! isset($definition_values[$definition_key]) ) {
+                        $display_name = apply_filters(
+                            'berocket_aapf_custom_postmeta_value_name',
+                            (string)$post_meta_val->val,
+                            $post_meta_val->val,
+                            $post_meta_val->name
+                        );
                         $definition_values[$definition_key] = $wpdb->prepare(
                             '(%s, %s, %s)',
                             $name,
                             $val,
-                            (string)$post_meta_val->val
+                            (string)$display_name
                         );
                     }
                 }
@@ -447,7 +453,12 @@ if( ! class_exists('BeRocket_aapf_variations_tables_postmeta_addon') ) {
             $values = array();
             if( is_array($result) ) {
                 foreach($result as $result_val) {
-                    $values[$this->sanitize_name($result_val)] = $result_val;
+                    $values[$this->sanitize_name($result_val)] = apply_filters(
+                        'berocket_aapf_custom_postmeta_value_name',
+                        (string)$result_val,
+                        $result_val,
+                        $meta_key
+                    );
                 }
             }
             $table_name_meta = $wpdb->prefix . 'braapf_custom_post_meta';
@@ -524,7 +535,7 @@ if( ! class_exists('BeRocket_aapf_variations_tables_postmeta_addon') ) {
             if( ! is_admin() ) {
                 global $wpdb;
                 $table_name_meta = $wpdb->prefix . 'braapf_custom_post_meta';
-                $query = "SELECT meta_id, slug as meta_slug, name as meta_value, count FROM {$table_name_meta}
+                $query = "SELECT meta_id, slug as meta_value, name as meta_name, count FROM {$table_name_meta}
                 WHERE meta LIKE %s ORDER BY meta_id";
             }
             return $query;

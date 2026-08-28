@@ -1,8 +1,8 @@
 {
   "name": "bapf/filters-group",
   "d4Shortcode": "et_pb_br_filters_group",
-  "title": "Group Filter",
-  "titles": "Group Filters",
+  "title": "BeRocket Group Filter",
+  "titles": "BeRocket Group Filters",
   "category": "module",
   "childModuleName": "bapf/filters-group-item",
   "childModuleTitle": "Filter",

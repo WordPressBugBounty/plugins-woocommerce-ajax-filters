@@ -21,6 +21,7 @@ class BeRocket_aapf_add_postmeta_filters {
         add_filter('bapf_widget_func_color_listener_save', array($this, 'color_listener_save'), 10, 4);
         add_filter('berocket_filter_br_widget_color_name', array($this, 'color_listener_attribute'), 10, 4);
         add_filter('berocket_aapf_color_term_select_metadata', array($this, 'select_metadata'), 10, 3);
+        add_filter('berocket_aapf_custom_postmeta_value_name', array($this, 'table_value_name'), 10, 3);
     }
     function filter_type($filter_type) {
         $filter_type = berocket_insert_to_array(
@@ -157,8 +158,9 @@ class BeRocket_aapf_add_postmeta_filters {
         $slugs = array();
         if( is_array($post_metas) ) {
             foreach($post_metas as $post_meta) {
-                $meta_name = ( property_exists($post_meta, 'meta_name') ? $this->style_meta_name($post_meta->meta_name, $post_meta->meta_name, $name) : $this->style_name($post_meta->meta_value, $name) );
-                $meta_slug = $this->style_slug($post_meta->meta_value);
+                $preformatted = property_exists($post_meta, 'meta_name');
+                $meta_name = ( $preformatted ? $post_meta->meta_name : $this->style_name($post_meta->meta_value, $name) );
+                $meta_slug = ( $preformatted ? $post_meta->meta_value : $this->style_slug($post_meta->meta_value) );
                 $meta_id   = ( property_exists($post_meta, 'meta_id') ? intval($post_meta->meta_id) : $meta_slug );
                 if( ! in_array($meta_slug, $slugs) || ! $exclude_same ) {
                     $slugs[] = $meta_slug;
@@ -307,24 +309,59 @@ GROUP BY meta_value ORDER BY meta_value");
         return $text_field;
     }
     function style_name($text, $postname = false) {
-        if( ! empty($postname) && function_exists('acf_get_field') ) {
+        $is_acf = false;
+        if( ! empty($postname) && function_exists('acf_get_field') && $this->get_acf_field($postname) ) {
             $text_field = $this->acf_field_detect($postname, $text);
+            $is_acf = true;
         } else {
             $text_field = maybe_unserialize($text);
         }
         if( is_array($text_field) ) {
             $text_field = self::r_implode(', ', $text_field);
         }
-        $text_field = str_replace(array('_'), array(' '), $text_field);
-        $text_field = trim($text_field);
-        $text_field = ucfirst($text_field);
+        if( ! $is_acf ) {
+            $text_field = str_replace(array('_'), array(' '), $text_field);
+            $text_field = trim($text_field);
+            $text_field = ucfirst($text_field);
+        }
         return $text_field;
     }
-    function acf_field_detect($postname, $text) {
-        if( empty($this->acf_fields[$postname]) ) {
+    function table_value_name($display_name, $text, $postname) {
+        return $this->style_name($text, $postname);
+    }
+    function get_acf_field($postname) {
+        if( ! array_key_exists($postname, $this->acf_fields) ) {
             $this->acf_fields[$postname] = acf_get_field($postname);
         }
-        $field = $this->acf_fields[$postname];
+        return $this->acf_fields[$postname];
+    }
+    function acf_choice_name($choices, $value) {
+        foreach((array)$choices as $choice_value => $choice_name) {
+            if( is_array($choice_name) ) {
+                $nested_name = $this->acf_choice_name($choice_name, $value);
+                if( $nested_name !== null ) {
+                    return $nested_name;
+                }
+            } elseif( (string)$choice_value === (string)$value ) {
+                return $choice_name;
+            }
+        }
+        return null;
+    }
+    function acf_choices_names($choices, $value) {
+        if( is_array($value) ) {
+            $names = array();
+            foreach($value as $single_value) {
+                $choice_name = $this->acf_choice_name($choices, $single_value);
+                $names[] = ( $choice_name === null ? $single_value : $choice_name );
+            }
+            return $names;
+        }
+        $choice_name = $this->acf_choice_name($choices, $value);
+        return ( $choice_name === null ? $value : $choice_name );
+    }
+    function acf_field_detect($postname, $text) {
+        $field = $this->get_acf_field($postname);
         $value = maybe_unserialize($text);
         if( empty($field) || empty($field['type']) ) {
             if( is_array($value) ) {
@@ -334,6 +371,12 @@ GROUP BY meta_value ORDER BY meta_value");
             }
         }
         switch($field['type']) {
+            case 'select':
+            case 'radio':
+            case 'checkbox':
+            case 'button_group':
+                return $this->acf_choices_names(( isset($field['choices']) ? $field['choices'] : array() ), $value);
+                break;
             case 'image':
                 return wp_get_attachment_url($value);
                 break;

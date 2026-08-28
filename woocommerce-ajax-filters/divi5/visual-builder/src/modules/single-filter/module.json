@@ -1,8 +1,8 @@
 {
   "name": "bapf/single-filter",
   "d4Shortcode": "et_pb_br_filter_single",
-  "title": "Single Filter",
-  "titles": "Single Filters",
+  "title": "BeRocket Single Filter",
+  "titles": "BeRocket Single Filters",
   "category": "module",
   "moduleClassName": "et_pb_br_filter_single",
   "moduleOrderClassName": "et_pb_br_filter_single",

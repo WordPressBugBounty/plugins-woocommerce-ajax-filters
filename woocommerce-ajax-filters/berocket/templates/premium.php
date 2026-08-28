@@ -27,7 +27,9 @@ if ( isset($this->plugin_version_capability) && $this->plugin_version_capability
             <?php
             $feature_text = '';
             foreach ( $feature_list as $feature ) {
-                $feature_text .= '<li>' . $feature . '</li>';
+                if ( is_scalar($feature) ) {
+                    $feature_text .= '<li>' . esc_html((string)$feature) . '</li>';
+                }
             }
             $text = '<h3>Unlock Premium features!</h3>
             <div>
