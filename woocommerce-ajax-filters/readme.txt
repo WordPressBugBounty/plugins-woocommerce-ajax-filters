@@ -5,7 +5,7 @@ Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=w
 Tags: product filters, ajax product filters, woocommerce filters, wc filters, category filter
 Requires at least: 6.3
 Tested up to: 7.1
-Stable tag: 3.2.3
+Stable tag: 3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -191,6 +191,18 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Changelog ==
+= 3.3 =
+* New: Added BeRocket Single Filter and BeRocket Filter Group blocks for the Gutenberg editor.
+* Improved: Gutenberg previews now load the existing filter styles and safely hydrate sliders and select controls.
+* Improved: Gutenberg selectors show published filters and groups to WooCommerce managers, with cached editor data.
+* Security: Hardened Gutenberg server previews, selector data and slider labels.
+
+= 3.2.3.2 =
+* Hotfix: Fixed the Business Filter Statistics Regenerate and Clear buttons in the Product Filters settings form.
+
+= 3.2.3.1 =
+* Fix - Load the slider script for the Divi filter style.
+
 = 3.2.3 =
 * Enhancement - Added an SEO title template that leaves the page title unchanged and improved per-page SEO settings.
 * Enhancement - Added WPML translation support for Business SEO meta title, H1 title and meta description.

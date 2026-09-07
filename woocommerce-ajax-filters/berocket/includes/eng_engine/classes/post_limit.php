@@ -9,7 +9,7 @@ class PostLimit extends PostBase {
 	public function __construct( $o_locked_features ) {
 		parent::__construct( $o_locked_features );
 
-		$data = get_option( BR_EE_OPTION );
+		$data = DataStore::get_current();
 		if ( ! empty( $data['locked_features'][ $this->plugin_sku ]['posts'][ $this->post_name ] ) ) {
 			$locked_features = $data['locked_features'][ $this->plugin_sku ]['posts'][ $this->post_name ];
 			foreach ( $locked_features as $feature ) {
@@ -29,7 +29,7 @@ class PostLimit extends PostBase {
 	}
 
 	public function minmax_limitation_inputs_after( $html ) {
-		$data = get_option( BR_EE_OPTION );
+		$data = DataStore::get_current();
 		if ( ! empty( $data['locked_features']['minmax']['posts']['PostLimit'] ) ) {
 			$locked_features = $data['locked_features']['minmax']['posts']['PostLimit'];
 			foreach ( $locked_features as $feature ) {
@@ -49,7 +49,7 @@ class PostLimit extends PostBase {
 	}
 
 	public function add_settings_tab( $tabs_info ) {
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = $this->plugin_sku;
 		$plugin_name = $this->plugin_name;
 		$plugin_version_capability = apply_filters( 'brfr_get_plugin_version_capability_' . $plugin_name, 0 );
@@ -99,7 +99,7 @@ class PostLimit extends PostBase {
 	}
 
 	public function data_add_option( $settings_data ) {
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = $this->plugin_sku;
 		$plugin_name = $this->plugin_name;
 		$plugin_version_capability = apply_filters( 'brfr_get_plugin_version_capability_' . $plugin_name, 0 );

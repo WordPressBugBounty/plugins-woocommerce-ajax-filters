@@ -1,6 +1,8 @@
 <?php
 namespace BeRocket\EngagementEngine;
 
+include_once __DIR__ . "/data_store.php";
+
 use function BeRocket\utm;
 
 class PostBase {
@@ -89,7 +91,7 @@ class PostBase {
 	}
 
 	public function output_locked_features( $page_content, $item, $tab_name, $tab_content ): string {
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = $this->plugin_sku;
 		$plugin_name = $this->plugin_name;
 		if ( empty( $item['name'] ) ) {
@@ -124,7 +126,7 @@ class PostBase {
 	}
 
 	public function get_locked_features_for_post(): array {
-		$data = get_option( BR_EE_OPTION );
+		$data = DataStore::get_current();
 
 		return $data['locked_features'][ $this->plugin_sku ]['posts'][ $this->post_name ] ?? [];
 	}

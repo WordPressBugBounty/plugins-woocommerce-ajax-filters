@@ -1,0 +1,23 @@
+.berocket-aapf-gutenberg-block .berocket-aapf-gutenberg-preview {
+	pointer-events: none;
+}
+
+.berocket-aapf-gutenberg-block .berocket-aapf-gutenberg-preview__unavailable,
+.berocket-aapf-gutenberg-preview-notice {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 12px 16px;
+	border: 1px solid #dcdcde;
+	border-radius: 2px;
+	background: #f6f7f7;
+	color: #50575e;
+}
+
+.berocket-aapf-gutenberg-block .berocket-aapf-gutenberg-preview__unavailable p,
+.berocket-aapf-gutenberg-preview-notice p {
+	margin: 0;
+}
+
+.berocket-aapf-gutenberg-block .berocket-aapf-gutenberg-placeholder .components-placeholder__fieldset {
+	max-width: 480px;
+}

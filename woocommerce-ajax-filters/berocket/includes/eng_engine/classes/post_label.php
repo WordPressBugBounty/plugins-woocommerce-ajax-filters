@@ -9,7 +9,7 @@ class PostLabel extends PostBase {
 	public function __construct( $o_locked_features ) {
 		parent::__construct( $o_locked_features );
 
-		$data = get_option( BR_EE_OPTION );
+		$data = DataStore::get_current();
 		if ( ! empty( $data['locked_features'][ $this->plugin_sku ]['posts'][ $this->post_name ] ) ) {
 			$locked_features = $data['locked_features'][ $this->plugin_sku ]['posts'][ $this->post_name ];
 			foreach ( $locked_features as $feature ) {
@@ -32,7 +32,7 @@ class PostLabel extends PostBase {
 		if ( empty( $item ) or empty( $tab_name ) )
 			return $page_content;
 
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = 'labels';
 		$plugin_name = 'products_label';
 		$item_name = ( is_array( $item['name'] ) ? implode( '_', $item['name'] ) : $item['name'] );
@@ -63,7 +63,7 @@ class PostLabel extends PostBase {
 	}
 
 	public function premium_select_option( $tabs_data ): array {
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = 'labels';
 
 		if ( ! empty( $data['locked_features'][ $plugin ]['posts'][ $this->post_name ] ) ) {

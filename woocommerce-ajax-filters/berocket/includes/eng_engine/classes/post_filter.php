@@ -88,7 +88,7 @@ class PostFilter extends PostBase {
 		if ( ! $this->is_paid() or $this->is_premium() ) {
 			$options['style']['has_advanced'] = true;
 			add_action( 'braapf_advanced_single_filter_style', function ( $settings_name, $braapf_filter_setings ) {
-				$data    = get_option( BR_EE_OPTION );
+				$data    = DataStore::get_current();
 				if ( ! empty( $data['locked_features']['filters']['posts'][ $this->post_name ] ) ) {
 					$locked_features = $data['locked_features']['filters']['posts'][ $this->post_name ];
 					foreach ( $locked_features as $feature ) {
@@ -251,7 +251,7 @@ class PostFilter extends PostBase {
 	}
 
 	public function get_locked_features_for_post(): array {
-		$data = get_option( BR_EE_OPTION );
+		$data = DataStore::get_current();
 
 		return $data['locked_features'][ $this->plugin_sku ]['posts'][ $this->post_name ] ?? [];
 	}

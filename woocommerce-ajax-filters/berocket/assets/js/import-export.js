@@ -261,7 +261,7 @@
         $('.brfr_backup_form .fa-spin').show();
         $('.brfr_backup_form .brfr_backup_form_send').prop('disabled', true);
         $('.brfr_backup_form .brfr_backup_form_select select').prop('disabled', true);
-        $.get(ajaxurl, data, function(data) {
+        $.post(ajaxurl, data, function(data) {
             if (data === 'OK') {
                 $('.brfr_backup_form .fa-check').show();
             } else {

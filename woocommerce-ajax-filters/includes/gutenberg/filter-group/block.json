@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "berocket/filter-group",
+  "title": "BeRocket Filter Group",
+  "category": "widgets",
+  "icon": "filter",
+  "description": "Display one existing BeRocket filter group.",
+  "keywords": [
+    "woocommerce",
+    "filter",
+    "berocket"
+  ],
+  "textdomain": "BeRocket_AJAX_domain",
+  "attributes": {
+    "groupId": {
+      "type": "number"
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "editorScript": "berocket-aapf-gutenberg-editor",
+  "editorStyle": "berocket-aapf-gutenberg-editor-style"
+}

@@ -333,6 +333,10 @@ if ( ! class_exists('BeRocket_custom_post_class') ) {
                 return false;
             }
 
+            if( ! current_user_can( 'edit_post', $post_id ) ) {
+                return false;
+            }
+
             if( empty($_REQUEST[$this->post_name.'_nonce']) || ! wp_verify_nonce($_REQUEST[$this->post_name.'_nonce'], $this->post_name.'_check') ) {
                 return false;
             }

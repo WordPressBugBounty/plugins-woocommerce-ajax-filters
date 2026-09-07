@@ -81,7 +81,7 @@ class LockedFeatures extends Messaging {
 
 	public function init_settings() {
 		$plugin = $this->get_plugin_sku_by_page();
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 
 		if ( ! empty( $data['locked_features'][ $plugin ]['main'] ) ) {
 			$locked_features = $data['locked_features'][ $plugin ]['main'];
@@ -123,7 +123,7 @@ class LockedFeatures extends Messaging {
 	}
 
 	public function init_post( $plugin, $post_name ) {
-		$data = get_option( BR_EE_OPTION );
+		$data = DataStore::get_current();
 
 		if ( ! empty( $data['locked_features'] ) ) {
 			foreach ( $this->plugin_posts as $plugin_name => $plugin_posts ) {
@@ -153,7 +153,7 @@ class LockedFeatures extends Messaging {
 		if ( empty( $item ) or empty( $tab_name ) )
 			return $page_content;
 
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = $this->get_plugin_sku_by_page();
 		$plugin_name = $this->get_plugin_name_by_page();
 
@@ -198,7 +198,7 @@ class LockedFeatures extends Messaging {
 		if ( empty( $item ) or empty( $tab_name ) )
 			return $page_content;
 
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = $this->get_plugin_sku_by_page();
 		$plugin_name = $this->get_plugin_name_by_page();
 		if ( $plugin == 'loadmore' ) {
@@ -238,7 +238,7 @@ class LockedFeatures extends Messaging {
 	}
 
 	public function output_locked_features_selected_filters_template( $templates ): array {
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = $this->get_plugin_sku_by_page();
 		$plugin_name = $this->get_plugin_name_by_page();
 		$plugin_version_capability = apply_filters( 'brfr_get_plugin_version_capability_' . $plugin_name, 0 );
@@ -799,7 +799,7 @@ class LockedFeatures extends Messaging {
 	}
 
 	public function add_settings_tab( $tabs_info ) {
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = $this->get_plugin_sku_by_page();
 		$plugin_name = $this->get_plugin_name_by_page();
 		$plugin_version_capability = apply_filters( 'brfr_get_plugin_version_capability_' . $plugin_name, 0 );
@@ -849,7 +849,7 @@ class LockedFeatures extends Messaging {
 	}
 
 	public function data_add_option( $settings_data ) {
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = $this->get_plugin_sku_by_page();
 		$plugin_name = $this->get_plugin_name_by_page();
 		$plugin_version_capability = apply_filters( 'brfr_get_plugin_version_capability_' . $plugin_name, 0 );
@@ -894,7 +894,7 @@ class LockedFeatures extends Messaging {
 	}
 
 	public function output_locked_feature_by_hook( $page_content, $item, $tab_name, $tab_content ): string {
-		$data   = get_option( BR_EE_OPTION );
+		$data   = DataStore::get_current();
 		$plugin = $this->get_plugin_sku_by_page();
 		$plugin_name = $this->get_plugin_name_by_page();
 		$plugin_version_capability = apply_filters( 'brfr_get_plugin_version_capability_' . $plugin_name, 0 );
@@ -964,7 +964,7 @@ class LockedFeatures extends Messaging {
 	}
 
 	public function add_sidebar_metabox() {
-		$data = get_option( BR_EE_OPTION );
+		$data = DataStore::get_current();
 		if ( ! empty( $data['locked_features'] ) ) {
 			foreach ( $this->post_name_to_plugin as $post_name => $plugin ) {
 				if ( $this->is_post_page( $post_name ) ) {
