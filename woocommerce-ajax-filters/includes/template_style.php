@@ -1,6 +1,7 @@
 <?php
 if( ! class_exists('BeRocket_AAPF_Template_Style') ) {
     class BeRocket_AAPF_Template_Style {
+        protected static $script_handles = array();
         public $data = array();
         function __construct() {
             $this->data = array_merge(
@@ -24,11 +25,22 @@ if( ! class_exists('BeRocket_AAPF_Template_Style') ) {
             $this->enqueue_all();
         }
         function enqueue_all() {
-            if( ! empty($this->data['style_file']) && file_exists(dirname($this->data['file']).'/'.$this->data['style_file']) ) {
-                BeRocket_AAPF::wp_enqueue_style( 'BeRocket_AAPF_style-'.sanitize_title($this->data['style_file']), plugins_url( $this->data['style_file'], $this->data['file'] ), array(), $this->data['version'] );
+            $style_files = is_array($this->data['style_file']) ? $this->data['style_file'] : array($this->data['style_file']);
+            foreach($style_files as $style_file) {
+                if( ! empty($style_file) && file_exists(dirname($this->data['file']).'/'.$style_file) ) {
+                    BeRocket_AAPF::wp_enqueue_style( 'BeRocket_AAPF_style-'.sanitize_title($style_file), plugins_url( $style_file, $this->data['file'] ), array(), $this->data['version'] );
+                }
             }
-            if( ! empty($this->data['script_file']) && file_exists(dirname($this->data['file']).'/'.$this->data['script_file']) ) {
-                BeRocket_AAPF::wp_enqueue_script( 'BeRocket_AAPF_script-'.sanitize_title($this->data['script_file']), plugins_url( $this->data['script_file'], $this->data['file'] ), array('jquery', 'berocket_aapf_widget-script'), $this->data['version'], true );
+            $script_files = is_array($this->data['script_file']) ? $this->data['script_file'] : array($this->data['script_file']);
+            foreach($script_files as $script_file) {
+                if( ! empty($script_file) && file_exists(dirname($this->data['file']).'/'.$script_file) ) {
+                    // Different styles can refer to the same script through different relative paths.
+                    $script_path = realpath(dirname($this->data['file']).'/'.$script_file);
+                    if( ! isset(self::$script_handles[$script_path]) ) {
+                        self::$script_handles[$script_path] = 'BeRocket_AAPF_script-'.sanitize_title($script_file);
+                    }
+                    BeRocket_AAPF::wp_enqueue_script( self::$script_handles[$script_path], plugins_url( $script_file, $this->data['file'] ), array('jquery', 'berocket_aapf_widget-script'), $this->data['version'], true );
+                }
             }
         }
         function deactivate() {

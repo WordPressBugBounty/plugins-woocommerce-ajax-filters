@@ -3,6 +3,7 @@
         <key name="br_filters_options">
             <key name="ub_product_text" />
             <key name="ub_product_button_text" />
+            <key name="selected_filters_label" />
             <key name="ajax_load_text">
                 <key name="top" />
                 <key name="bottom" />

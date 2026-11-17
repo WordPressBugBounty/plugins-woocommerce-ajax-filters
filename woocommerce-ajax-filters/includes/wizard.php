@@ -962,7 +962,7 @@ class BeRocket_AAPF_Wizard {
                 $active_widgets = get_option( 'sidebars_widgets' );
                 $is_group_posts = $is_group_posts[0];
                 $group_id_search = $is_group_posts->ID;
-                $widget_data = array('group_id' => $group_id_search);
+                $widget_data = array('group_slug' => braapf_get_group_slug( $group_id_search ));
                 $sidebar = strtolower(sanitize_text_field($sidebar));
                 $widget_exist = false;
                 if( isset($active_widgets[$sidebar]) && count($active_widgets[$sidebar]) > 0 ) {
@@ -970,8 +970,8 @@ class BeRocket_AAPF_Wizard {
                     foreach($active_widgets[$sidebar] as $widget_id) {
                         if( strpos($widget_id, 'berocket_aapf_group') !== FALSE ) {
                             $widget_id = str_replace('berocket_aapf_group-', '', $widget_id);
-                            if( isset($widget_data_check[$widget_id]) && isset($widget_data_check[$widget_id]['group_id']) 
-                                && $widget_data_check[$widget_id]['group_id'] == $group_id_search ) {
+                            if( isset($widget_data_check[$widget_id])
+                                && braapf_normalize_group_instance( $widget_data_check[$widget_id] )['group_id'] == $group_id_search ) {
                                 $widget_exist = true;
                                 $status = true;
                             }

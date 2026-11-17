@@ -50,6 +50,7 @@ if ( ! class_exists( 'berocket_admin_notices' ) ) {
                 'name'          => 'sale',
                 'html'          => '',
                 'type'          => 'info',
+                'display_area'  => 'settings',
                 'righthtml'     => '<span class="berocket-notice-dismiss notice-dismiss berocket_no_thanks" role="button" tabindex="0">
 						<span class="screen-reader-text">
 						<input class="berocket-notice-dismiss-check" type="checkbox" value="1">Dismiss this notice.
@@ -345,7 +346,7 @@ if ( ! class_exists( 'berocket_admin_notices' ) ) {
                         'end_soon'   => $end_soon,
                         'closed'     => $closed,
                     ) );
-                    if( $display_notice ) {
+	                if ( $display_notice && self::is_notice_in_display_area( $item ) ) {
                         return $item;
                     }
                 }
@@ -372,13 +373,28 @@ if ( ! class_exists( 'berocket_admin_notices' ) ) {
                         'subscribed' => self::$subscribed,
                         'priority'   => $priority,
                     ) );
-                    if( $display_notice ) {
+	                if ( $display_notice && self::is_notice_in_display_area( $item ) ) {
                         $notices[] = $item;
                     }
                 }
             }
             return $notices;
         }
+	    public static function is_notice_in_display_area( $notice ) {
+		    $area = $notice['display_area']
+		            ?? self::$default_notice_options['display_area'];
+
+		    if ( $area === 'global' ) {
+			    return true;
+		    }
+
+		    if ( $area === 'account' ) {
+			    return ( $_GET['page'] ?? '' ) === 'berocket_account';
+		    }
+
+		    return $area === 'settings'
+		           && (bool) apply_filters( 'is_berocket_settings_page', false );
+	    }
         public static function display_admin_notice() {
             $settings_page = apply_filters('is_berocket_settings_page', false);
             if( $settings_page ) {
@@ -448,68 +464,81 @@ if ( ! class_exists( 'berocket_admin_notices' ) ) {
                     <input type="submit" class="button-primary button berocket_notice_submit" value="Subscribe">
                 </form></div>';
             }
-            echo '
-                <div class="notice berocket-notice notice-' . $notice['type'] . ' berocket_admin_notice berocket_admin_notice_', self::$notice_index, '" data-notice=\'', json_encode($notice_data), '\' data-nonce="' . wp_create_nonce('berocket_information_close_notice') . '">',
-                    ( empty($notice['image']['local']) ? '' : '<img class="berocket_notice_img" src="' . $notice['image']['local'] . '">' ),
-                    ( empty($notice['righthtml']) ? '' :
-                    '<div class="berocket_notice_right_content">
-                        <div class="berocket_notice_content">' . $notice['righthtml'] . '</div>
-                        <div class="berocket_notice_after_content"></div>
-                    </div>' ),
+
+            if ( $notice['type'] == 'custom' ) {
+	            echo '<div class="berocket_admin_notice notice-custom berocket_admin_notice_',
+	            self::$notice_index,
+	            '" data-notice=\'', esc_attr( wp_json_encode( $notice_data ) ),
+	            '\' data-nonce="',
+	            esc_attr( wp_create_nonce( 'berocket_information_close_notice' ) ),
+	            '">',
+	            $notice['html'],
+	            '</div>';
+            } else {
+	            echo '
+                    <div class="notice berocket-notice notice-' . $notice['type'] . ' berocket_admin_notice berocket_admin_notice_', self::$notice_index, '" data-notice=\'', json_encode( $notice_data ), '\' data-nonce="' . wp_create_nonce( 'berocket_information_close_notice' ) . '">',
+                    ( empty( $notice['image']['local'] ) ? '' : '<img class="berocket_notice_img" src="' . $notice['image']['local'] . '">' ),
+                    ( empty( $notice['righthtml'] ) ? '' :
+                        '<div class="berocket_notice_right_content">
+                            <div class="berocket_notice_content">' . $notice['righthtml'] . '</div>
+                            <div class="berocket_notice_after_content"></div>
+                        </div>' ),
                     '<div class="berocket_notice_content_wrap">
-                        <div class="berocket_notice_content">', $notice['html'], '</div>
-                        <div class="berocket_notice_after_content"></div>
-                    </div></div>';
-            if( $settings_page && $notice['priority'] <= 5 ) {
-                $notice['rightwidth'] -= $notice['nothankswidth'];
-            }
-            echo '<style>
-                .berocket_admin_notice.berocket_admin_notice_', self::$notice_index, ' .berocket_no_thanks {',
+                            <div class="berocket_notice_content">', $notice['html'], '</div>
+                            <div class="berocket_notice_after_content"></div>
+                        </div></div>';
+                    if ( $settings_page && $notice['priority'] <= 5 ) {
+                        $notice['rightwidth'] -= $notice['nothankswidth'];
+                    }
+                    echo '<style>
+                    .berocket_admin_notice.berocket_admin_notice_', self::$notice_index, ' .berocket_no_thanks {',
                     ( $settings_page && $notice['priority'] <= 5 ? 'display: none!important;' : 'cursor: pointer;' ),
-                '}
-                ', ( empty($notice['subscribe']) ? '' : '
-                .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form {
-                    display: inline-block;
-                    padding-right: 10px;
-                }
-                .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form .berocket_subscribe_email {
-                    width: 180px;
-                    margin: 0;
-                    height: 28px
-                    display: inline;
-                }
-                .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form .berocket_notice_submit {
-                    margin: 0 0 0 10px;
-                    min-width: 80px;
-                    max-width: 80px;
-                    width: 80px;
-                    padding: 0;
-                    display: inline;
-                    vertical-align: baseline;
-                    color: #fff;
-                    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-                    text-shadow: none;
-                    border: 0 none;
-                    -moz-user-select: none;
-                    background: #ff5252 none repeat scroll 0 0;
-                    box-sizing: border-box;
-                    cursor: pointer;
-                    font-size: 14px;
-                    outline: 0 none;
-                    position: relative;
-                    text-align: center;
-                    text-decoration: none;
-                    transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) 0s, background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) 0s;
-                    white-space: nowrap;
-                    height: auto;
-                }
-                .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form .berocket_notice_submit:hover,
-                .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form .berocket_notice_submit:focus,
-                .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form .berocket_notice_submit:active{
-                    background: #ff6e68 none repeat scroll 0 0;
-                    color: white;
-                }' ), '
-            </style>
+                    '}
+                    ', ( empty( $notice['subscribe'] ) ? '' : '
+                    .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form {
+                        display: inline-block;
+                        padding-right: 10px;
+                    }
+                    .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form .berocket_subscribe_email {
+                        width: 180px;
+                        margin: 0;
+                        height: 28px
+                        display: inline;
+                    }
+                    .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form .berocket_notice_submit {
+                        margin: 0 0 0 10px;
+                        min-width: 80px;
+                        max-width: 80px;
+                        width: 80px;
+                        padding: 0;
+                        display: inline;
+                        vertical-align: baseline;
+                        color: #fff;
+                        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+                        text-shadow: none;
+                        border: 0 none;
+                        -moz-user-select: none;
+                        background: #ff5252 none repeat scroll 0 0;
+                        box-sizing: border-box;
+                        cursor: pointer;
+                        font-size: 14px;
+                        outline: 0 none;
+                        position: relative;
+                        text-align: center;
+                        text-decoration: none;
+                        transition: box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) 0s, background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) 0s;
+                        white-space: nowrap;
+                        height: auto;
+                    }
+                    .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form .berocket_notice_submit:hover,
+                    .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form .berocket_notice_submit:focus,
+                    .berocket_admin_notice.berocket_admin_notice_' . self::$notice_index . ' .berocket_subscribe_form .berocket_notice_submit:active{
+                        background: #ff6e68 none repeat scroll 0 0;
+                        color: white;
+                    }' ), '</style>';
+            }
+
+            echo '
             <script>
                 jQuery(document).ready(function() {
                     jQuery(document).on("click", ".berocket_admin_notice.berocket_admin_notice_', self::$notice_index, ' .berocket_no_thanks", function(event){
@@ -517,7 +546,8 @@ if ( ! class_exists( 'berocket_admin_notices' ) ) {
                         var notice = jQuery(this).parents(".berocket_admin_notice.berocket_admin_notice_', self::$notice_index, '").data("notice");
                         var nonce = jQuery(this).parents(".berocket_admin_notice.berocket_admin_notice_', self::$notice_index, '").data("nonce");
                         jQuery.post(ajaxurl, {action:"berocket_admin_close_notice", notice:notice, wp_nonce:nonce}, function(data){});
-                        jQuery(this).parents(".berocket_admin_notice.berocket_admin_notice_', self::$notice_index, '").hide();
+                        jQuery(this).parents(".berocket_admin_notice.berocket_admin_notice_', self::$notice_index, '").fadeOut(500);
+                        jQuery("#toplevel_page_berocket_account .wp-menu-name").addClass("hideAfter");
                     });
                 });';
             if ( $notice['end'] < strtotime(self::$end_soon_time) && $notice['end'] != 0 ) {
@@ -1756,22 +1786,14 @@ if( ! class_exists( 'berocket_admin_notices_rate_stars' ) ) {
 		            $plugin = self::get_plugin_data( 1 );
 	            }
 
-	            $start_time = mktime(0, 0, 0, 4, 13, 2026);
-	            $end_time   = mktime(23, 59, 59, 4, 17, 2026);
-	            $c_notice   = berocket_admin_notices::get_notice_by_path(array(
-                    19,
-                    $end_time,
-                    $start_time,
-                    'spring_premium_days_2026'
-                ));
-	            $is_closed = false;
-	            if ( ! isset( $c_notice['closed'] ) or $c_notice['closed'] > 0 ) {
-		            $is_closed = true;
-	            }
+	            berocket_admin_notices::$subscribed =
+		            get_option('berocket_email_subscribed');
 
-                if ( ! $is_closed and time() >= $start_time and time() < $end_time ) {
-                    // do nothing
-                } else {
+	            $notices = berocket_admin_notices::get_notices_with_priority(
+		            get_option('berocket_admin_notices', [])
+	            );
+
+	            if ( empty($notices) ) {
 	                $banner = [ "get_it_now"              => __( 'Get it now', 'BeRocket_domain' ),
                                 "remove_banner"           => __( 'Remove banner', 'BeRocket_domain' ),
                                 "unlock_premium"          => __( 'Unlock Premium', 'BeRocket_domain' ),
@@ -1784,6 +1806,13 @@ if( ! class_exists( 'berocket_admin_notices_rate_stars' ) ) {
                                 "unlock_everything"       => __( 'Unlock Everything', 'BeRocket_domain' ),
                                 "remove_this_banner"      => __( 'Remove This Banner', 'BeRocket_domain' ) ];
 	                $banner_key = array_rand( $banner );
+	                $utm_term = rawurlencode(
+	                    (string) (
+	                        $cur_plugin->info['plugin_sku']
+	                        ?? $cur_plugin->info['plugin_name']
+	                        ?? ''
+	                    )
+	                );
 	                echo "
                     <div class='berocket-above-settings-banner' style='background: {$plugin['bg_top']};'>
                         <div style='background-image: url(\"{$plugin['image_top']}\")'>
@@ -1792,7 +1821,7 @@ if( ! class_exists( 'berocket_admin_notices_rate_stars' ) ) {
                                 <p>" . ( empty( $plugin['desc_top'] ) ? $plugin['desc'] : $plugin['desc_top'] ) . "</p>
                                 <a href='{$plugin['url']}" . ( strpos( $plugin['url'], '?' ) !== false ? '&' : '?' ) .
                                     "utm_source=plugin&utm_medium=banner&utm_campaign=upgrade&utm_content=top_" . $banner_key .
-                                    "&utm_term={$cur_plugin->info['plugin_sku']}' target='_blank'>" . $banner[ $banner_key ] .
+                                    "&utm_term={$utm_term}' target='_blank'>" . $banner[ $banner_key ] .
                                 "</a>
                             </div>
                         </div>

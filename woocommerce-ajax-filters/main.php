@@ -27,6 +27,22 @@ include_once(plugin_dir_path( __FILE__ ) . 'includes/filters/get_terms_additiona
 
 class BeRocket_AAPF extends BeRocket_Framework {
     public static $user_can_manage = false;
+    public $import_export = array(
+        'purge_cache_time' => array(
+            'export_type' => 'remove',
+        ),
+        'elements_above_products' => array(
+            'export_type' => 'post',
+            'post_type'   => 'br_filters_group',
+            'multiple'    => true,
+            'scope'       => 'package',
+            'on_missing'  => 'remove',
+        ),
+    );
+    public $import_export_posts = array(
+        'br_product_filter',
+        'br_filters_group',
+    );
     public static $current_page_filters = array('added' => array());
     public static $settings_name = 'br_filters_options';
     public $info, $defaults, $values, $notice_array, $conditions;
@@ -127,6 +143,9 @@ class BeRocket_AAPF extends BeRocket_Framework {
             'scroll_shop_top_px'              => '-180',
             'selected_area_show'              => '',
             'selected_filters_template'       => 'sfa_default',
+            'selected_filters_label'          => '',
+            'filter_design_preset'            => '',
+            'show_selected_values_count'      => '',
             'selected_area_hide_empty'        => '',
             'products_only'                   => '1',
             'out_of_stock_variable'           => '',
@@ -800,6 +819,14 @@ class BeRocket_AAPF extends BeRocket_Framework {
                             ),
                         )
                     ),
+                    'selected_filters_label' => array(
+                        'label'       => __('Label before selected filters', 'BeRocket_AJAX_domain'),
+                        'name'        => 'selected_filters_label',
+                        'type'        => 'text',
+                        'extra'       => 'placeholder="' . esc_attr__('You selected', 'BeRocket_AJAX_domain') . '"',
+                        'value'       => '',
+                        'tr_class'    => 'br_selected_filters_label_row',
+                    ),
                     'selected_filters_template' => array(
                         "section"   => "selected_filters_template",
                         "value"     => "",
@@ -1137,6 +1164,26 @@ class BeRocket_AAPF extends BeRocket_Framework {
                                 'label_be_for' => __('After:', 'BeRocket_AJAX_domain'),
                             ),
                         ),
+                    ),
+                    'filter_design_preset' => array(
+                        "label"     => __( 'Filter design preset', 'BeRocket_AJAX_domain' ),
+                        "name"      => 'filter_design_preset',
+                        "type"      => 'selectbox',
+                        "options"   => array(
+                            array('value' => '', 'text' => __('Default (keep current design)', 'BeRocket_AJAX_domain')),
+                            array('value' => 'compact', 'text' => __('Compact', 'BeRocket_AJAX_domain')),
+                            array('value' => 'soft', 'text' => __('Soft', 'BeRocket_AJAX_domain')),
+                            array('value' => 'high_contrast', 'text' => __('High contrast', 'BeRocket_AJAX_domain')),
+                        ),
+                        "value"     => '',
+                        "label_for" => __('Apply a ready-made design to filters without changing their values or templates. Your custom CSS remains available. Select Default to restore the current design.', 'BeRocket_AJAX_domain'),
+                    ),
+                    'show_selected_values_count' => array(
+                        "label"     => __('Selected values count', 'BeRocket_AJAX_domain'),
+                        "name"      => 'show_selected_values_count',
+                        "type"      => 'checkbox',
+                        "value"     => '1',
+                        "label_for" => __('Show the number of selected values beside multi-select filter titles, whether expanded or collapsed. Price and single-selection filters are excluded.', 'BeRocket_AJAX_domain'),
                     ),
                     'description_show' => array(
                         "label"    => __( 'Show and hide description', "BeRocket_AJAX_domain" ),
@@ -1584,10 +1631,10 @@ jQuery(document).on('change', '.br_scroll_shop_top', br_scroll_shop_top);
 function br_selected_area_show() {
     if( jQuery('.br_selected_area_show').prop('checked') ) {
         jQuery('.br_selected_area_hide_empty').parent().show();
-        jQuery('.selected_filters_template_tr').show();
+        jQuery('.selected_filters_template_tr, .br_selected_filters_label_row').show();
     } else {
         jQuery('.br_selected_area_hide_empty').parent().hide();
-        jQuery('.selected_filters_template_tr').hide();
+        jQuery('.selected_filters_template_tr, .br_selected_filters_label_row').hide();
     }
 }
 br_selected_area_show();
@@ -2360,6 +2407,7 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
         $set_query_var_title['title'] = '';
         $set_query_var_title['widget_type'] = 'selected_area';
         $set_query_var_title['style'] = br_get_value_from_array($br_options, 'selected_filters_template', 'sfa_default');
+        $set_query_var_title['selected_filters_label'] = br_get_value_from_array($br_options, 'selected_filters_label', '');
         $set_query_var_title['selected_area_show'] = empty($br_options['selected_area_hide_empty']);
         $set_query_var_title = array_merge(BeRocket_AAPF_Widget::$defaults, $set_query_var_title);
         new BeRocket_AAPF_Widget($set_query_var_title);
@@ -2435,6 +2483,9 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
         $options = $this->get_option();
         if( $previous === '0' ) {
             update_option('berocket_filter_open_wizard_on_settings', true);
+        }
+        if( version_compare($previous, '3.3', '<') ) {
+            BeRocket_AAPF_Import_Export::migrate_page_conditions();
         }
         if( $previous !== '0' && ( version_compare($previous, '1.3.7', '<') || (version_compare($previous, '2.0', '>') && version_compare($previous, '2.3.1', '<') ) ) ) {
             $options = berocket_sanitize_array($options);
@@ -2720,6 +2771,7 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
                             'bapf_nonce'    => wp_create_nonce( 'bapf_divi5_preview' ),
                             'bapf_filters'  => rawurlencode( wp_json_encode( $this->divi5_get_select_options( 'br_product_filter', __( '--Please create filter first--', 'BeRocket_AJAX_domain' ) ) ) ),
                             'bapf_groups'   => rawurlencode( wp_json_encode( $this->divi5_get_select_options( 'br_filters_group', __( '--Please create group first--', 'BeRocket_AJAX_domain' ), array( '0' => __( 'Build In Divi', 'BeRocket_AJAX_domain' ) ) ) ) ),
+                            'bapf_group_id_to_slug' => rawurlencode( wp_json_encode( braapf_get_group_id_to_slug_map() ) ),
                             'bapf_build'    => filemtime( $asset_path ),
                         ),
                         plugin_dir_url( __FILE__ ) . 'divi5/visual-builder/build/woocommerce-ajax-products-filter-divi5.js'
@@ -2738,7 +2790,8 @@ jQuery(document).on('change', '.berocket_disable_ajax_loading', berocket_disable
 
         if ( is_array($posts) && count($posts) ) {
             foreach($posts as $post_id) {
-                $options[strval($post_id)] = get_the_title($post_id) . ' (ID:' . $post_id . ')';
+                $option_value = 'br_filters_group' === $post_type ? braapf_get_group_slug( $post_id ) : strval( $post_id );
+                $options[$option_value] = get_the_title($post_id) . ('br_filters_group' === $post_type ? '' : ' (ID:' . $post_id . ')');
             }
         } elseif( empty($options) ) {
             $options = array('0' => $empty_label);

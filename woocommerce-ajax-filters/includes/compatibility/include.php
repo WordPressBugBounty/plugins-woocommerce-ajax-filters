@@ -5,6 +5,11 @@ $compatibility_features = array(
         'check' => true,
         'file' => 'wc-widgets.php'
     ),
+//Theme compatibility
+    'Woodmart' => array(
+        'check' => get_template() === 'woodmart',
+        'file' => 'woodmart.php'
+    ),
 //Builder compatibility
     'DiviBuilder' => array(
         'check' => defined('ET_CORE_VERSION') && ( ! function_exists('et_builder_d5_enabled') || ! et_builder_d5_enabled() ),

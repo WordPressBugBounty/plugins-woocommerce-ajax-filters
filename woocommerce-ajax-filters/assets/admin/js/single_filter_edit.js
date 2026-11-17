@@ -306,7 +306,8 @@ braapf_checked_style_parent;
         berocket_show_element('.braapf_widget_color_pick', '!braapf_load_color_image_pick! == true');
         //ADDITIONAL
         berocket_show_element('.brsbs_additional', '!braapf_any_style_checked! == true');
-        berocket_show_element('.braapf_selected_area_show', '{.braapf_widget_type input[type=radio]} == "selected_area"');
+        berocket_show_element('.braapf_selected_area_show, .braapf_selected_filters_label', '{.braapf_widget_type input[type=radio]} == "selected_area"');
+        berocket_show_element('.braapf_update_button_alignment', '{.braapf_widget_type input[type=radio]} == "update_button"');
         //FOR ALL FILTERS
         berocket_show_element('.braapf_widget_collapse', '{.braapf_widget_type input[type=radio]} == "filter" || {.braapf_widget_type input[type=radio]} == "selected_area" || {.braapf_widget_type input[type=radio]} == "sortby_field"');
         berocket_show_element('.braapf_widget_is_hide', '{#braapf_widget_collapse} != "" && ({.braapf_widget_type input[type=radio]} == "filter" || {.braapf_widget_type input[type=radio]} == "selected_area" || {.braapf_widget_type input[type=radio]} == "sortby_field")');
@@ -325,6 +326,7 @@ braapf_checked_style_parent;
         berocket_show_element('.braapf_select_first_element_text', '{.braapf_widget_type input[type=radio]} == "filter" && !braapf_current_template! == "select" && ({#braapf_single_selection} == true || {.braapf_style input[type=radio]} == "select2")');
         berocket_show_element('.braapf_select_first_element_text_for_single', '{#braapf_single_selection} == true');
         berocket_show_element('.braapf_select_first_element_text_for_multiple', '{#braapf_single_selection} == false');
+        berocket_show_element('.braapf_select2_selection_display', '{.braapf_widget_type input[type=radio]} == "filter" && !braapf_current_template! == "select" && ({.braapf_style input[type=radio]} == "select2" || {.braapf_style input[type=radio]} == "select2classic") && {#braapf_single_selection} == false');
         berocket_show_element('.braapf_attribute_count, .braapf_attribute_count_show_hide', '{.braapf_widget_type input[type=radio]} == "filter" && !braapf_current_template! == "checkbox"');
         //COLOR/IMAGE
         berocket_show_element('.braapf_use_value_with_color, .braapf_color_image_block_size, .braapf_color_image_checked', '{.braapf_widget_type input[type=radio]} == "filter" && (!braapf_current_specific! == "color" || !braapf_current_specific! == "image")');

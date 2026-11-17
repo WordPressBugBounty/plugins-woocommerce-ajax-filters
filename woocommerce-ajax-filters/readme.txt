@@ -4,8 +4,8 @@ Contributors: dholovnia, berocket
 Donate link: https://berocket.com/woocommerce-ajax-products-filter/?utm_source=wordpress_org&utm_medium=donate&utm_campaign=ajax_filters
 Tags: product filters, ajax product filters, woocommerce filters, wc filters, category filter
 Requires at least: 6.3
-Tested up to: 7.1
-Stable tag: 3.3
+Tested up to: 7.1.4
+Stable tag: 3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -191,7 +191,32 @@ You can try this plugin's admin side [here](https://berocket.com/woocommerce-aja
 ---
 
 == Changelog ==
+
+= 3.5 =
+* Feature - Added full-width and start, center, and end alignment options for the Apply Filters button.
+* Feature - Added Outline selected-filter chips with thin borders and visible keyboard focus.
+* Feature - Added a customizable label before selected filters, separately for widgets and the area above products.
+* Feature - Added five title-only group styles and five collapse button styles in Pro.
+* Feature - Added filter container background, border, and corner radius controls in Business.
+* Feature - Added filter header background, inner padding, bottom divider, and header-to-body margin controls in Business.
+* Fix - Matched filter header corners to rounded container borders, including collapsed and title-only filters.
+* Fix - Improved Customize column widths, hidden empty sections, color picker fields, and selected-filter label alignment.
+* Fix - Prevented stale Woodmart infinite scroll responses during AJAX filtering.
+* Security - Hardened malformed AJAX filter parameters in Flatsome, WPBakery, and Business One-Click AI integrations.
+* Enhancement - Updated seasonal admin notices and BeRocket Framework to 3.1.5.
+
+= 3.4 =
+* Feature - Added compact Select2 multiple-selection displays: selected count or first value plus remaining count, including Select2 Classic.
+* Feature - Added Compact, Soft and High contrast filter design presets.
+* Feature - Added optional selected-value counts beside multi-select filter titles, updated after AJAX filtering and reset.
+* Enhancement - Improved filter import/export, group references, and default settings.
+* Fix - Improved variation filtering and cache updates, hierarchical taxonomy URLs, ID sliders, and color filter styles.
+* Enhancement - Updated BeRocket Framework to 3.1.3 with CDN release metadata, reduced updater API traffic, isolated invalid catalog records, improved banner tracking, and an SVG account icon.
+* Enhancement - Updated compatibility declarations for WordPress 7.1.3 and WooCommerce 11.2.1.
+
 = 3.3 =
+* New: Added optional selected-value badges beside multi-select filter titles, with plain numbers on grey circles. Available with or without minimization, in expanded and collapsed filters; counts update during AJAX filtering and reset. Price and single-selection filters are excluded.
+* New: Added optional Compact, Soft and High contrast filter design presets in all editions. Existing designs remain unchanged by default.
 * New: Added BeRocket Single Filter and BeRocket Filter Group blocks for the Gutenberg editor.
 * Improved: Gutenberg previews now load the existing filter styles and safely hydrate sliders and select controls.
 * Improved: Gutenberg selectors show published filters and groups to WooCommerce managers, with cached editor data.

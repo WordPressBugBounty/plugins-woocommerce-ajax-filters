@@ -15,6 +15,9 @@
   "attributes": {
     "groupId": {
       "type": "number"
+    },
+    "groupSlug": {
+      "type": "string"
     }
   },
   "supports": {

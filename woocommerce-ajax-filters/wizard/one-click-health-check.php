@@ -76,8 +76,8 @@ class BeRocket_AAPF_One_Click_Health_Check {
         $instance = isset($instances[$number]) ? $instances[$number] : array();
         $attached = isset($sidebars[$sidebar_id]) && is_array($sidebars[$sidebar_id])
             && in_array($widget_id, $sidebars[$sidebar_id], true)
-            && is_array($instance) && isset($instance['group_id'])
-            && absint($instance['group_id']) === $group_id;
+            && is_array($instance)
+            && braapf_normalize_group_instance($instance)['group_id'] === $group_id;
         return array('type' => $type, 'attached' => $attached);
     }
 }

@@ -13,6 +13,9 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
         public static $key         = '';
         public static $error_log   = array();
         public static $debug_mode  = false;
+        const LICENSE_PROTOCOL = 'berocket-license/1';
+        private static $license_downloads = array();
+        private static $license_download_upgrader = null;
 
         public static function init() {
             add_action( 'admin_init', array(__CLASS__, 'admin_init') );
@@ -42,6 +45,13 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             add_action( 'network_admin_menu', array( __CLASS__, 'network_account_page' ) );
             add_action( 'admin_init', array( __CLASS__, 'account_option_register' ) );
             add_filter( 'pre_set_site_transient_update_plugins', array( __CLASS__, 'update_check_set' ) );
+            add_filter('site_transient_update_plugins', array(__CLASS__, 'update_check_read'));
+            add_filter('plugins_api', array(__CLASS__, 'plugin_api_data'), 10, 3);
+            add_filter('upgrader_pre_download', array(__CLASS__, 'license_before_download'), 100, 4);
+            add_filter('upgrader_source_selection', array(__CLASS__, 'license_check_source'), 100, 4);
+            add_filter('auto_update_plugin', array(__CLASS__, 'license_automatic'), 100, 2);
+            add_action('load-update-core.php', array(__CLASS__, 'license_check_again'));
+
 	        add_filter( 'plugins_api_result', array( __CLASS__, 'plugin_api_data' ), 10, 3 );
             add_action( "wp_ajax_br_test_key", array( __CLASS__, 'test_key' ) );
             add_action( "wp_ajax_br_test_keys", array( __CLASS__, 'test_keys' ) );
@@ -104,9 +114,10 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             foreach ( self::$plugin_info as $plugin ) {
                 $plugin_file = $plugin['plugin'];
                 add_action( "after_plugin_row_{$plugin_file}", array( __CLASS__, 'update_message'), 10, 1 );
+                add_action("in_plugin_update_message-{$plugin_file}", array(__CLASS__, 'license_message'), 10, 2);
             }
 
-	        add_filter( 'plugins_api_result', array( __CLASS__, 'plugin_api_data' ), 10, 3 );
+
         }
 
         public static function error_log() {
@@ -176,7 +187,7 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                 if ( $item[ 0 ] == 'BeRocket' ) {
                     $BeRocket_item = $item;
                     continue;
-                } elseif ( $item[ 0 ] == __('Setting & Keys', 'BeRocket_domain') ) {
+                } elseif ( $item[ 0 ] == __('Settings & Keys', 'BeRocket_domain') ) {
                     $account_keys_item = $item;
                     continue;
                 }
@@ -582,18 +593,18 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             add_menu_page( __('BeRocket Account Settings', 'BeRocket_domain'), __('BeRocket Account', 'BeRocket_domain'), 'manage_berocket', 'berocket_account', array(
                     __CLASS__,
                     'account_form_network'
-                ), 'https://apicdn.berocket.com/logo_rocket_white.png', '55.55' );
+                ), 'https://apicdn.berocket.com/logo_rocket_white.svg', '55.55' );
         }
 
         public static function main_menu_item() {
             add_menu_page( 'BeRocket Account', 'BeRocket', 'manage_berocket', 'berocket_account', array(
                     __CLASS__,
                     'account_form'
-                ), 'https://apicdn.berocket.com/logo_rocket_white.png', '55.55' );
+                ), 'https://apicdn.berocket.com/logo_rocket_white.svg', '55.55' );
         }
 
         public static function account_page() {
-            add_submenu_page( 'berocket_account', __('BeRocket Account Settings', 'BeRocket_domain'), __('Setting & Keys', 'BeRocket_domain'), 'manage_berocket_account', 'berocket_account', array(
+            add_submenu_page( 'berocket_account', __('BeRocket Account Settings', 'BeRocket_domain'), __('Settings & Keys', 'BeRocket_domain'), 'manage_berocket_account', 'berocket_account', array(
                     __CLASS__,
                     'account_form'
                 ) );
@@ -895,100 +906,186 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             <?php
         }
 
-        public static function check_plugin_activation($plugin_test_id = false, $data_send = false) {
-            $options = self::get_options();
-            $active = false;
-            if( ! empty($options) && is_array($options) && ! empty($options['plugin_key']) && is_array($options['plugin_key']) ) {
-                $disable_cache = false;
-                if( $data_send === false ) {
-                    $data_send = array(
-                        'keys' => array()
-                    );
-                    if( ! empty($options['account_key']) ) {
-                        $data_send['keys'][] = array(
-                            'id'  => '0',
-                            'key' => $options['account_key']
-                        );
-                    }
-                    foreach(self::$plugin_info as $plugin_data) {
-                        if( ! empty($plugin_data['key']) ) {
-                            $data_send['keys'][] = array(
-                                'id'  => $plugin_data['id'],
-                                'key' => $plugin_data['key']
-                            );
-                        }
-                    }
-                    $keys_hash = md5(print_r($data_send, true)).'v2';
-                    $plugin_activation = get_transient( 'br_plugin_activation' );
-                } else {
-                    $keys_hash = '';
-                    $disable_cache = true;
+        /** One request/cache serves both activation and update permissions. */
+        public static function check_plugin_activation($plugin_test_id = false, $data_send = false, $force = false) {
+            $store_cache = $data_send === false;
+            $plugins = array();
+            foreach (self::$plugin_info as $plugin) {
+                if (!empty($plugin['key'])) { $plugins[(int)$plugin['id']] = $plugin; }
+            }
+            if ($store_cache) {
+                $options = self::get_options();
+                $data_send = array('keys'=>array());
+                if (!empty($options['account_key'])) {
+                    $data_send['keys'][] = array('id'=>0, 'key'=>$options['account_key']);
                 }
-                if( empty($plugin_activation) || ! is_array($plugin_activation) 
-                || empty($plugin_activation['hash']) || $plugin_activation['hash'] != $keys_hash ) {
-                    $plugin_activation = array(
-                        'hash' => $keys_hash,
-                        'plugins' => array()
-                    );
-                    if( count($data_send['keys']) > 0 ) {
-                        $url      = BeRocket_update_path . 'v1/check_plugin_key/';
-                        $response = wp_remote_post( $url, array(
-                            'body'        => $data_send,
-                            'method'      => 'POST',
-                            'timeout'     => 30,
-                            'redirection' => 5,
-                            'blocking'    => true,
-                            'sslverify'   => false
-                        ) );
-                        if ( ! is_wp_error( $response ) ) {
-                            $out = wp_remote_retrieve_body( $response );
-                            if ( ! empty( $out ) ) {
-                                $out = json_decode( @ $out );
-                                if( is_array($out) ) {
-                                    foreach($out as $key_status) {
-                                        if( isset($key_status->id) && $key_status->id == 0 ) {
-                                            if( ! empty($key_status->products) && is_array($key_status->products) ) {
-                                                $plugin_activation['plugins'][0] = true;
-                                                foreach($key_status->products as $product_id) {
-                                                    $plugin_activation['plugins'][intval($product_id)] = array(
-                                                        'status'  => true,
-                                                        'license' => 'paid'
-                                                    );
-                                                }
-                                            } else {
-                                                $plugin_activation['plugins'][0] = false;
-                                            }
-                                        } elseif( ! empty($key_status->id) ) {
-                                            $plugin_activation['plugins'][intval($key_status->id)] = array(
-                                                'status'  => ! empty($key_status->status),
-                                                'license' => ( empty($key_status->license) ? 'paid' : $key_status->license )
-                                            );
-                                        }
-                                    }                                    
-                                }
-                            }
-                        }
-                    }
-                    if( ! $disable_cache ) {
-                        set_transient( 'br_plugin_activation', $plugin_activation, 604800 );
+                foreach ($plugins as $plugin) {
+                    $data_send['keys'][] = array('id'=>(int)$plugin['id'], 'key'=>$plugin['key']);
+                }
+            }
+            // AJAX key tests can contain a new key; do not enroll it until it is saved.
+            $requested = array();
+            foreach ($data_send['keys'] ?? array() as $entry) {
+                if (!is_array($entry) || !isset($entry['id'], $entry['key']) || !is_scalar($entry['id']) || !is_string($entry['key'])) { continue; }
+                $id = (int)$entry['id'];
+                if (isset($plugins[$id]) && $plugins[$id]['key'] === $entry['key']) {
+                    $entry['installed_version'] = (string)$plugins[$id]['version'];
+                    $entry['installed_licenses'] = self::license_installed($plugins[$id]);
+                }
+                $requested[$id] = $entry;
+            }
+            $data_send['keys'] = array_values($requested);
+            $data_send['url'] = get_site_url();
+            $data_send['license_protocol'] = self::LICENSE_PROTOCOL;
+            $hash = hash('sha256', get_current_blog_id().'|'.wp_json_encode($data_send));
+            $cached = $store_cache ? get_transient('br_plugin_activation') : false;
+            $same_request = is_array($cached) && ($cached['hash'] ?? '') === $hash && ($cached['cache_version'] ?? 0) === 2;
+            $public_versions = $same_request ? ($cached['public_versions'] ?? array()) : array();
+            $public_changed = false;
+            // CDN changes refresh enrolled rights once. Record the high-water mark
+            // even on an API error so lagging CDN edges cannot cause request loops.
+            foreach ($plugins as $id => $plugin) {
+                $public = self::license_public_version($plugin, false);
+                if ($public !== null && (!isset($public_versions[$id]) || version_compare($public, $public_versions[$id], '>'))) {
+                    $public_versions[$id] = $public;
+                    if ($same_request && isset($cached['plugins'][$id]['updates'])) { $public_changed = true; }
+                }
+            }
+            $retry_wait = $same_request && ($cached['retry_after'] ?? 0) > time();
+            if (!$force && $same_request && ($cached['refresh_at'] ?? 0) > time() && (!$public_changed || $retry_wait)) {
+                return $plugin_test_id === false ? $cached : ($cached['plugins'][$plugin_test_id] ?? false);
+            }
+            $result = array('cache_version'=>2, 'hash'=>$hash, 'plugins'=>array(), 'public_versions'=>$public_versions);
+            $rows = array();
+            $data = $requested ? null : array();
+            if ($requested) {
+                $response = wp_remote_post(BeRocket_update_path.'v1/check_plugin_key/', array(
+                    'body'=>$data_send, 'timeout'=>15, 'redirection'=>0, 'sslverify'=>true, 'limit_response_size'=>262144
+                ));
+                if (!is_wp_error($response) && (int)wp_remote_retrieve_response_code($response) === 200) {
+                    $data = json_decode(wp_remote_retrieve_body($response), true);
+                }
+                foreach (is_array($data) ? $data : array() as $row) {
+                    if (!is_array($row) || !isset($row['id']) || !is_scalar($row['id']) || !ctype_digit((string)$row['id'])) { continue; }
+                    $id = (int)$row['id'];
+                    $rows[$id] = array_key_exists($id, $rows) ? false : $row;
+                }
+            }
+            $ttl = 604800; // Preserve the upstream seven-day legacy activation cache.
+            $failed = !is_array($data);
+            $cutoff = null;
+            $jitter = hexdec(substr($hash, 0, 4));
+            // Preserve universal account-key products; an explicit product key takes precedence.
+            if (isset($requested[0])) {
+                $universal_valid = isset($rows[0]) && is_array($rows[0]) && is_bool($rows[0]['status'] ?? null) && is_array($rows[0]['products'] ?? null);
+                if (!$universal_valid) { $failed = true; }
+                $products = $universal_valid && $rows[0]['status'] ? $rows[0]['products'] : array();
+                if (!$universal_valid && $same_request && !empty($cached['plugins'][0])) {
+                    foreach ($cached['plugins'] as $id => $previous_row) {
+                        if ($id && !isset($requested[$id]) && !isset($previous_row['updates'])) { $products[] = $id; }
                     }
                 }
-                if( $plugin_test_id === false ) {
-                    $active = $plugin_activation;
-                } else {
-                    if (! empty($plugin_activation['plugins']) && is_array($plugin_activation['plugins']) && isset($plugin_activation['plugins'][$plugin_test_id])) {
-                        $active = $plugin_activation['plugins'][$plugin_test_id];
+                $result['plugins'][0] = !empty($products) && is_array($products);
+                foreach (is_array($products) ? $products : array() as $product_id) {
+                    if (is_scalar($product_id) && (int)$product_id > 0) {
+                        $result['plugins'][(int)$product_id] = array('status'=>true, 'license'=>'paid');
                     }
                 }
             }
-            return $active;
+            foreach ($requested as $id => $entry) {
+                if (!$id) { continue; }
+                $row = $rows[$id] ?? null;
+                $row_valid = is_array($row) && in_array($row['status'] ?? null, array(true,false,0,1), true) && in_array($row['license'] ?? 'paid', array('paid','business'), true);
+                if ($row_valid) {
+                    $result['plugins'][$id] = array('status'=>!empty($row['status']), 'license'=>empty($row['license']) ? 'paid' : $row['license']);
+                } else {
+                    $failed = true;
+                    // A transport/malformed reply does not invalidate a previously
+                    // confirmed activation. Enrolled update packages are held below.
+                    if ($same_request && isset($cached['plugins'][$id])) { $result['plugins'][$id] = $cached['plugins'][$id]; }
+                }
+                if (!isset($plugins[$id]) || $plugins[$id]['key'] !== $entry['key'] || !self::license_eligible($plugins[$id]) || self::license_key($plugins[$id]) === '') { continue; }
+                $plugin = $plugins[$id];
+                $known_key = 'br_lu_known_'.self::license_identity($plugin);
+                $previous = get_option($known_key, null);
+                $record = is_array($row) ? ($row['updates'] ?? null) : null;
+                $managed = is_array($record) && ($record['protocol'] ?? '') === self::LICENSE_PROTOCOL && ($record['mode'] ?? '') === 'enforce';
+                if ($managed) {
+                    $decision = $row_valid && ($record['valid_key'] ?? null) === (bool)$row['status'] ? self::license_validate($record, $plugin, $row['license'] ?? 'paid') : false;
+                    if ($decision === false) {
+                        $decision = self::license_held($previous, 'response_invalid');
+                    } elseif (($record['decision_status'] ?? '') === 'unavailable') {
+                        $decision = self::license_held($decision, 'verification_unavailable');
+                    }
+                } elseif (is_array($previous)) {
+                    $decision = self::license_held($previous, is_array($data) ? 'confirmation_missing' : 'verification_unavailable');
+                } else { $decision = null; }
+                if ($decision !== null) {
+                    // Activation is confirmed by the outer v1 status, even when
+                    // the duration/allowed release is still unresolved.
+                    if ($row_valid) { $decision['valid_key'] = (bool)$row['status']; }
+                    if ($row_valid && !$row['status']) {
+                        $decision['updates_expired'] = false;
+                        $decision['allowed_version'] = null;
+                        $decision['package_available'] = false;
+                        $decision['fresh'] = true;
+                    }
+                    if ($store_cache && ($managed || ($row_valid && !$row['status']))) { update_option($known_key, $decision, false); }
+                    // Expiry or a transport failure is not an activation failure.
+                    $result['plugins'][$id] = array(
+                        'status'=>is_bool($decision['valid_key']) ? $decision['valid_key'] : !empty($row['status']),
+                        'license'=>$decision['license'], 'updates'=>$decision
+                    );
+                    if (!$decision['fresh']) { $failed = true; }
+                    else {
+                        $ttl = min($ttl, $decision['updates_expired'] ? 3600 + ($jitter % 601) : 43200 + ($jitter % 3601));
+                    }
+                    if ($decision['updates_until_utc']) {
+                        $until = self::license_utc($decision['updates_until_utc']);
+                        if ($until > time()) { $cutoff = $cutoff === null ? $until : min($cutoff, $until); }
+                    }
+                }
+            }
+            $failures = $failed ? min(6, ($same_request ? (int)($cached['failures'] ?? 0) : 0) + 1) : 0;
+            $result['failures'] = $failures;
+            $result['retry_after'] = 0;
+            if ($failed) {
+                $backoff = min(21600, 900 * pow(2, $failures - 1));
+                $ttl = min($ttl, 21600, $backoff + ($jitter % 91));
+                $result['retry_after'] = time() + $ttl;
+            }
+            if ($cutoff !== null) { $ttl = min($ttl, max(1, $cutoff - time())); }
+            $result['refresh_at'] = time()+$ttl;
+            // Keep retry history across refresh deadlines; refresh_at still governs
+            // reuse. The persistent known decision remains the enforcement fallback.
+            if ($store_cache) { set_transient('br_plugin_activation', $result, 604800); }
+            return $plugin_test_id === false ? $result : ($result['plugins'][$plugin_test_id] ?? false);
         }
 
-        public static function update_check_set( $value ) {
+        public static function update_check_set( $value, $managed_only = false ) {
+            if (!is_object($value)) { self::check_plugin_activation(); return $value; }
             $no_update_paid = array();
 
             foreach ( self::$plugin_info as $plugin ) {
                 $check_plugin_activation = self::check_plugin_activation($plugin[ 'id' ]);
+                $decision = is_array($check_plugin_activation) ? ($check_plugin_activation['updates'] ?? null) : null;
+                if ($decision !== null) {
+                    $file = $plugin['plugin'];
+                    $can_update = self::license_can_update($plugin, $decision);
+                    $public_version = self::license_public_version($plugin);
+                    $newer = $public_version !== null && version_compare($public_version, $plugin['version'], '>');
+                    $target = $can_update ? $decision['allowed_version'] : ($newer ? $public_version : $plugin['version']);
+                    $current = isset($value->response[$file]) ? (array)$value->response[$file] : array();
+                    $val = (object)array_merge($current, array('id'=>'br_'.$plugin['id'], 'slug'=>$plugin['slug'], 'plugin'=>$file,
+                        'new_version'=>$target, 'url'=>BeRocket_main_path,
+                        'package'=>$can_update ? self::license_package($plugin, $decision['license'], $target) : '', 'br_license_managed'=>true));
+                    $value->checked[$file] = (string)$plugin['version'];
+                    unset($value->response[$file], $value->no_update[$file]);
+                    if ($can_update || $newer) { $value->response[$file] = $val; }
+                    else { $value->no_update[$file] = $val; $no_update_paid[$file] = $val; }
+                    continue;
+                }
+                if ($managed_only) { continue; }
                 $is_active = ( ! empty($check_plugin_activation) && is_array($check_plugin_activation) && ! empty($check_plugin_activation['status']) );
                 $license_key_name = ( is_array($check_plugin_activation) && ! empty($check_plugin_activation['license']) ? $check_plugin_activation['license'] : 'paid' );
                 $plugin_data = BeRocket_Framework::get_product_data_berocket($plugin[ 'id' ]);
@@ -1006,7 +1103,7 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                     : '';
                 if ( $is_active && ! empty($plugin_data) && is_array($plugin_data) && is_array($plugin) && ! empty($remote_version)
                 && ( version_compare( (string)$plugin[ 'version' ], $remote_version, '<' ) || ! in_array($license_key_name, $plugin_licenses) ) && ! empty($value) ) {
-                    $value->checked[ $plugin[ 'plugin' ] ]  = $remote_version;
+                    $value->checked[ $plugin[ 'plugin' ] ]  = (string)$plugin['version'];
                     $val                                    = array(
                         'id'          => 'br_' . $plugin[ 'id' ],
                         'new_version' => $remote_version . '(' . sanitize_text_field((string)$license_key_name) . ')',
@@ -1059,6 +1156,7 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
                     $no_update_paid[$plugin[ 'plugin' ]] = $val;
                 }
             }
+            if ($managed_only) { return $value; }
             if ( ! empty($value) && isset( $value->no_update ) && is_array( $value->no_update ) ) {
                 $value->no_update = array_merge($value->no_update, $no_update_paid);
                 foreach ( $value->no_update as $key => $val ) {
@@ -1140,6 +1238,9 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
         }
 
         public static function woocommerce_addons_sections($sections) {
+            if( ! is_array($sections) ) {
+                $sections = array();
+            }
             $sections[] = (object)array(
                 'slug' => 'berocket',
                 'label' => 'BeRocket'
@@ -1328,6 +1429,19 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             return $data;
         }
         public static function update_message($plugin_file) {
+            $registered = self::license_find($plugin_file);
+            $decision = $registered ? self::license_decision($registered) : null;
+            if ($decision !== null) {
+                $public_version = self::license_public_version($registered);
+                $has_row = self::license_can_update($registered, $decision) || ($public_version !== null && version_compare($public_version, $registered['version'], '>'));
+                if (!$has_row && self::license_text($registered, $decision) !== '') {
+                    $table = _get_list_table('WP_Plugins_List_Table', array('screen'=>get_current_screen()));
+                    echo '<tr class="plugin-update-tr"><td colspan="'.esc_attr($table->get_column_count()).'"><div class="notice inline notice-warning"><p>';
+                    self::print_license_message($registered, $decision);
+                    echo '</p></div></td></tr>';
+                }
+                return;
+            }
             $plugin_data = false;
             foreach ( self::$plugin_info as $plugin ) {
                 if( $plugin_file == $plugin['plugin'] ) {
@@ -1369,96 +1483,283 @@ if ( ! class_exists( 'BeRocket_updater' ) ) {
             }
         }
 
-	    public static function plugin_api_data($res, $action, $args) {
-		    if ( property_exists($args, 'slug') && $plugin_id = array_search( $args->slug, self::$slugs ) ) {
-			    if ( $transient_res = get_transient( 'brplugin_info_' . $plugin_id ) ) {
-				    return $transient_res;
-			    } else {
-				    if ( $plugin = self::get_plugin_data( $plugin_id ) and
-				         ! empty( $plugin['version_capability'] ) and
-				         $plugin['version_capability'] >= 10
-				    ) {
-					    $live_plugin_data = BeRocket_Framework::get_product_data_berocket( $plugin['id'] );
-					    $remote_version = ( ! empty($live_plugin_data['version']) && is_scalar($live_plugin_data['version']) )
-					        ? sanitize_text_field((string)$live_plugin_data['version'])
-					        : '';
-					    $plugin_url = ( ! empty($live_plugin_data['plugin_url']) && is_scalar($live_plugin_data['plugin_url']) )
-					        ? esc_url_raw((string)$live_plugin_data['plugin_url'])
-					        : '';
+        public static function plugin_api_data($res, $action, $args) {
+            if ($action !== 'plugin_information' || !is_object($args) || !isset($args->slug)) { return $res; }
+            $plugin = self::license_find($args->slug);
+            if (!$plugin || !self::license_eligible($plugin)) { return $res; }
+            $decision = self::license_decision($plugin);
+            // Only enrolled products short-circuit the WordPress.org request.
+            if (current_filter() === 'plugins_api' && $decision === null) { return $res; }
+            $plugin_id = (int)$plugin['id'];
+            $live = BeRocket_Framework::get_product_data_berocket($plugin_id);
+            $remote_version = self::license_public_version($plugin);
+            $plugin_url = !empty($live['plugin_url']) && is_string($live['plugin_url']) ? esc_url_raw($live['plugin_url']) : BeRocket_main_path;
+            $slug = isset($live['slug']) && is_string($live['slug']) ? preg_replace('/\s+/', '-', strtolower($live['slug'])) : '';
+            $notes_url = preg_match('/^[a-z0-9][a-z0-9_-]{0,149}$/D', $slug) ? BeRocket_cdn_path.'update/'.$slug : '';
+            $cached = get_transient('brplugin_info_'.$plugin_id);
+            if (is_array($cached) && ($cached['source'] ?? '') === 'cdn-html/1' &&
+                ($cached['version'] ?? null) === $remote_version && ($cached['url'] ?? '') === $notes_url && is_object($cached['public'] ?? null)) {
+                $res = clone $cached['public'];
+            } else {
+                if ($remote_version === null && $decision === null) { return $res; }
+                $res = is_object($res) && !is_wp_error($res) ? clone $res : new stdClass();
+                $res->name = $plugin['full_name'] ?? $plugin['name'] ?? $plugin['slug'];
+                $res->slug = $plugin['slug'];
+                $res->version = $remote_version ?: (string)$plugin['version'];
+                $res->author = '<a href="https://berocket.com/">BeRocket</a>';
+                $res->author_profile = BeRocket_main_path;
+                $res->support_url = $res->commercial_support_url = BeRocket_main_path.'support/';
+                $res->support_threads = $res->support_threads_resolved = 0;
+                $res->ratings = $res->contributors = array();
+                $res->donate_link = '';
+                $res->external = true;
+                $res->sections = array('changelog'=>'');
+                // Existing API publisher writes an HTML document at update/<slug>.
+                // No automatic shop fallback, scripts, remote images or stylesheets.
+                $details = $notes_url !== '' ? wp_remote_get($notes_url,
+                    array('timeout'=>15, 'redirection'=>0, 'sslverify'=>true, 'limit_response_size'=>262144)) : false;
+                $body = is_array($details) && (int)wp_remote_retrieve_response_code($details) === 200 ? wp_remote_retrieve_body($details) : '';
+                if (is_string($body) && strlen($body) < 262144 && strpos($body, 'plugin_info-changelog') !== false) {
+                    $body = preg_replace('~<(script|style|head|iframe|object|template|noscript|form)\b[^>]*>.*?</\1\s*>~is', '', $body);
+                    $body = preg_replace('~<li\b[^>]*class=["\'][^"\']*plugin_info-changelog-load-more[^"\']*["\'][^>]*>.*?</li\s*>~is', '', $body);
+                    $res->sections['changelog'] = wp_kses($body, array(
+                        'div'=>array('class'=>true), 'ul'=>array('class'=>true), 'ol'=>array(), 'li'=>array('class'=>true),
+                        'h2'=>array(), 'h3'=>array(), 'h4'=>array(), 'p'=>array(), 'span'=>array('class'=>true),
+                        'strong'=>array(), 'b'=>array(), 'em'=>array(), 'i'=>array(), 'br'=>array(),
+                        'code'=>array(), 'pre'=>array(), 'a'=>array('href'=>true, 'title'=>true), 'time'=>array('datetime'=>true)
+                    ));
+                    $res->sections['changelog'] .= '<p><a target="_blank" rel="noopener noreferrer" href="'.esc_url($plugin_url).'">'.esc_html__('View the full release history on BeRocket.', 'BeRocket_domain').'</a></p>';
+                }
+                if ($res->sections['changelog'] === '') {
+                    $res->sections = array('description'=>'<p><a href="'.esc_url($plugin_url ?: BeRocket_main_path).'">'.esc_html__('View product information and release notes on BeRocket.', 'BeRocket_domain').'</a></p>');
+                }
+                // Cache public metadata only. Key-specific links are computed below.
+                unset($res->download_link, $res->package);
+                set_transient('brplugin_info_'.$plugin_id, array('source'=>'cdn-html/1', 'version'=>$remote_version, 'url'=>$notes_url, 'public'=>clone $res),
+                    isset($res->sections['description']) ? 3600 : 43200);
+            }
+            unset($res->sections['license']);
+            if ($decision === null) {
+                $key = self::license_key($plugin) ?: self::$key;
+                $res->download_link = BeRocket_update_path.'v1/update_product/'.$plugin_id.'/'.($key ?: 'none');
+            } else {
+                $can_update = self::license_can_update($plugin, $decision);
+                $res->name = $plugin['full_name'] ?? $plugin['name'] ?? $plugin['slug'];
+                $res->slug = $plugin['slug'];
+                $res->external = true;
+                $res->version = $can_update ? $decision['allowed_version'] : ($remote_version ?: $plugin['version']);
+                $res->download_link = $can_update ? self::license_package($plugin, $decision['license'], $decision['allowed_version']) : '';
+                $text = self::license_text($plugin, $decision);
+                if ($text !== '') {
+                    $res->sections['license'] = '<p>'.esc_html($text).'</p>';
+                    if ($decision['fresh'] && $decision['updates_expired']) {
+                        $res->sections['license'] .= '<p><a href="'.esc_url(BeRocket_main_path.'my-account/').'">'.esc_html__('Manage license', 'BeRocket_domain').'</a></p>';
+                    }
+                }
+            }
+            return $res;
+        }
 
-					    if ( empty($remote_version) || empty($plugin_url) ) {
-					        return $res;
-					    }
+        public static function license_decision($plugin, $force = false) {
+            if (!self::license_eligible($plugin) || self::license_key($plugin) === '') { return null; }
+            if (self::license_key(self::get_plugin_data($plugin['id'])) !== self::license_key($plugin)) { return null; }
+            $activation = self::check_plugin_activation($plugin['id'], false, $force);
+            return is_array($activation) ? ($activation['updates'] ?? null) : null;
+        }
 
-					    if ( ! empty( self::$key ) && strlen( self::$key ) == 40 ) {
-						    $key = self::$key;
-					    }
-					    if ( ! empty( $plugin['key'] ) && strlen( $plugin['key'] ) == 40 ) {
-						    $key = $plugin['key'];
-					    }
+        public static function license_check_again() {
+            if (!empty($_GET['force-check']) && current_user_can('update_plugins')) {
+                delete_transient('br_plugin_activation');
+                delete_transient('berocket_plugin_paid_info');
+            }
+        }
 
-					    $res->name                     = $plugin['full_name'];
-					    $res->slug                     = $plugin['slug'];
-					    $res->version                  = $remote_version;
-					    $res->author                   = '<a href="https://berocket.com/">BeRocket</a>';
-					    $res->author_profile           = 'https://berocket.com/';
-					    $res->support_url              = 'https://berocket.com/support/';
-					    $res->support_threads          = 0;
-					    $res->support_threads_resolved = 0;
-					    $res->commercial_support_url   = 'https://berocket.com/support/';
-					    $res->download_link            = BeRocket_update_path . 'v1/update_product/' . $plugin['id'] . '/' . ( empty( $key ) ? 'none' : $key );
-					    $res->ratings                  = array();
-					    $res->external                 = true;
-					    $res->contributors             = array();
-					    $res->donate_link              = '';
-					    $res->sections['changelog']    = '';
+        public static function update_check_read($value) {
+            // Reuse the same builder for cached rows after renewal/expiry, without
+            // re-running legacy public metadata requests for unconverted products.
+            return is_object($value) ? self::update_check_set($value, true) : $value;
+        }
 
-					    $url = add_query_arg( 'preview', 'in_plugin_info', $plugin_url );
 
-					    if ( $plugin_contents_raw = file_get_contents( $url ) and
-					         $plugin_contents = json_decode( $plugin_contents_raw ) and
-					         ! empty( $plugin_contents->changelog )
-					    ) {
-						    $k = 1;
-						    $plugin_contents->changelog->version = array_reverse( $plugin_contents->changelog->version, true );
-						    foreach ( $plugin_contents->changelog->version as $version_key => $version ) {
-							    $res->sections['changelog'] .= '<h4>' . esc_html( is_scalar($version) ? (string)$version : '' ) . '</h4>';
-							    $res->sections['changelog'] .= '<ul>';
-							    if ( ! empty( $plugin_contents->changelog->enhancements[ $version_key ] ) ) {
-								    $enhancements = preg_split( "/\r\n|\n|\r/", $plugin_contents->changelog->enhancements[ $version_key ] );
-								    foreach ( $enhancements as $enhancement ) {
-									    $res->sections['changelog'] .= '<li><strong>Enhancement:</strong> ' . esc_html( $enhancement ) . '</li>';
-								    }
-							    }
+        private static function license_eligible($plugin) {
+            return is_array($plugin) && !empty($plugin['id']) && !empty($plugin['plugin']) &&
+                isset($plugin['version']) && (int)($plugin['version_capability'] ?? 0) >= 10;
+        }
 
-							    if ( ! empty( $plugin_contents->changelog->fixes[ $version_key ] ) ) {
-								    $fixes = preg_split( "/\r\n|\n|\r/", $plugin_contents->changelog->fixes[ $version_key ] );
-								    foreach ( $fixes as $fix ) {
-									    $res->sections['changelog'] .= '<li><strong>Bugfix:</strong> ' . esc_html( $fix ) . '</li>';
-								    }
-							    }
-							    $res->sections['changelog'] .= '</ul>';
-							    if ( ++ $k > 2 ) {
-								    $res->sections['changelog'] .= '<p></p>';
-								    $res->sections['changelog'] .= '<a target="_blank" rel="noopener noreferrer" href="' . esc_url( $plugin_url ) . '">For a complete list of updates and changes, please visit the plugin’s page.</a>';
-								    $res->sections['changelog'] .= '<p></p>';
-								    break;
-							    }
-						    }
+        private static function license_key($plugin) {
+            // Universal keys keep their agreed lifetime/legacy behavior.
+            return isset($plugin['key']) && is_string($plugin['key']) && preg_match('/^[A-Za-z0-9_-]{40}$/D', $plugin['key']) ? $plugin['key'] : '';
+        }
 
-						    $res->version      = ( ! empty($plugin_contents->tech_detail->plugin_version) && is_scalar($plugin_contents->tech_detail->plugin_version) )
-						        ? sanitize_text_field((string)$plugin_contents->tech_detail->plugin_version)
-						        : $remote_version;
-						    $res->last_updated = date( 'Y-m-d g:ia e', strtotime( $plugin_contents->tech_detail->last_update ) );
-					    }
+        private static function license_identity($plugin) {
+            return hash('sha256', get_current_blog_id().'|'.get_site_url().'|'.(int)$plugin['id'].'|'.self::license_key($plugin));
+        }
 
-					    set_transient( 'brplugin_info_' . $plugin_id, $res, 7200 );
-				    }
-			    }
-		    }
+        public static function license_version($value) {
+            return is_string($value) && preg_match('/^[0-9][0-9A-Za-z.+_-]{0,49}$/D', $value);
+        }
 
-		    return $res;
-	    }
+        private static function license_public_version($plugin, $allow_cached = true) {
+            $public = BeRocket_Framework::get_product_data_berocket((int)$plugin['id']);
+            if (is_array($public) && self::license_version($public['version'] ?? null)) { return $public['version']; }
+            // This is a version previously observed on CDN, never the API's latest.
+            $cached = $allow_cached ? get_transient('br_plugin_activation') : false;
+            $version = is_array($cached) ? ($cached['public_versions'][(int)$plugin['id']] ?? null) : null;
+            return self::license_version($version) ? $version : null;
+        }
+
+        private static function license_utc($value) {
+            if (!is_string($value)) { return false; }
+            $date = DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s\Z', $value, new DateTimeZone('UTC'));
+            return $date && $date->format('Y-m-d\TH:i:s\Z') === $value ? $date->getTimestamp() : false;
+        }
+
+        public static function license_package($plugin, $license, $version) {
+            return BeRocket_update_path.'v1/update_release/'.(int)$plugin['id'].'/'.rawurlencode(self::license_key($plugin)).'/'.$license.'/'.rawurlencode($version);
+        }
+
+        public static function license_validate($record, $plugin, $license) {
+            if (!is_array($record) || ($record['protocol'] ?? '') !== self::LICENSE_PROTOCOL || ($record['mode'] ?? '') !== 'enforce' ||
+                ($record['product_id'] ?? null) !== (int)$plugin['id'] || !is_bool($record['valid_key'] ?? null) ||
+                !is_bool($record['updates_expired'] ?? null) || !array_key_exists('updates_until_utc', $record) ||
+                !array_key_exists('allowed_version', $record) || !self::license_version($record['latest_version'] ?? null) ||
+                !is_string($record['package'] ?? null) || !in_array($license, array('paid','business'), true)) { return false; }
+            $kind = $record['license_kind'] ?? '';
+            $until = $record['updates_until_utc'];
+            if ($kind === 'subscription') {
+                if (self::license_utc($until) === false) { return false; }
+            } elseif ($kind === 'lifetime') {
+                if ($until !== null || $record['updates_expired']) { return false; }
+            } elseif ($kind !== 'unknown' || $record['valid_key'] || $until !== null || $record['updates_expired']) { return false; }
+            $allowed = $record['allowed_version'];
+            if ($allowed !== null && (!self::license_version($allowed) || version_compare($allowed, $record['latest_version'], '>'))) { return false; }
+            if (!$record['valid_key'] && ($allowed !== null || $record['package'] !== '' || $record['updates_expired'])) { return false; }
+            if ($record['package'] !== '' && (!$record['valid_key'] || $allowed === null ||
+                $record['package'] !== self::license_package($plugin, $license, $allowed))) { return false; }
+            return array('valid_key'=>$record['valid_key'], 'license_kind'=>$kind, 'updates_expired'=>$record['updates_expired'],
+                'updates_until_utc'=>$until, 'latest_version'=>$record['latest_version'], 'allowed_version'=>$allowed,
+                'license'=>$license, 'package_available'=>$record['package'] !== '', 'fresh'=>true, 'error'=>'');
+        }
+
+        private static function license_held($previous, $reason) {
+            $r = is_array($previous) ? $previous : array('valid_key'=>null, 'license_kind'=>'unknown', 'updates_expired'=>false,
+                'updates_until_utc'=>null, 'latest_version'=>null, 'allowed_version'=>null, 'license'=>'paid', 'package_available'=>false);
+            $r['fresh'] = false;
+            $r['error'] = $reason;
+            return $r;
+        }
+
+        public static function license_can_update($plugin, $decision) {
+            if (empty($decision['fresh']) || empty($decision['valid_key']) || empty($decision['package_available']) ||
+                !self::license_version($decision['allowed_version'] ?? null)) { return false; }
+            $public_version = self::license_public_version($plugin);
+            if ($public_version === null || version_compare($decision['allowed_version'], $public_version, '>')) { return false; }
+            $compare = version_compare($decision['allowed_version'], (string)$plugin['version']);
+            $licenses = self::license_installed($plugin);
+            return $compare > 0 || ($compare === 0 && $licenses && !in_array($decision['license'], $licenses, true));
+        }
+
+        private static function license_find($file_or_slug) {
+            foreach (self::$plugin_info as $plugin) {
+                if (($plugin['plugin'] ?? '') === $file_or_slug || ($plugin['slug'] ?? '') === $file_or_slug ||
+                    (!empty($plugin['free_slug']) && $plugin['free_slug'] === $file_or_slug)) { return $plugin; }
+            }
+            return null;
+        }
+
+        public static function license_text($plugin, $decision) {
+            if (empty($decision['fresh'])) { return __('License information could not be verified. Please try checking for updates again.', 'BeRocket_domain'); }
+            if (!$decision['valid_key']) { return __('This key is not authorized for updates. Please check your BeRocket account key.', 'BeRocket_domain'); }
+            $public_version = self::license_public_version($plugin);
+            if ($decision['updates_expired']) {
+                $text = __('Your update license has expired. Renew your license or purchase a new one to receive newer releases.', 'BeRocket_domain');
+                if (self::license_version($decision['allowed_version'])) { $text .= ' '.sprintf(__('Your license includes version %s.', 'BeRocket_domain'), $decision['allowed_version']); }
+                if (self::license_can_update($plugin, $decision) && $public_version !== null && version_compare($public_version, $decision['allowed_version'], '>')) {
+                    $text .= ' '.sprintf(__('The latest release is %s.', 'BeRocket_domain'), $public_version);
+                }
+                return $text;
+            }
+            if ($public_version === null || (self::license_version($decision['allowed_version']) && version_compare($decision['allowed_version'], $public_version, '>'))) {
+                return __('Update information is temporarily unavailable. Please check for updates again later.', 'BeRocket_domain');
+            }
+            if ((!$decision['package_available'] || !self::license_version($decision['allowed_version']) || version_compare($public_version, $decision['allowed_version'], '>')) && version_compare($public_version, (string)$plugin['version'], '>')) {
+                return __('The update package is temporarily unavailable. Please try again later.', 'BeRocket_domain');
+            }
+            return '';
+        }
+
+        public static function license_message($metadata, $response) {
+            $plugin = self::license_find($response->plugin ?? '');
+            if (!$plugin || ($decision = self::license_decision($plugin)) === null) { return; }
+            self::print_license_message($plugin, $decision);
+        }
+
+        public static function license_automatic($update, $item) {
+            $plugin = self::license_find($item->plugin ?? '');
+            if (!$plugin || ($decision = self::license_decision($plugin)) === null) { return $update; }
+            return self::license_can_update($plugin, $decision) && ($item->package ?? '') === self::license_package($plugin, $decision['license'], $decision['allowed_version']) ? $update : false;
+        }
+
+        public static function license_before_download($reply, $package, $upgrader, $extra = array()) {
+            if (is_wp_error($reply)) { return $reply; }
+            $plugin = !empty($extra['plugin']) ? self::license_find($extra['plugin']) : null;
+            if (!$plugin && is_string($package)) {
+                // Covers stale bulk-update entries and older WordPress callers without hook_extra.
+                foreach (self::$plugin_info as $candidate) {
+                    foreach (array('update_product','update_release') as $route) {
+                        $prefix = BeRocket_update_path.'v1/'.$route.'/'.(int)$candidate['id'].'/';
+                        if (strpos($package, $prefix) === 0) { $plugin = $candidate; break 2; }
+                    }
+                }
+            }
+            if (!$plugin) { return $reply; }
+            // A bulk upgrader shares one freshly confirmed batch within this PHP
+            // request. A new key/request identity still invalidates that cache.
+            $force = !is_object($upgrader) || self::$license_download_upgrader !== $upgrader;
+            $decision = self::license_decision($plugin, $force);
+            if (is_object($upgrader)) { self::$license_download_upgrader = $upgrader; }
+            if ($decision === null) { return $reply; }
+            if (!self::license_can_update($plugin, $decision)) {
+                return new WP_Error('berocket_license_update_unavailable', self::license_text($plugin, $decision) ?: __('No permitted newer release is available.', 'BeRocket_domain'));
+            }
+            $expected = self::license_package($plugin, $decision['license'], $decision['allowed_version']);
+            if (!is_string($package) || $package !== $expected) {
+                return new WP_Error('berocket_license_package_changed', __('The permitted update has changed. Check for updates again before installing it.', 'BeRocket_domain'));
+            }
+            // A previous filter must not substitute an unverified local ZIP for this version.
+            self::$license_downloads[$plugin['plugin']] = $decision['allowed_version'];
+            return false;
+        }
+
+        public static function license_check_source($source, $remote_source, $upgrader, $extra = array()) {
+            $file = $extra['plugin'] ?? '';
+            if (is_wp_error($source) || !isset(self::$license_downloads[$file])) { return $source; }
+            $expected = self::$license_downloads[$file];
+            unset(self::$license_downloads[$file]);
+            global $wp_filesystem;
+            $header = $wp_filesystem->get_contents(rtrim($source, '/\\').'/'.basename($file));
+            if (!is_string($header) || !preg_match('/^[ \t\/*#@]*Version:\s*([^\r\n]+)/mi', substr($header, 0, 8192), $match) ||
+                trim($match[1], " \t*/") !== $expected) {
+                return new WP_Error('berocket_license_version_mismatch', __('The downloaded plugin version does not match the permitted update. The installed plugin has not been replaced.', 'BeRocket_domain'));
+            }
+            return $source;
+        }
+
+        private static function license_installed($plugin) {
+            $licenses = apply_filters('brfr_plugin_get_licenses_current_id_'.(int)$plugin['id'], array());
+            return is_array($licenses) ? array_values(array_intersect(array('free','paid','business'), $licenses)) : array();
+        }
+
+        private static function print_license_message($plugin, $decision) {
+            $text = self::license_text($plugin, $decision);
+            if ($text === '') { return; }
+            echo ' <span class="berocket-license-message">'.esc_html($text);
+            if (!empty($decision['fresh']) && !empty($decision['updates_expired'])) {
+                echo ' <a href="'.esc_url(BeRocket_main_path.'my-account/').'">'.esc_html__('Manage license', 'BeRocket_domain').'</a>';
+            }
+            echo '</span>';
+        }
+
         public static function is_settings_page($is_page) {
             if ( ! empty( $_GET[ 'page' ] ) && $_GET[ 'page' ] == 'berocket_account' ) {
                 return true;

@@ -7,6 +7,7 @@
   },
   "module": {
     "group_id": "group_id.innerContent.*",
+    "group_slug": "group_slug.innerContent.*",
     "display_inline": "display_inline.innerContent.*",
     "display_inline_count": "display_inline_count.innerContent.*",
     "min_filter_width_inline": "min_filter_width_inline.innerContent.*",

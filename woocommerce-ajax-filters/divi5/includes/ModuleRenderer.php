@@ -85,14 +85,22 @@ class BAPF_Divi5_Module_Renderer {
     protected function render_filters_group( $atts ) {
         $args = array();
 
-        if ( empty( $atts['group_id'] ) ) {
+        $group_slug = isset( $atts['group_slug'] ) ? (string) $atts['group_slug'] : '';
+        $legacy_group_id = isset( $atts['group_id'] ) ? (string) $atts['group_id'] : '';
+        $group_reference = '0' === $group_slug && '' !== $legacy_group_id && '0' !== $legacy_group_id
+            ? $legacy_group_id
+            : ( '' !== $group_slug ? $group_slug : $legacy_group_id );
+        if ( '' === $group_reference || '0' === $group_reference ) {
             foreach ( array( 'display_inline', 'display_inline_count', 'min_filter_width_inline', 'hidden_clickable', 'hidden_clickable_hover', 'group_is_hide' ) as $option ) {
                 $args[ $option ] = empty( $atts[ $option ] ) ? '' : $atts[ $option ];
             }
 
             $args['filters'] = $this->get_group_filter_ids( $atts );
         } else {
-            $args['group_id'] = absint( $atts['group_id'] );
+            $args['group_slug'] = sanitize_title( $group_reference );
+            if ( '' !== $legacy_group_id ) {
+                $args['group_id'] = absint( $legacy_group_id );
+            }
         }
 
         add_filter( 'BeRocket_AAPF_template_full_content', array( $this, 'header_replace' ), 4000, 1 );

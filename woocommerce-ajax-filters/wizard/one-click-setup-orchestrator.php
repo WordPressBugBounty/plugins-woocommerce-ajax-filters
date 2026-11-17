@@ -342,8 +342,8 @@ class BeRocket_AAPF_One_Click_Setup_Orchestrator {
         $previous_sidebars = $sidebars;
         $widget_ids = array();
         foreach ($instances as $number => $instance) {
-            if (!is_array($instance) || empty($instance['group_id'])
-                || !in_array(absint($instance['group_id']), $missing_group_ids, true)) {
+            if (!is_array($instance)
+                || !in_array(braapf_normalize_group_instance($instance)['group_id'], $missing_group_ids, true)) {
                 continue;
             }
             $widget_ids[] = self::GROUP_WIDGET_BASE . '-' . absint($number);
@@ -509,7 +509,7 @@ class BeRocket_AAPF_One_Click_Setup_Orchestrator {
         $instances = $previous_instances;
         $existing_number = 0;
         foreach ($instances as $number => $instance) {
-            if (is_array($instance) && isset($instance['group_id']) && absint($instance['group_id']) === absint($group_id)) {
+            if (is_array($instance) && braapf_normalize_group_instance($instance)['group_id'] === absint($group_id)) {
                 $existing_number = absint($number);
                 break;
             }
@@ -525,7 +525,7 @@ class BeRocket_AAPF_One_Click_Setup_Orchestrator {
             $sidebars[$sidebar_id][] = $widget_id;
         }
         if (!$existing_number) {
-            $instances[$number] = array('group_id' => absint($group_id));
+            $instances[$number] = array('group_slug' => braapf_get_group_slug($group_id));
             $created = true;
         }
         $sidebars_saved = $sidebars === $previous_sidebars || update_option('sidebars_widgets', $sidebars);

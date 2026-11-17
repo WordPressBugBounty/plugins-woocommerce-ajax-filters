@@ -1,0 +1,147 @@
+/* FLT01: opt-in designs. Scoped selectors, no !important declarations. */
+.bapf_sfilter.bapf_design_preset_compact {
+    font-size: .9375rem;
+    line-height: 1.45;
+    margin-bottom: 1rem;
+}
+.bapf_sfilter.bapf_design_preset_compact .bapf_head h3 {
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-block: 0 .4rem;
+}
+.bapf_sfilter.bapf_design_preset_compact .bapf_body label {
+    line-height: 1.6;
+}
+.bapf_sfilter.bapf_design_preset_compact .bapf_button {
+    font-size: inherit;
+    padding: .4rem .75rem;
+}
+.bapf_sfilter.bapf_design_preset_soft {
+    background-color: #f5f7fb;
+    border: 1px solid #dce3ed;
+    border-radius: .875rem;
+    color: #263448;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+}
+.bapf_sfilter.bapf_design_preset_soft .bapf_head h3 {
+    color: #263448;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    margin-block: 0 .625rem;
+}
+.bapf_sfilter.bapf_design_preset_soft .bapf_button {
+    background-color: #263448;
+    border: 1px solid #263448;
+    border-radius: .5rem;
+    color: #fff;
+    font-size: inherit;
+    padding: .55rem .875rem;
+}
+.bapf_sfilter.bapf_design_preset_soft .bapf_button:hover {
+    background-color: #152032;
+    color: #fff;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast {
+    background-color: #fff;
+    border: 2px solid #161616;
+    border-radius: .25rem;
+    color: #161616;
+    font-size: 1rem;
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_head h3 {
+    color: #161616;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-block: 0 .75rem;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_body label,
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_body a,
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_show_hide {
+    color: #161616;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_body a,
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_show_hide {
+    text-decoration: underline;
+    text-underline-offset: .15em;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_body li.checked > label {
+    font-weight: 700;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast input[type="checkbox"],
+.bapf_sfilter.bapf_design_preset_high_contrast input[type="radio"] {
+    accent-color: #161616;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast .irs--flat .irs-bar,
+.bapf_sfilter.bapf_design_preset_high_contrast .irs--flat .irs-handle > i:first-child,
+.bapf_sfilter.bapf_design_preset_high_contrast .irs--flat .irs-from,
+.bapf_sfilter.bapf_design_preset_high_contrast .irs--flat .irs-to,
+.bapf_sfilter.bapf_design_preset_high_contrast .irs--flat .irs-single {
+    background-color: #161616;
+    color: #fff;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast .irs--flat .irs-from:before,
+.bapf_sfilter.bapf_design_preset_high_contrast .irs--flat .irs-to:before,
+.bapf_sfilter.bapf_design_preset_high_contrast .irs--flat .irs-single:before {
+    border-top-color: #161616;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast .irs--flat .irs-min,
+.bapf_sfilter.bapf_design_preset_high_contrast .irs--flat .irs-max {
+    background-color: #e8e8e8;
+    color: #161616;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_button {
+    background-color: #161616;
+    border: 2px solid #161616;
+    border-radius: .25rem;
+    color: #fff;
+    font-size: inherit;
+    font-weight: 700;
+    padding: .5rem .875rem;
+}
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_button:hover {
+    background-color: #fff;
+    color: #161616;
+}
+.bapf_sfilter.bapf_design_preset_soft,
+.bapf_sfilter.bapf_design_preset_high_contrast {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+.bapf_sfilter.bapf_design_preset_compact .bapf_head h3,
+.bapf_sfilter.bapf_design_preset_soft .bapf_head h3,
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_head h3,
+.bapf_sfilter.bapf_design_preset_compact .bapf_body label,
+.bapf_sfilter.bapf_design_preset_soft .bapf_body label,
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_body label,
+.bapf_sfilter.bapf_design_preset_compact .bapf_button,
+.bapf_sfilter.bapf_design_preset_soft .bapf_button,
+.bapf_sfilter.bapf_design_preset_high_contrast .bapf_button {
+    overflow-wrap: anywhere;
+}
+.bapf_sfilter.bapf_design_preset_soft select,
+.bapf_sfilter.bapf_design_preset_high_contrast select,
+.bapf_sfilter.bapf_design_preset_soft input[type="text"],
+.bapf_sfilter.bapf_design_preset_high_contrast input[type="text"],
+.bapf_sfilter.bapf_design_preset_soft input[type="number"],
+.bapf_sfilter.bapf_design_preset_high_contrast input[type="number"] {
+    background-color: #fff;
+    border: 1px solid #64748b;
+    border-radius: .25rem;
+    box-sizing: border-box;
+    color: #161616;
+    font: inherit;
+    max-width: 100%;
+    padding: .35rem;
+}
+.bapf_sfilter.bapf_design_preset_compact :focus-visible,
+.bapf_sfilter.bapf_design_preset_soft :focus-visible,
+.bapf_sfilter.bapf_design_preset_high_contrast :focus-visible {
+    outline: 2px solid #005fcc;
+    outline-offset: 3px;
+}

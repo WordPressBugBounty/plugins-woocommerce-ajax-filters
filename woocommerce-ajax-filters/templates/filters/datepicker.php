@@ -1,4 +1,3 @@
-
 <?php
 /**
 * The template for displaying slider filters

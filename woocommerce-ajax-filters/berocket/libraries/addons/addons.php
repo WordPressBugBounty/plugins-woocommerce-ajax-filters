@@ -166,17 +166,19 @@ if( ! class_exists('BeRocket_framework_addons') ) {
         function paid_only_sign( $html_array, $addon_info ) {
 
             if ( $this->version_check($addon_info) ) {
-                $meta_data = '?utm_source=plugin&utm_medium=settings&utm_campaign=upgrade&utm_content=addons&utm_term='.($this->info['plugin_sku'] ?? $this->info['plugin_name']);
                 $html = '<i class="berocket_addon_paid_sign fa fa-lock"></i>';
-                $html .= '<div class="berocket_addon_paid_get"><a target="_blank" href="https://berocket.com/' . $this->values[ 'premium_slug' ] . $meta_data . '"><span>
+                if ( ! empty( $this->values['premium_slug'] ) ) {
+                    $meta_data = '?utm_source=plugin&utm_medium=settings&utm_campaign=upgrade&utm_content=addons&utm_term='.($this->info['plugin_sku'] ?? $this->info['plugin_name']);
+                    $html .= '<div class="berocket_addon_paid_get"><a target="_blank" href="https://berocket.com/' . $this->values[ 'premium_slug' ] . $meta_data . '"><span>
                 ';
-                if( ! empty( $addon_info[ 'paid' ] ) ) {
-                    $html .= __( 'Go Premium', 'BeRocket_domain' );
-                } else {
-                    $html .= __( 'Go Business', 'BeRocket_domain' );
-                }
-                $html .= '
+                    if( ! empty( $addon_info[ 'paid' ] ) ) {
+                        $html .= __( 'Go Premium', 'BeRocket_domain' );
+                    } else {
+                        $html .= __( 'Go Business', 'BeRocket_domain' );
+                    }
+                    $html .= '
                 </span></a></div>';
+                }
                 $html_array = berocket_insert_to_array($html_array, 'close_addon_block', array('paid_only' => $html));
             }
 

@@ -106,6 +106,65 @@ if( ! class_exists('BeRocket_conditions') ) {
                 'condition_page_woo_category' => array('func' => 'check_condition_page_woo_category', 'type' => 'woo_category', 'name' => __('Product Category', 'BeRocket_domain')),
             );
         }
+        public static function get_import_export_schema($context = array()) {
+            $schema = array(
+                'product' => array(
+                    'product' => array(
+                        'export_type' => 'post',
+                        'post_type'   => array('product', 'product_variation'),
+                        'multiple'    => true,
+                        'on_missing'  => 'remove',
+                    ),
+                    'additional_product' => array(
+                        'export_type' => 'post',
+                        'post_type'   => array('product', 'product_variation'),
+                        'multiple'    => true,
+                        'on_missing'  => 'remove',
+                    ),
+                ),
+                'category' => array(
+                    'category' => array(
+                        'export_type' => 'taxonomy',
+                        'taxonomy'    => 'product_cat',
+                        'multiple'    => 'auto',
+                        'passthrough' => array(''),
+                        'on_missing'  => 'remove',
+                    ),
+                ),
+                'woo_category' => array(
+                    'inherit' => 'category',
+                ),
+                'shippingclass' => array(
+                    'term' => array(
+                        'export_type' => 'taxonomy',
+                        'taxonomy'    => 'product_shipping_class',
+                        'passthrough' => array(''),
+                        'on_missing'  => 'remove',
+                    ),
+                ),
+                'attribute' => array(
+                    'values' => array(
+                        'export_type'    => 'taxonomy',
+                        'taxonomy_by_key' => true,
+                        'passthrough'    => array(''),
+                        'on_missing'     => 'remove',
+                    ),
+                ),
+                'woo_attribute' => array(
+                    'inherit' => 'attribute',
+                ),
+                'page_id' => array(
+                    'pages' => array(
+                        'export_type' => 'post',
+                        'post_type'   => 'page',
+                        'multiple'    => true,
+                        'passthrough' => array('shop', 'category', 'product', 'tags', 'taxonomies'),
+                        'on_missing'  => 'remove',
+                    ),
+                ),
+            );
+            return apply_filters('berocket_conditions_import_export_schema', $schema, $context);
+        }
         public static function get_condition($condition) {
             $conditions = static::get_conditions_product();
             return ( isset($conditions[$condition]) ? $conditions[$condition] : '' );
@@ -776,25 +835,37 @@ if( ! class_exists('BeRocket_conditions') ) {
         public static function check_condition_product_stockquantity($show, $condition, $additional) {
             $product = $additional['product'];
             if( method_exists($product, 'get_type') && $product->get_type() == 'variable' ) {
-                $variations = $product->get_available_variations();
-                $product_stock = 0;
+                $variations = $product->get_available_variations('objects');
+                $product_stock = null;
+                $parent_stock_counted = false;
                 foreach($variations as $variation){
-                    $variation_id = $variation['variation_id'];
-                    $variation_obj = new WC_Product_variation($variation_id);
-                    $product_stock += intval($variation_obj->get_stock_quantity('edit'));
+                    $manage_stock = $variation->get_manage_stock();
+                    if( ! $manage_stock ) {
+                        return false;
+                    }
+                    if( $manage_stock === 'parent' && $parent_stock_counted ) {
+                        continue;
+                    }
+                    $stock_quantity = $variation->get_stock_quantity();
+                    if( $stock_quantity === null ) {
+                        return false;
+                    }
+                    $product_stock += $stock_quantity;
+                    if( $manage_stock === 'parent' ) {
+                        $parent_stock_counted = true;
+                    }
                 }
             } else {
                 if( method_exists($product, 'get_manage_stock') && ! $product->get_manage_stock() ) {
-                    if( $condition == 'equal_more' ) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return false;
                 } elseif( method_exists($product, 'get_stock_quantity') ) {
-                    $product_stock = $product->get_stock_quantity('edit');
+                    $product_stock = $product->get_stock_quantity();
                 } else {
                     $product_stock = $product->stock;
                 }
+            }
+            if( $product_stock === null ) {
+                return false;
             }
             $backorder = true;
             if( ! empty($condition['backorder']) && $condition['backorder'] != 'any' ) {

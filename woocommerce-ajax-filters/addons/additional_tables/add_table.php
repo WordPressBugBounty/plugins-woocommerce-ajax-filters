@@ -127,7 +127,7 @@ class BeRocket_aapf_variations_tables {
         
         $query['subquery']['select'] = 'SELECT filtered_post.post_id as var_id, MAX(filtered_post.parent_id) as ID, COUNT(filtered_post.post_id) as meta_count, 
  max(filtered_post.stock_status) as stock_status, MAX(max_filtered_post.max_meta_count) as max_meta_count,
- IF(MAX(max_filtered_post.max_meta_count) != COUNT(filtered_post.post_id) OR max(filtered_post.stock_status) = 0, 1, 0) as out_of_stock';
+ IF(MAX(max_filtered_post.max_meta_count) != COUNT(DISTINCT filtered_post.meta_key) OR max(filtered_post.stock_status) = 0, 1, 0) as out_of_stock';
 
         $query['subquery']['from_open'] = "FROM {$wpdb->prefix}braapf_product_variation_attributes as filtered_post";
         $query['subquery']['join_close_1'] = ') as max_filtered_post ON max_filtered_post.ID = filtered_post.parent_id';

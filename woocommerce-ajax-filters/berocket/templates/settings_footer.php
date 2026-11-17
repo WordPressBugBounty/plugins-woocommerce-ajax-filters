@@ -3,7 +3,7 @@
     $meta_data = '?utm_source=plugin&utm_medium=settings&utm_campaign=upgrade&utm_content=footer&utm_term='.($this->info['plugin_sku'] ?? $this->info['plugin_name']);
     if ( isset($this->plugin_version_capability) && $this->plugin_version_capability == 3 ) {
         $text = '<h4><a href="%plugin_link%" target="_blank">%plugin_name%</a> developed by <a href="https://berocket.com'.$meta_data.'" target="_blank">BeRocket</a></h4>';
-    } elseif ( isset($this->plugin_version_capability) && $this->plugin_version_capability <= 5 ) {
+    } elseif ( isset($this->plugin_version_capability) && $this->plugin_version_capability <= 5 && ! empty( $dplugin_link ) ) {
         $text = '<h4>Both <a href="%plugin_link%" target="_blank">Free</a> and <a href="%link%" target="_blank">Paid</a> versions of %plugin_name% developed by <a href="https://berocket.com'.$meta_data.'" target="_blank">BeRocket</a></h4>';
     } else {
         $text = '<h4><a href="%plugin_link%" target="_blank">%plugin_name%</a> developed by <a href="https://berocket.com" target="_blank">BeRocket</a></h4>';

@@ -130,3 +130,7 @@
 .brfr_import_export_block .brfr_import_all .brfr_import_send {
     margin-top: 15px;
 }
+
+.brfr_import_result p {
+    white-space: pre-line;
+}

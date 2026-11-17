@@ -36,6 +36,8 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
             add_action('braapf_single_filter_additional', array(__CLASS__, 'price_value_position'), 900, 2);
             //SELECTED FILTERS AREA
             add_action('braapf_single_filter_additional', array(__CLASS__, 'selected_filters_area'), 800, 2);
+            //UPDATE BUTTON
+            add_action('braapf_single_filter_additional', array(__CLASS__, 'update_button_alignment'), 500, 2);
             //RESET BUTTON
             add_action('braapf_single_filter_additional', array(__CLASS__, 'reset_button_hide'), 500, 2);
             //SAVE SETTING
@@ -295,6 +297,15 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                         echo '<input id="braapf_single_selection" type="checkbox" name="' . $settings_name . '[single_selection]"' . ( empty($single_selection) ? '' : ' checked' ) . ' value="1">';
                         echo '<label for="braapf_single_selection">'.__('Single Selection. Only one value can be selected at a time', 'BeRocket_AJAX_domain').'</label>';
                     echo '</p>';
+                echo '</div>';
+                echo '<div class="braapf_select2_selection_display braapf_half_select_full">';
+                    $selection_display = br_get_value_from_array($braapf_filter_settings, 'select2_selection_display', '');
+                    echo '<label for="braapf_select2_selection_display">'.esc_html__('Selected values display', 'BeRocket_AJAX_domain').'</label>';
+                    echo '<select id="braapf_select2_selection_display" name="'.esc_attr($settings_name).'[select2_selection_display]">';
+                    foreach (array('' => __('Tags (default)', 'BeRocket_AJAX_domain'), 'count' => __('Selected count', 'BeRocket_AJAX_domain'), 'first' => __('First value + remaining count', 'BeRocket_AJAX_domain')) as $value => $label) {
+                        echo '<option value="'.esc_attr($value).'"'.selected($selection_display, $value, false).'>'.esc_html($label).'</option>';
+                    }
+                    echo '</select>';
                 echo '</div>';
                 echo '<div class="braapf_operator braapf_half_select_full">';
                     $operator = br_get_value_from_array($braapf_filter_settings, 'operator', '');
@@ -582,6 +593,33 @@ if( ! class_exists('braapf_single_filter_edit_elements') ) {
                         echo '<input id="braapf_selected_area_show" type="checkbox" name="' . $settings_name . '[selected_area_show]"' . ( empty($selected_area_show) ? '' : ' checked' ) . ' value="1">';
                         echo '<label for="braapf_selected_area_show">'.__('Show if nothing is selected', 'BeRocket_AJAX_domain').'</label>';
                     echo '</p>';
+                echo '</div>';
+            echo '</div>';
+            echo '<div class="braapf_attribute_setup_flex">';
+                echo '<div class="braapf_selected_filters_label braapf_full_select_full">';
+                    $label = br_get_value_from_array($braapf_filter_settings, 'selected_filters_label', '');
+                    echo '<label for="braapf_selected_filters_label">' . esc_html__('Label before selected filters', 'BeRocket_AJAX_domain') . '</label>';
+                    echo '<input id="braapf_selected_filters_label" type="text" name="' . esc_attr($settings_name) . '[selected_filters_label]" value="' . esc_attr($label) . '" placeholder="' . esc_attr__('You selected', 'BeRocket_AJAX_domain') . '">';
+                echo '</div>';
+            echo '</div>';
+        }
+        static function update_button_alignment($settings_name, $braapf_filter_settings) {
+            $alignment = br_get_value_from_array($braapf_filter_settings, 'update_button_alignment', '');
+            $choices = array(
+                ''       => __('Default', 'BeRocket_AJAX_domain'),
+                'start'  => __('Start', 'BeRocket_AJAX_domain'),
+                'center' => __('Center', 'BeRocket_AJAX_domain'),
+                'end'    => __('End', 'BeRocket_AJAX_domain'),
+                'full'   => __('Full width', 'BeRocket_AJAX_domain'),
+            );
+            echo '<div class="braapf_attribute_setup_flex">';
+                echo '<div class="braapf_update_button_alignment braapf_half_select_full">';
+                    echo '<label for="braapf_update_button_alignment">' . esc_html__('Button alignment', 'BeRocket_AJAX_domain') . '</label>';
+                    echo '<select id="braapf_update_button_alignment" name="' . esc_attr($settings_name) . '[update_button_alignment]">';
+                    foreach ($choices as $value => $label) {
+                        echo '<option value="' . esc_attr($value) . '"' . selected($alignment, $value, false) . '>' . esc_html($label) . '</option>';
+                    }
+                    echo '</select>';
                 echo '</div>';
             echo '</div>';
         }

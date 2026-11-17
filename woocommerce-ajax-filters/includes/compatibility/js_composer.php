@@ -24,20 +24,26 @@ if( ! class_exists('BeRocket_AAPF_compat_js_composer') ) {
         );
         function init() {
             if( ! empty($_REQUEST['tag']) && ('vc_basic_grid' == $_REQUEST['tag'] || 'vc_masonry_grid' == $_REQUEST['tag'])
-            && ! empty($_REQUEST['data']) && is_array($_REQUEST['data']) && isset($_REQUEST['data']['brfilter']) ) {
+            && ! empty($_REQUEST['data']) && is_array($_REQUEST['data'])
+            && isset($_REQUEST['data']['brfilter']) && is_string($_REQUEST['data']['brfilter']) ) {
                 $bapf_apply = true;
                 bapf_set_filter_field_ajax($_REQUEST['data']['brfilter']);
                 $this->builder_parameter_apply($bapf_apply);
                 add_filter('vc_basic_grid_filter_query_suppress_filters', array($this, 'enable_filters'));
                 if( isset($_REQUEST['data']['brfilter_list'] ) && is_array($_REQUEST['data']['brfilter_list']) ) {
                     foreach($_REQUEST['data']['brfilter_list'] as $filter) {
-                        $filter['wid'] = intval($filter['wid']);
-                        $filter['id'] = intval($filter['id']);
+                        if( ! is_array($filter)
+                        || ( isset($filter['wid']) && ! is_string($filter['wid']) && ! is_int($filter['wid']) )
+                        || ( isset($filter['id']) && ! is_string($filter['id']) && ! is_int($filter['id']) ) ) {
+                            continue;
+                        }
+                        $filter['wid'] = max(0, intval($filter['wid'] ?? 0));
+                        $filter['id'] = max(0, intval($filter['id'] ?? 0));
                         if( ! empty($filter['wid']) ) {
                             if( ! in_array($filter['wid'], $this->brfilter_ajax_list['group']) ) {
                                 $this->brfilter_ajax_list['group'][] = $filter['wid'];
                             }
-                        } else {
+                        } elseif( ! empty($filter['id']) ) {
                             if( ! in_array($filter['id'], $this->brfilter_ajax_list['single']) ) {
                                 $this->brfilter_ajax_list['single'][] = $filter['id'];
                             }

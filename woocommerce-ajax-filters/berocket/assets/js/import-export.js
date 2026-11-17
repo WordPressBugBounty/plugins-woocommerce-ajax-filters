@@ -191,6 +191,12 @@
         $('.brfr_import_export_form_plugin').hide();
     }
 
+    function brfrShowImportResult(message, success) {
+        $('.brfr_import_result').removeClass('notice-success notice-error')
+            .addClass(success ? 'notice-success' : 'notice-error')
+            .find('p').text(message).end().show();
+    }
+
     function brfrConfirmImport() {
         var pluginSlug = $('.brfr_import_export_form select[name="plugin"]').val();
         var data = {
@@ -208,19 +214,19 @@
         $.post(ajaxurl, data, function(response) {
             $('.brapf_import_loading').hide();
             if (response && response.success) {
-                $('.brfr_import_export_form .brfr_import').val(response.data.message);
+                brfrShowImportResult(response.data.message, true);
                 brfrResetImportLinks();
                 brfrGetExportData();
                 brfrGetImportBackup();
             } else {
                 var message = response && response.data && response.data.message ? response.data.message : textValue('import_failed', 'Import failed');
-                $('.brfr_import_export_form .brfr_import').val(message);
+                brfrShowImportResult(message, false);
             }
-            setTimeout(brfrGetImportDataEnd, 5000);
+            brfrGetImportDataEnd();
         }, 'json').fail(function() {
             $('.brapf_import_loading').hide();
-            $('.brfr_import_export_form .brfr_import').val(textValue('import_failed', 'Import failed'));
-            setTimeout(brfrGetImportDataEnd, 5000);
+            brfrShowImportResult(textValue('import_failed', 'Import failed'), false);
+            brfrGetImportDataEnd();
         });
     }
 
@@ -245,13 +251,13 @@
                 }
             } else {
                 var message = response && response.data && response.data.message ? response.data.message : textValue('incorrect_data', 'Incorrect data');
-                $('.brfr_import_export_form .brfr_import').val(message);
-                setTimeout(brfrGetImportDataEnd, 5000);
+                brfrShowImportResult(message, false);
+                brfrGetImportDataEnd();
             }
         }, 'json').fail(function() {
             $('.brapf_import_loading').hide();
-            $('.brfr_import_export_form .brfr_import').val(textValue('import_failed', 'Import failed'));
-            setTimeout(brfrGetImportDataEnd, 5000);
+            brfrShowImportResult(textValue('import_failed', 'Import failed'), false);
+            brfrGetImportDataEnd();
         });
     }
 
@@ -280,6 +286,10 @@
         $('.brfr_backup_form .brfr_backup_form_send').prop('disabled', false);
         $('.brfr_backup_form .brfr_backup_form_select select').prop('disabled', false);
     }
+
+    $(document).on('click', '.brfr_import_result_dismiss', function() {
+        $('.brfr_import_result').hide();
+    });
 
     $(document).on('click', '.brfr_import_export_form .brfr_export', function() {
         var textarea = $(this)[0];

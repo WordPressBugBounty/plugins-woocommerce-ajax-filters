@@ -925,9 +925,42 @@
 #settings .berocket_sbs_step .braapf_style_customization {
     gap: 25px;
 }
-#settings .berocket_sbs_step .braapf_style_customization .braapf_half_select_full {
+#settings .berocket_sbs_step .braapf_style_customization_section {
+    flex: 0 0 31%;
+    width: 31%;
     min-width: 220px;
-    flex-grow: 1;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+#settings .berocket_sbs_step .braapf_style_customization_section > .braapf_half_select_full_inner {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+}
+#settings .colpick_hex .colpick_hex_field div,
+#settings .colpick_hex .colpick_hex_field input {
+    box-sizing: border-box;
+    height: 25px;
+    min-height: 25px;
+    line-height: 25px;
+    border-radius: 0;
+}
+#settings .colpick_hex .colpick_hex_field div {
+    width: 18px;
+    padding: 0;
+    text-align: center;
+}
+#settings .colpick_hex .colpick_hex_field input {
+    top: 0;
+    right: 4px;
+    width: calc(100% - 22px);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+    font-size: 12px;
 }
 #settings .berocket_sbs_step .braapf_style_customization h3 {
     font-size: 20px;

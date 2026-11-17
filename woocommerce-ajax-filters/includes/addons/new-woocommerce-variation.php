@@ -16,6 +16,21 @@ class BeRocket_AAPF_compat_woocommerce_variation_new {
             add_filter('bapf_faster_recount_get_query_for_calculate', array($this, 'modify_query_vars'), 9000, 2);
         }
         add_filter('bapf_uparse_query_vars_apply_filters', array($this, 'apply_filter'), 9000, 3);
+        add_action('woocommerce_after_product_object_save', array(__CLASS__, 'invalidate_cache'), 100);
+        add_action('woocommerce_product_set_stock_status', array(__CLASS__, 'invalidate_cache'), 100);
+        add_action('woocommerce_variation_set_stock_status', array(__CLASS__, 'invalidate_cache'), 100);
+        add_action('deleted_post', array(__CLASS__, 'invalidate_post_cache'), 100, 2);
+        add_action('post_updated', array(__CLASS__, 'invalidate_post_cache'), 100, 2);
+        add_action('braapf_additional_tables_cache_published', array(__CLASS__, 'invalidate_cache'));
+    }
+    public static function invalidate_cache() {
+        // A unique token also distinguishes multiple stock changes within one second.
+        update_option('braapf_variation_cache_version', wp_generate_uuid4(), false);
+    }
+    public static function invalidate_post_cache($post_id, $post) {
+        if( in_array($post->post_type, array('product', 'product_variation'), true) ) {
+            self::invalidate_cache();
+        }
     }
     function is_out_of_stock($result, $instance, $filter, $data) {
         if( ! $this->is_apply && $result !== null && isset($filter['type']) && $filter['type'] == 'stock_status' && ! empty($result['tax_query']) ) {
@@ -221,7 +236,9 @@ class BeRocket_AAPF_compat_woocommerce_variation_new {
         global $wpdb;
         list($current_terms, $current_attributes) = self::current_selected_data($data, $query);
         if( empty($current_terms) && empty($current_attributes) ) return array();
-        $out_of_stock_variable = br_get_cache(apply_filters('berocket_variation_cache_key', md5($current_terms.$current_attributes)), 'berocket_variation');
+        // Keep the same generation for reading and writing, even if data changes during the query.
+        $cache_key = md5(get_option('braapf_variation_cache_version', '0') . ':' . apply_filters('berocket_variation_cache_key', md5($current_terms.$current_attributes)));
+        $out_of_stock_variable = br_get_cache($cache_key, 'berocket_variation');
         if( $out_of_stock_variable === false ) {
             $query = self::out_of_stock_sql_array($data, $query, $current_attributes, $current_terms);
             $query = self::implode_recursive($query);
@@ -233,7 +250,7 @@ class BeRocket_AAPF_compat_woocommerce_variation_new {
             do_action('brapf_before_query', 'out_of_stock_variable', $query);
             $out_of_stock_variable = $wpdb->get_results( $query, ARRAY_N );
             do_action('brapf_after_query', 'out_of_stock_variable', $query);
-            br_set_cache(apply_filters('berocket_variation_cache_key', md5($current_terms.$current_attributes)), $out_of_stock_variable, 'berocket_variation', HOUR_IN_SECONDS);
+            br_set_cache($cache_key, $out_of_stock_variable, 'berocket_variation', HOUR_IN_SECONDS);
         }
         if( BeRocket_AAPF::$debug_mode ) {
             if( ! isset(BeRocket_AAPF::$error_log['_addons_variations_query']) || ! is_array(BeRocket_AAPF::$error_log['_addons_variations_query']) ) {

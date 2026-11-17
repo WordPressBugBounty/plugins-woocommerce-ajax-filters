@@ -6,12 +6,13 @@ class BeRocket_new_AAPF_Widget extends WP_Widget
             array("description" => __("AJAX Product Filters. Group of filters", 'BeRocket_AJAX_domain')));
     }
     public function widget($args, $instance) {
+        $instance = braapf_normalize_group_instance( $instance );
         if( ! self::check_widget_by_instance($instance) ) {
             return false;
         }
         if( ! empty($instance['group_id']) ) {
             $current_language = apply_filters( 'wpml_current_language', NULL );
-            $instance['group_id'] = apply_filters( 'wpml_object_id', $instance['group_id'], 'page', true, $current_language );
+            $instance['group_id'] = apply_filters( 'wpml_object_id', $instance['group_id'], 'br_filters_group', true, $current_language );
             $BeRocket_AAPF_group_filters = BeRocket_AAPF_group_filters::getInstance();
             $filters = $BeRocket_AAPF_group_filters->get_option($instance['group_id']);
             $filters['group_id'] = $instance['group_id'];
@@ -80,6 +81,7 @@ class BeRocket_new_AAPF_Widget extends WP_Widget
         }
     }
     public static function check_widget_by_instance($instance) {
+        $instance = braapf_normalize_group_instance( $instance );
         if( ( empty($instance['group_id']) || get_post_status($instance['group_id']) != 'publish' ) && empty($instance['filters']) ) {
             if( empty($instance['group_id']) ) {
                 braapf_is_filters_displayed_debug('-1', 'group', 'disabled', 'Do not have group ID');
@@ -100,7 +102,7 @@ class BeRocket_new_AAPF_Widget extends WP_Widget
             $filters = array();
         } else {
             $current_language = apply_filters( 'wpml_current_language', NULL );
-            $instance['group_id'] = apply_filters( 'wpml_object_id', $instance['group_id'], 'page', true, $current_language );
+            $instance['group_id'] = apply_filters( 'wpml_object_id', $instance['group_id'], 'br_filters_group', true, $current_language );
             $BeRocket_AAPF_group_filters = BeRocket_AAPF_group_filters::getInstance();
             $filters = $BeRocket_AAPF_group_filters->get_option($instance['group_id']);
         }
@@ -136,16 +138,26 @@ class BeRocket_new_AAPF_Widget extends WP_Widget
     }
     public function update( $new_instance, $old_instance ) {
         $instance = $old_instance;
-        $instance['group_id'] = strip_tags( @ $new_instance['group_id'] );
+        $group_reference = isset( $new_instance['group_slug'] ) ? $new_instance['group_slug'] : ( isset( $new_instance['group_id'] ) ? $new_instance['group_id'] : '' );
+        $normalized = braapf_normalize_group_instance(
+            array(
+                'group_slug' => $group_reference,
+                'group_id'   => isset( $new_instance['group_id'] ) ? $new_instance['group_id'] : '',
+            )
+        );
+        $instance['group_slug'] = braapf_get_group_slug( $normalized['group_id'] );
+        unset( $instance['group_id'] );
         $instance['title'] = strip_tags( @ $new_instance['title'] );
         return $instance;
     }
     public function form($instance) {
         wp_enqueue_script( 'berocket_aapf_widget-admin' );
         wp_enqueue_script('jquery-color');
-        $instance = wp_parse_args( (array) $instance, array( 'group_id' => '', 'title' => '') );
+        $instance = wp_parse_args( (array) $instance, array( 'group_id' => '', 'group_slug' => '', 'title' => '') );
+        $selected_group_id = braapf_resolve_group_id( ! empty( $instance['group_slug'] ) ? $instance['group_slug'] : $instance['group_id'] );
         $current_language = apply_filters( 'wpml_current_language', NULL );
-        $instance['group_id'] = apply_filters( 'wpml_object_id', $instance['group_id'], 'page', true, $current_language );
+        $selected_group_id = apply_filters( 'wpml_object_id', $selected_group_id, 'br_filters_group', true, $current_language );
+        $instance['group_id'] = $selected_group_id;
         echo '<a href="' . admin_url('edit.php?post_type=br_filters_group') . '">' . __('Manage groups', 'BeRocket_AJAX_domain') . '</a>';
         ?>
         <p>
@@ -153,20 +165,20 @@ class BeRocket_new_AAPF_Widget extends WP_Widget
             <input type="text" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $instance['title']; ?>">
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('group_id'); ?>"><?php _e('Group', 'BeRocket_AJAX_domain'); ?></label><br>
+            <label for="<?php echo $this->get_field_id('group_slug'); ?>"><?php _e('Group', 'BeRocket_AJAX_domain'); ?></label><br>
             <?php
             $query = new WP_Query(array('post_type' => 'br_filters_group', 'nopaging' => true, 'fields' => 'ids'));
             $posts = $query->get_posts();
             $edit_link_current = '';
             if ( !empty($posts) ) {
-                echo '<select class="berocket_new_widget_selectbox group" id="'.$this->get_field_id('group_id').'" name="'.$this->get_field_name('group_id').'">';
+                echo '<select class="berocket_new_widget_selectbox group" id="'.$this->get_field_id('group_slug').'" name="'.$this->get_field_name('group_slug').'">';
                 echo '<option>'.__('--Please select group--', 'BeRocket_AJAX_domain').'</option>';
                 foreach($posts as $post_id) {
-                    if( empty($instance['group_id']) ) {
-                        $instance['group_id'] = $post_id;
+                    if( empty($selected_group_id) ) {
+                        $selected_group_id = $post_id;
                     }
-                    echo '<option data-edit="'.get_edit_post_link($post_id).'" value="' . $post_id . '"'.($post_id == $instance['group_id'] ? ' selected' : '').'>' . substr(get_the_title($post_id), 0, 50) . (strlen(get_the_title($post_id)) > 50 ? '...' : '') . ' (ID:' . $post_id . ')</option>';
-                    if( $post_id == $instance['group_id'] ) {
+                    echo '<option data-edit="'.get_edit_post_link($post_id).'" value="' . esc_attr( braapf_get_group_slug( $post_id ) ) . '"'.($post_id == $selected_group_id ? ' selected' : '').'>' . substr(get_the_title($post_id), 0, 50) . (strlen(get_the_title($post_id)) > 50 ? '...' : '') . '</option>';
+                    if( $post_id == $selected_group_id ) {
                         $edit_link_current = get_edit_post_link($post_id);
                     }
                 }

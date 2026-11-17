@@ -14,6 +14,7 @@ class BeRocket_AAPF_Widget {
         'custom_taxonomy'               => 'product_cat',
         'type'                          => '',
         'select_first_element_text'     => '',
+        'select2_selection_display'     => '',
         'operator'                      => 'OR',
         'order_values_by'               => '',
         'order_values_type'             => '',
@@ -577,6 +578,7 @@ class BeRocket_AAPF_Widget {
         $set_query_var_title['hide_child_attributes']       = berocket_isset($hide_child_attributes);
         $set_query_var_title['cat_value_limit']             = ( isset($cat_value_limit) ? $cat_value_limit : null );
         $set_query_var_title['select_first_element_text']   = ( empty($select_first_element_text) ? __('Any', 'BeRocket_AJAX_domain') : $select_first_element_text );
+        $set_query_var_title['select2_selection_display'] = isset($select2_selection_display) ? $select2_selection_display : '';
         $set_query_var_title['hide_o_value']                = ! empty($br_options['hide_value']['o']);
         $set_query_var_title['hide_sel_value']              = ! empty($br_options['hide_value']['sel']);
         $set_query_var_title['hide_empty_value']            = ! empty($br_options['hide_value']['empty']);

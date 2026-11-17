@@ -1158,6 +1158,16 @@ td.br_colorpicker_field.colorpicker_removed:after {
 #settings .berocket_filter_groups .berocket_group_is_hide_theme_option_slider div label:hover {
     border-color: #f04e37;
 }
+.berocket_group_is_hide_theme_option_slider .bapf_group_style_radio {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+.berocket_group_is_hide_theme_option_slider .bapf_group_style_radio:focus-visible + label {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
 #settings .berocket_filter_groups .berocket_group_is_hide_theme_option_slider div input:checked + label {
     border-color: #f04e37;
 }

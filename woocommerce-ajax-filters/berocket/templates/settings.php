@@ -3,7 +3,8 @@ $plugin_info   = get_plugin_data( $this->cc->info[ 'plugin_file' ] );
 $meta_data = '?utm_source=plugin&utm_medium=settings&utm_campaign=upgrade&utm_term='.($this->info['plugin_sku'] ?? $this->info['plugin_name']);
 
 $dplugin_name  = $this->cc->info['full_name'];
-$dplugin_link  = 'https://berocket.com/' . $this->cc->values['premium_slug'] . $meta_data;
+$dplugin_link  = empty( $this->cc->values['premium_slug'] )
+    ? '' : 'https://berocket.com/' . $this->cc->values['premium_slug'] . $meta_data;
 $dplugin_price = $this->cc->info['price'];
 $dplugin_desc  = $plugin_info['Description'];
 $options       = $this->get_option();

@@ -2,12 +2,6 @@
 class BeRocket_conditions_AAPF extends BeRocket_conditions {
     public static function get_conditions() {
         $conditions = parent::get_conditions();
-        $conditions['condition_page'] = array(
-            'func' => 'check_condition_page',
-            'type' => 'page',
-            'name' => __('Page ID', 'BeRocket_domain')
-        );
-        
         $conditions['condition_user_status'] = array(
             'func' => 'check_condition_user_status',
             'type' => 'user_status',
@@ -19,29 +13,6 @@ class BeRocket_conditions_AAPF extends BeRocket_conditions {
             'name' => __('User Role', 'BeRocket_products_of_day_domain')
         );
         return $conditions;
-    }
-    public static function condition_page($html, $name, $options) {
-        $options = self::berocket_aapf_page_compatibility_fix($options);
-        return parent::condition_page_id($html, $name, $options);
-    }
-    public static function check_condition_page($show, $condition, $additional) {
-        $condition = self::berocket_aapf_page_compatibility_fix($condition);
-        return parent::check_condition_page_id($show, $condition, $additional);
-    }
-    public static function berocket_aapf_page_compatibility_fix($options) {
-        $compatibility_pages = array(
-            'product_cat' => 'category',
-            'product_taxonomy' => 'taxonomies',
-            'product_tag' => 'tags',
-            'single_product' => 'product',
-        );
-        if( ! empty($options['page']) ) {
-            if( array_key_exists($options['page'], $compatibility_pages) ) {
-                $options['page'] = $compatibility_pages[$options['page']];
-            }
-            $options['pages'] = array($options['page']);
-        }
-        return $options;
     }
     //User Status
     public static function condition_user_status($html, $name, $options) {
@@ -100,6 +71,33 @@ class BeRocket_conditions_AAPF extends BeRocket_conditions {
 class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
     public $hook_name = 'berocket_aapf_single_filter';
     public $conditions;
+    public $import_export = array(
+        'data' => array(
+            'export_type' => 'conditions',
+        ),
+        'data2' => array(
+            'export_type' => 'conditions',
+        ),
+        'include_exclude_list' => array(
+            'export_type'                    => 'taxonomy',
+            'multiple'                       => true,
+            'on_missing'                     => 'remove',
+            'aapf_filter_taxonomy_reference' => true,
+        ),
+        'valuename_change_list' => array(
+            'export_type'                    => 'taxonomy',
+            'array_keys'                     => true,
+            'on_missing'                     => 'remove',
+            'aapf_filter_taxonomy_reference' => true,
+        ),
+        'parent_*' => array(
+            'export_type'              => 'taxonomy',
+            'taxonomy_from_key_prefix' => 'parent_',
+            'passthrough'              => array('', '0', '1', 'bapf1level', 'bapf4current'),
+            'on_missing'               => 'remove',
+            'aapf_parent_reference'     => true,
+        ),
+    );
     protected static $instance;
     public $post_type_parameters = array(
         'can_be_disabled' => true
@@ -139,29 +137,31 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
         );
         $this->default_settings = array(
             'data'                          => array(),
-            'br_wp_footer'                  => false,
-            'widget_type'                   => '',
-            'reset_hide'                    => 'berocket_no_filters',
+            'br_wp_footer'                  => '',
+            'widget_type'                   => 'filter',
+            'reset_hide'                    => '',
+            'update_button_alignment'       => '',
             'title'                         => '',
-            'filter_type'                   => 'attribute',
+            'filter_type'                   => 'all_product_cat',
             'attribute'                     => '',
-            'custom_taxonomy'               => 'product_cat',
+            'custom_taxonomy'               => '',
             'type'                          => '',
             'select_first_element_text'     => '',
+            'select2_selection_display'     => '',
             'operator'                      => 'OR',
             'order_values_by'               => '',
-            'order_values_type'             => '',
+            'order_values_type'             => 'asc',
             'text_before_price'             => '',
             'text_after_price'              => '',
             'enable_slider_inputs'          => '',
             'parent_product_cat'            => '',
-            'depth_count'                   => '0',
-            'widget_collapse_enable'        => '0',
-            'widget_is_hide'                => '0',
-            'show_product_count_per_attr'   => '0',
-            'hide_child_attributes'         => '0',
-            'hide_collapse_arrow'           => '0',
-            'use_value_with_color'          => '0',
+            'depth_count'                   => '',
+            'widget_collapse_enable'        => '',
+            'widget_is_hide'                => '',
+            'show_product_count_per_attr'   => '',
+            'hide_child_attributes'         => '',
+            'hide_collapse_arrow'           => '',
+            'use_value_with_color'          => '',
             'values_per_row'                => '',
             'icon_before_title'             => '',
             'icon_after_title'              => '',
@@ -175,22 +175,29 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
             'use_max_price'                 => '',
             'max_price'                     => '',
             'height'                        => '',
-            'scroll_theme'                  => 'dark',
-            'selected_area_show'            => '0',
-            'hide_selected_arrow'           => '0',
-            'selected_is_hide'              => '0',
-            'slider_default'                => '0',
-            'number_style'                  => '0',
+            'scroll_theme'                  => '',
+            'selected_area_show'            => '',
+            'selected_filters_label'        => '',
+            'hide_selected_arrow'           => '',
+            'selected_is_hide'              => '',
+            'slider_default'                => '',
+            'number_style'                  => '',
             'number_style_thousand_separate'=> '',
-            'number_style_decimal_separate' => '.',
-            'number_style_decimal_number'   => '2',
-            'is_hide_mobile'                => '0',
+            'number_style_decimal_separate' => '',
+            'number_style_decimal_number'   => '',
+            'is_hide_mobile'                => '',
             'user_can_see'                  => '',
-            'cat_propagation'               => '0',
+            'cat_propagation'               => '',
             'product_cat'                   => '',
-            'parent_product_cat_current'    => '0',
+            'parent_product_cat_current'    => '',
             'attribute_count'               => '',
             'clrimg_use_attrval'            => '',
+            'version'                       => '1.0',
+            'filter_title'                  => '',
+            'cat_value_limit'               => '',
+            'style'                         => 'checkbox',
+            'widget_collapse'               => '',
+            'attribute_count_show_hide'     => '',
         );
         parent::__construct();
         add_shortcode( 'br_filter_single', array( $this, 'shortcode' ) );
@@ -200,7 +207,7 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
     }
     public function init_translation() {
         $this->conditions = new BeRocket_conditions_AAPF($this->post_name.'[data]', $this->hook_name, array(
-            'condition_page',
+            'condition_page_id',
             'condition_page_woo_category'
         ));
         $this->add_meta_box('conditions', __( 'Conditions', 'BeRocket_AJAX_domain' ));
@@ -635,6 +642,25 @@ class BeRocket_AAPF_single_filter extends BeRocket_custom_post_class {
 class BeRocket_AAPF_group_filters extends BeRocket_custom_post_class {
     public $hook_name = 'berocket_aapf_group_filters';
     public $conditions;
+    public $import_export = array(
+        'data' => array(
+            'export_type' => 'conditions',
+        ),
+        'filters' => array(
+            'export_type' => 'post',
+            'post_type'   => 'br_product_filter',
+            'multiple'    => true,
+            'scope'       => 'package',
+            'on_missing'  => 'remove',
+        ),
+        'filters_data' => array(
+            'export_type' => 'post',
+            'post_type'   => 'br_product_filter',
+            'array_keys'  => true,
+            'scope'       => 'package',
+            'on_missing'  => 'remove',
+        ),
+    );
     protected static $instance;
     public $post_type_parameters = array(
         'can_be_disabled' => true
@@ -695,7 +721,7 @@ class BeRocket_AAPF_group_filters extends BeRocket_custom_post_class {
     }
     public function init_translation() {
         $this->conditions = new BeRocket_conditions_AAPF($this->post_name.'[data]', $this->hook_name, array(
-            'condition_page',
+            'condition_page_id',
             'condition_page_woo_category'
         ));
         $this->add_meta_box('conditions', __( 'Conditions', 'BeRocket_AJAX_domain' ));
@@ -760,7 +786,7 @@ class BeRocket_AAPF_group_filters extends BeRocket_custom_post_class {
         if( in_array( $pagenow, array( 'post-new.php' ) ) ) {
             _e( 'You need save it to get shortcode', 'BeRocket_AJAX_domain' );
         } else {
-            echo "[br_filters_group group_id={$post->ID}]";
+            echo '[br_filters_group group_slug="' . esc_attr( $post->post_name ) . '"]';
         }
     }
     public function manage_edit_columns ( $columns ) {
@@ -791,13 +817,14 @@ class BeRocket_AAPF_group_filters extends BeRocket_custom_post_class {
                 echo $filter_links;
                 break;
             case "shortcode":
-                echo "[br_filters_group group_id={$post->ID}]";
+                echo '[br_filters_group group_slug="' . esc_attr( $post->post_name ) . '"]';
                 break;
             default:
                 break;
         }
     }
     public function shortcode( $atts = array() ) {
+        $atts = braapf_normalize_group_instance( $atts );
         if ( BeRocket_new_AAPF_Widget::check_widget_by_instance( $atts ) ) {
             ob_start();
 

@@ -1,7 +1,10 @@
 <?php
 if( ! class_exists( 'BeRocket_Framework' ) && ! function_exists('BeRocket_Framework_load_newest') ) {
     function BeRocket_Framework_load_newest() {
-        $active_plugins = get_option('active_plugins');
+        $active_plugins = (array)get_option('active_plugins');
+        if (is_multisite()) {
+            $active_plugins = array_unique(array_merge($active_plugins, array_keys((array)get_site_option('active_sitewide_plugins', array()))));
+        }
         $framework_version = '0';
         $framework_dir = false;
         foreach($active_plugins as $active_plugin) {
@@ -37,8 +40,8 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
     include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
     load_plugin_textdomain('BeRocket_domain', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/');
     class BeRocket_Framework {
-        public static $framework_version = '3.0.6';
-        public $plugin_framework_version = '3.0.6';
+        public static $framework_version = '3.1.5';
+        public $plugin_framework_version = '3.1.5';
         public $licenses_current = array('free');
         public static $settings_name = '';
         public $addons;
@@ -229,24 +232,33 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
         public static function get_product_data_berocket($plugin_id) {
             $products = get_transient('berocket_plugin_paid_info');
             if( $products === FALSE ) {
-                $response = wp_remote_post('https://apicdn.berocket.com/plugins_data', array(
-                    'method' => 'GET',
+                $response = wp_remote_get('https://apicdn.berocket.com/plugins_data', array(
                     'timeout' => 15,
-                    'redirection' => 5,
-                    'blocking' => true,
-                    'sslverify' => false
+                    'redirection' => 0,
+                    'sslverify' => true,
+                    'limit_response_size' => 524288
                 ));
-                if( ! is_wp_error($response) ) {
+                $products = '';
+                $partial = false;
+                if( ! is_wp_error($response) && (int)wp_remote_retrieve_response_code($response) === 200 ) {
                     $out = wp_remote_retrieve_body($response);
-                    if( !empty($out) && json_decode($out) ) {
-                        $products = json_decode($out, true);
-                        set_transient('berocket_plugin_paid_info', $products, DAY_IN_SECONDS);
-                    } else {
-                        set_transient('berocket_plugin_paid_info', '', HOUR_IN_SECONDS);
+                    $decoded = is_string($out) && strlen($out) < 524288 ? json_decode($out, true) : null;
+                    // The publisher emits an object keyed by product ID; legacy
+                    // snapshots may be lists. Validate records in either form.
+                    if (is_array($decoded) && json_last_error() === JSON_ERROR_NONE) {
+                        $products = self::validated_product_catalog($decoded, $partial);
                     }
-                } else {
-                    set_transient('berocket_plugin_paid_info', '', HOUR_IN_SECONDS);
                 }
+                set_transient('berocket_plugin_paid_info', $products, is_array($products) && !$partial ? DAY_IN_SECONDS : HOUR_IN_SECONDS);
+            } elseif (is_array($products)) {
+                // Older frameworks cached unvalidated lists. Sanitize those too,
+                // without another HTTP request or renewing an unchanged cache.
+                $partial = false;
+                $validated = self::validated_product_catalog($products, $partial);
+                if ($validated !== $products) {
+                    set_transient('berocket_plugin_paid_info', $validated, $partial ? HOUR_IN_SECONDS : DAY_IN_SECONDS);
+                }
+                $products = $validated;
             }
             if( $plugin_id == 'all' ) {
                 return $products;
@@ -261,6 +273,29 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
                 }
             }
             return $product_return;
+        }
+
+        private static function validated_product_catalog(array $rows, &$partial) {
+            $products = array(); $seen = array(); $partial = false;
+            foreach ($rows as $product) {
+                $id = is_array($product) ? ($product['id'] ?? null) : null;
+                if ((!is_int($id) && !is_string($id)) || strlen((string)$id) > 10 || !ctype_digit((string)$id)
+                    || (float)$id > 2147483647 || (int)$id < 1) {
+                    $partial = true; continue;
+                }
+                $id = (int)$id;
+                // Remember even invalid versions: a later duplicate cannot make
+                // this product unambiguous, regardless of the records' order.
+                if (isset($seen[$id])) {
+                    unset($products[$id]); $partial = true; continue;
+                }
+                $seen[$id] = true;
+                if (!is_string($product['version'] ?? null) || !preg_match('/^[0-9][0-9A-Za-z.+_-]{0,49}$/D', $product['version'])) {
+                    $partial = true; continue;
+                }
+                $products[$id] = $product;
+            }
+            return $products;
         }
 
         public function clear_product_data_transient() {
@@ -343,12 +378,13 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
             $plugin_base_slug = plugin_basename( $this->cc->info[ 'plugin_file' ] );
             if ( $file == $plugin_base_slug ) {
                 $meta_data = '?utm_source=plugin&utm_medium=plugins_page&utm_campaign=upgrade&utm_term='.($this->info['plugin_sku'] ?? $this->info['plugin_name']);
-                $row_meta = array(
-                    'docs'    => '<a href="https://docs.berocket.com/plugin/' .
+                $row_meta = array();
+                if ( ! empty( $this->cc->values['premium_slug'] ) ) {
+                    $row_meta['docs'] = '<a href="https://docs.berocket.com/plugin/' .
                                  $this->cc->values[ 'premium_slug' ] . $meta_data . '" title="' .
                                  __( 'View Plugin Documentation', 'BeRocket_domain' ) .
-                                 '" target="_blank">' . __( 'Docs', 'BeRocket_domain' ) . '</a>',
-                );
+                                 '" target="_blank">' . __( 'Docs', 'BeRocket_domain' ) . '</a>';
+                }
                 if( ! empty($this->plugin_version_capability) && $this->plugin_version_capability == 3 ) {
                     if( ! empty($this->cc->values[ 'free_slug' ]) ) {
                         $row_meta['support'] = '<a href="https://wordpress.org/support/plugin/' . $this->cc->values[ 'free_slug' ] .
@@ -356,10 +392,12 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
                                  '" target="_blank">' . __( 'Support', 'BeRocket_domain' ) . '</a>';
                     }
                 } elseif( ! empty($this->plugin_version_capability) && $this->plugin_version_capability > 10 ) {
-                    $row_meta['premium'] = '<a href="https://berocket.com/support/support-' . $this->cc->values[ 'premium_slug' ] .
+                    if ( ! empty( $this->cc->values['premium_slug'] ) ) {
+                        $row_meta['premium'] = '<a href="https://berocket.com/support/support-' . $this->cc->values[ 'premium_slug' ] .
                                  '" title="' . __( 'View Premium Support Page', 'BeRocket_domain' ) .
                                  '" target="_blank">' . __( 'Premium Support', 'BeRocket_domain' ) . '</a>';
-                } else {
+                    }
+                } elseif ( ! empty( $this->cc->values['premium_slug'] ) ) {
                     $row_meta['premium'] = '<a href="https://berocket.com/' . $this->cc->values[ 'premium_slug' ] . $meta_data .
                                  '" title="' . __( 'View Premium Version Page', 'BeRocket_domain' ) .
                                  '" target="_blank">' . __( 'Premium Version', 'BeRocket_domain' ) . '</a>';
@@ -967,19 +1005,22 @@ if( ! class_exists( 'BeRocket_Framework' ) ) {
                             </div>
                             <nav class='premium'>";
                                 if( ! $setup_style['hide_header_links'] ) {
-                                    $header_links = array(
-                                        'documentation' => array(
+                                    $header_links = array();
+                                    if ( ! empty( $this->cc->values['premium_slug'] ) ) {
+                                        $header_links['documentation'] = array(
                                             'text' => "<i class='fa fa-book'></i>",
                                             'link' => apply_filters('brfr_docs_link_' . $setup_style['name_for_filters'],
 	                                            "https://docs.berocket.com/plugin/{$this->cc->values['premium_slug']}" )
-                                        )
-                                    );
-                                    if( ! empty($this->plugin_version_capability) && $this->plugin_version_capability > 10 ) {
-                                        $header_links['support'] = array(
-                                            'text' => "<i class='fa fa-support'></i>",
-                                            'link' => apply_filters('brfr_support_link_' . $setup_style['name_for_filters'],
-	                                            "https://berocket.com/support/support-{$this->cc->values['premium_slug']}{$meta_data}" )
                                         );
+                                    }
+                                    if( ! empty($this->plugin_version_capability) && $this->plugin_version_capability > 10 ) {
+                                        if ( ! empty( $this->cc->values['premium_slug'] ) ) {
+                                            $header_links['support'] = array(
+                                                'text' => "<i class='fa fa-support'></i>",
+                                                'link' => apply_filters('brfr_support_link_' . $setup_style['name_for_filters'],
+                                                    "https://berocket.com/support/support-{$this->cc->values['premium_slug']}{$meta_data}" )
+                                            );
+                                        }
                                     } elseif( ! empty($this->cc->values['free_slug']) ) {
                                         $header_links['support'] = array(
                                             'text' => "<i class='fa fa-support'></i>",

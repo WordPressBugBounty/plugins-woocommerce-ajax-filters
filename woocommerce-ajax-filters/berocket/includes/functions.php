@@ -334,6 +334,20 @@ if( ! function_exists( 'br_products_selector' ) ) {
     }
 }
 
+if( ! function_exists( 'br_normalize_conditions' ) ) {
+    function br_normalize_conditions($conditions) {
+        $groups = array();
+        if( is_array($conditions) ) {
+            foreach($conditions as $group) {
+                if( is_array($group) ) {
+                    $groups[] = array_values($group);
+                }
+            }
+        }
+        return $groups;
+    }
+}
+
 if( ! function_exists( 'br_condition_builder' ) ) {
     function br_condition_builder($name, $value, $additional = array()) {
         ob_start();
@@ -517,6 +531,10 @@ if( ! function_exists( 'berocket_sanitize_array' ) ){
         if ( is_object( $array ) ) $array = (array) $array; // wp_check_invalid_utf8 is not working with objects
 
         if ( is_array( $array ) ) {
+            if( ! empty($option_name) && end($option_name) === 'condition' ) {
+                // Condition keys are positional indexes, not user-defined names.
+                $array = br_normalize_conditions($array);
+            }
             foreach($array as $arr_key => &$arr_val) {
                 $new_option_name = array();
                 if( count($option_name) > 0 ) {

@@ -1115,6 +1115,7 @@ class BeRocket_aapf_variations_tables_addon extends BeRocket_framework_addon_lib
             if( intval($updated) === 1 ) {
                 wp_cache_delete('br_filters_options', 'options');
                 wp_cache_delete('br_filters_options', 'berocket_framework_option');
+                do_action('braapf_additional_tables_cache_published');
                 return true;
             }
         }

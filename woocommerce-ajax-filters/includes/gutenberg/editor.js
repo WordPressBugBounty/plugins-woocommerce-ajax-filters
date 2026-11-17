@@ -6,6 +6,7 @@
 	}
 
 	var createElement = element.createElement;
+	var useEffect = element.useEffect;
 	var InspectorControls = blockEditor.InspectorControls;
 	var useBlockProps = blockEditor.useBlockProps;
 	var PanelBody = components.PanelBody;
@@ -58,7 +59,9 @@
 		var blockType = blocks.getBlockType( definition.name );
 
 		return {
-			attribute: getSelectionAttribute( blockType ),
+			attribute: definition.attribute || getSelectionAttribute( blockType ),
+			fallbackAttribute: definition.fallbackAttribute || '',
+			referenceType: definition.referenceType || 'id',
 			label: blockType && blockType.title ? blockType.title : '',
 			options: Array.isArray( definition.options ) ? definition.options : []
 		};
@@ -105,11 +108,21 @@
 		return undefined !== normalizeId( value );
 	}
 
+	function normalizeReference( value, referenceType ) {
+		if ( 'slug' === referenceType ) {
+			value = undefined === value || null === value ? '' : String( value ).trim();
+			return value && '0' !== value ? value : undefined;
+		}
+
+		return normalizeId( value );
+	}
+
 	function getOptions( configuration, selectionMessage ) {
 		var options = configuration.options.map( function( option ) {
 			return {
 				label: option && undefined !== option.label ? String( option.label ) : '',
-				value: option && undefined !== option.value ? String( option.value ) : ''
+				value: option && undefined !== option.value ? String( option.value ) : '',
+				legacyValue: option && undefined !== option.legacyValue ? String( option.legacyValue ) : ''
 			};
 		} );
 
@@ -127,7 +140,7 @@
 		var index;
 
 		for ( index = 0; index < options.length; index++ ) {
-			if ( ! isSelected( options[ index ].value ) ) {
+			if ( ! options[ index ].value || '0' === String( options[ index ].value ) ) {
 				return options[ index ].value;
 			}
 		}
@@ -137,7 +150,14 @@
 
 	function createSelectionControl( props, configuration, selectionMessage ) {
 		var options = getOptions( configuration, selectionMessage );
-		var selected = normalizeId( props.attributes[ configuration.attribute ] );
+		var selected = normalizeReference( props.attributes[ configuration.attribute ], configuration.referenceType );
+		if ( undefined === selected && configuration.fallbackAttribute ) {
+			var legacySelected = normalizeReference( props.attributes[ configuration.fallbackAttribute ], 'id' );
+			var matchingOption = options.find( function( option ) {
+				return undefined !== legacySelected && option.legacyValue === String( legacySelected );
+			} );
+			selected = matchingOption ? matchingOption.value : legacySelected;
+		}
 		var attributes = {};
 
 		return createElement( SelectControl, {
@@ -145,7 +165,10 @@
 			value: undefined === selected ? getEmptyOptionValue( options ) : String( selected ),
 			options: options,
 			onChange: function( value ) {
-				attributes[ configuration.attribute ] = normalizeId( value );
+				attributes[ configuration.attribute ] = normalizeReference( value, configuration.referenceType );
+				if ( configuration.fallbackAttribute ) {
+					attributes[ configuration.fallbackAttribute ] = undefined;
+				}
 				props.setAttributes( attributes );
 			}
 		} );
@@ -161,6 +184,31 @@
 
 	function createEdit( definition ) {
 		return function( props ) {
+			var configuration = getConfiguration( definition );
+			var options = getOptions( configuration, getSelectionMessage( definition ) );
+			var legacyValue = configuration.fallbackAttribute
+				? normalizeReference( props.attributes[ configuration.fallbackAttribute ], 'id' )
+				: undefined;
+			var currentValue = normalizeReference( props.attributes[ configuration.attribute ], configuration.referenceType );
+
+			useEffect( function() {
+				if ( currentValue !== undefined || legacyValue === undefined ) {
+					return;
+				}
+
+				var matchingOption = options.find( function( option ) {
+					return option.legacyValue === String( legacyValue );
+				} );
+				if ( ! matchingOption || ! matchingOption.value ) {
+					return;
+				}
+
+				var migratedAttributes = {};
+				migratedAttributes[ configuration.attribute ] = matchingOption.value;
+				migratedAttributes[ configuration.fallbackAttribute ] = undefined;
+				props.setAttributes( migratedAttributes );
+			}, [ currentValue, legacyValue ] );
+
 			if ( ! canUseBlocks ) {
 				return createElement(
 					'div',
@@ -169,7 +217,6 @@
 				);
 			}
 
-			var configuration = getConfiguration( definition );
 			var selectionMessage = getSelectionMessage( definition );
 			var previewUnavailableMessage = getPreviewUnavailableMessage();
 			if ( ! configuration.attribute ) {
@@ -180,7 +227,7 @@
 				);
 			}
 
-			var selected = isSelected( props.attributes[ configuration.attribute ] );
+			var selected = undefined !== currentValue || undefined !== legacyValue;
 			var blockType = blocks.getBlockType( definition.name );
 			var title = blockType && blockType.title ? blockType.title : configuration.label;
 			var inspector = createElement(

@@ -10,6 +10,7 @@ class BAPF_DiviExtension extends DiviExtension {
 		$this->plugin_dir_url = plugin_dir_url( $this->plugin_dir );
 
 		parent::__construct( $name, $args );
+        $this->_builder_js_data['groupIdToSlug'] = braapf_get_group_id_to_slug_map();
         add_action('wp_ajax_brapf_get_single_filter', array($this, 'get_single_filter'));
         add_action('wp_ajax_brapf_get_group_filter', array($this, 'get_group_filter'));
     }
@@ -41,7 +42,12 @@ class BAPF_DiviExtension extends DiviExtension {
         $atts = self::convert_on_off($atts);
         $this->props = $atts;
         $args = array();
-        if( empty($atts['group_id']) ) {
+        $group_slug = isset( $atts['group_slug'] ) ? (string) $atts['group_slug'] : '';
+        $legacy_group_id = isset( $atts['group_id'] ) ? (string) $atts['group_id'] : '';
+        $group_reference = '0' === $group_slug && '' !== $legacy_group_id && '0' !== $legacy_group_id
+            ? $legacy_group_id
+            : ( '' !== $group_slug ? $group_slug : $legacy_group_id );
+        if( '' === $group_reference || '0' === $group_reference ) {
             $options = array(
                 'display_inline',
                 'display_inline_count',
@@ -54,7 +60,10 @@ class BAPF_DiviExtension extends DiviExtension {
                 $args[$option] = (empty($atts[$option]) ? '' : $atts[$option]);
             }
         } else {
-            $args['group_id'] = $atts['group_id'];
+            $args['group_slug'] = $group_reference;
+            if ( '' !== $legacy_group_id ) {
+                $args['group_id'] = $legacy_group_id;
+            }
         }
         $correct_filters = array();
         $filters_text = explode(',', $atts['filters']);
@@ -108,7 +117,10 @@ class BAPF_DiviExtension extends DiviExtension {
 		}
     }
     private function get_divi_nonce_script() {
-        return '(function(){var addNonce=function(){if(!window.et_fb_options||!window.et_fb_options.ajaxurl||window.et_fb_options.ajaxurl.indexOf("bapf_divi_nonce=")!==-1){return;}window.et_fb_options.ajaxurl+=(window.et_fb_options.ajaxurl.indexOf("?")===-1?"?":"&")+"bapf_divi_nonce="+encodeURIComponent(' . wp_json_encode( wp_create_nonce( 'bapf_divi_render' ) ) . ');};addNonce();if(window.jQuery){window.jQuery(window).on("et_builder_api_ready",addNonce);}})();';
+        return '(function(){var addNonce=function(){if(!window.et_fb_options||!window.et_fb_options.ajaxurl||window.et_fb_options.ajaxurl.indexOf("bapf_divi_nonce=")!==-1){return;}window.et_fb_options.ajaxurl+=(window.et_fb_options.ajaxurl.indexOf("?")===-1?"?":"&")+"bapf_divi_nonce="+encodeURIComponent(' . wp_json_encode( wp_create_nonce( 'bapf_divi_render' ) ) . ');};addNonce();if(window.jQuery){window.jQuery(window).on("et_builder_api_ready",addNonce);}})();' . $this->get_group_reference_migration_script();
+    }
+    private function get_group_reference_migration_script() {
+        return '(function(){var migrate=function(){var data=window.BraapfExtensionBuilderData||{},map=data.groupIdToSlug||{};document.querySelectorAll(".et-fb-modal,.et-vb-modal,.et-fb-settings,.et-vb-settings").forEach(function(modal){var legacy=modal.querySelector("[name=group_id],[data-name=group_id] input,[data-attr-name=group_id] input");var slug=modal.querySelector("[name=group_slug],[data-name=group_slug] select,[data-name=group_slug] input,[data-attr-name=group_slug] select,[data-attr-name=group_slug] input");if(!legacy||!slug){return;}var value=String(legacy.value||"");if(slug.value&&String(slug.value)!=="0"){return;}if(!Object.prototype.hasOwnProperty.call(map,value)){return;}slug.value=String(map[value]);slug.dispatchEvent(new Event("input",{bubbles:true}));slug.dispatchEvent(new Event("change",{bubbles:true}));legacy.value="";legacy.dispatchEvent(new Event("input",{bubbles:true}));legacy.dispatchEvent(new Event("change",{bubbles:true}));});};var start=function(){migrate();new MutationObserver(migrate).observe(document.body,{childList:true,subtree:true});};if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start);}else{start();}})();';
     }
     public static function convert_on_off($atts) {
         foreach($atts as &$attr) {

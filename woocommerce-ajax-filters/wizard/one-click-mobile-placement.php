@@ -208,7 +208,7 @@ class BeRocket_AAPF_One_Click_Mobile_Placement {
 
         $existing_number = 0;
         foreach ($instances as $number => $instance) {
-            if (is_array($instance) && isset($instance['group_id']) && absint($instance['group_id']) === $group_id) {
+            if (is_array($instance) && braapf_normalize_group_instance($instance)['group_id'] === $group_id) {
                 $existing_number = absint($number);
                 break;
             }
@@ -225,7 +225,7 @@ class BeRocket_AAPF_One_Click_Mobile_Placement {
             $sidebars[$sidebar_id][] = $widget_id;
         }
         if (!$existing_number) {
-            $instances[$number] = array('group_id' => $group_id);
+            $instances[$number] = array('group_slug' => braapf_get_group_slug($group_id));
             $created = true;
         }
         $sidebars_saved = $sidebars === $previous_sidebars || update_option('sidebars_widgets', $sidebars);

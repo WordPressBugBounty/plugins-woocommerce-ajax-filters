@@ -10,7 +10,7 @@ if( ! class_exists('BeRocket_AAPF_Template_Style_select') ) {
                 'style_file'    => 'css/select.css',
                 'script_file'   => 'js/select.js',
                 'image'         => plugin_dir_url( __FILE__ ) . 'images/select.png',
-                'version'       => '1.0',
+                'version'       => '1.1',
                 'sort_pos'      => '1',
                 'name_price'    => 'Price Ranges Select',
                 'image_price'   => plugin_dir_url( BeRocket_AJAX_filters_file ) . 'paid/template_styles/images/select-price.png',
@@ -43,6 +43,13 @@ if( ! class_exists('BeRocket_AAPF_Template_Style_select2') ) {
             $template['template']['content']['filter']['content']['list']['attributes']['class']['select2'] = 'bapf_select2';
             if( ! $berocket_query_var_title['single_selection'] ) {
                 $template['template']['content']['filter']['content']['list']['attributes']['data-placeholder'] = $berocket_query_var_title['select_first_element_text'];
+                if (isset($berocket_query_var_title['select2_selection_display']) && in_array($berocket_query_var_title['select2_selection_display'], array('count', 'first'), true)) {
+                    $attributes = &$template['template']['content']['filter']['content']['list']['attributes'];
+                    $attributes['data-selection-display'] = $berocket_query_var_title['select2_selection_display'];
+                    /* Translate both forms here; the actual selection count changes in the browser. */
+                    $attributes['data-selection-label-one'] = __('%d selected', 'BeRocket_AJAX_domain');
+                    $attributes['data-selection-label-many'] = __('%d selected values', 'BeRocket_AJAX_domain');
+                }
             }
             return $template;
         }

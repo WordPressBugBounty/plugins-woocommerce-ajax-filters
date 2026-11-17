@@ -7,10 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Gutenberg integration for the existing BeRocket filter shortcodes.
  *
- * The blocks intentionally store only a selected custom-post ID.  Rendering
- * remains delegated to the established shortcode/widget path so every filter
- * type, template style, condition, and third-party compatibility continues to
- * behave the same way as it does outside the block editor.
+ * Single-filter blocks store the selected post ID. Filter-group blocks store
+ * the portable group slug while retaining the legacy ID attribute for old
+ * content. Rendering remains delegated to the established shortcode/widget
+ * path so filter behavior stays identical outside the block editor.
  */
 class BeRocket_AAPF_Gutenberg {
     const EDITOR_SCRIPT_HANDLE          = 'berocket-aapf-gutenberg-editor';
@@ -158,7 +158,22 @@ class BeRocket_AAPF_Gutenberg {
      * @return string
      */
     public function render_filter_group( $attributes ) {
-        return $this->render_selected_post( $attributes, 'groupId', 'br_filters_group', 'br_filters_group', 'group_id' );
+        $attributes = is_array( $attributes ) ? $attributes : array();
+        $reference = braapf_normalize_group_instance(
+            array(
+                'group_slug' => isset( $attributes['groupSlug'] ) ? $attributes['groupSlug'] : '',
+                'group_id'   => isset( $attributes['groupId'] ) ? $attributes['groupId'] : '',
+            )
+        );
+        $post_id = $reference['group_id'];
+
+        return $this->render_selected_post(
+            array( 'resolvedGroupId' => $post_id ),
+            'resolvedGroupId',
+            'br_filters_group',
+            'br_filters_group',
+            'group_id'
+        );
     }
 
     /**
@@ -441,20 +456,24 @@ class BeRocket_AAPF_Gutenberg {
                 continue;
             }
 
-            $style_path = dirname( $style['file'] ) . '/' . $style['style_file'];
-            if ( ! file_exists( $style_path ) ) {
-                continue;
-            }
-
             $style_version = ! empty( $style['version'] ) ? $style['version'] : BeRocket_AJAX_filters_version;
-            $handle = self::PREVIEW_TEMPLATE_STYLE_PREFIX . substr( md5( wp_normalize_path( $style_path ) . '|' . $style_version ), 0, 12 );
-            wp_register_style(
-                $handle,
-                plugins_url( $style['style_file'], $style['file'] ),
-                array(),
-                $style_version
-            );
-            $dependencies[] = $handle;
+            $style_files = is_array( $style['style_file'] ) ? $style['style_file'] : array( $style['style_file'] );
+
+            foreach ( $style_files as $style_file ) {
+                $style_path = dirname( $style['file'] ) . '/' . $style_file;
+                if ( empty( $style_file ) || ! file_exists( $style_path ) ) {
+                    continue;
+                }
+
+                $handle = self::PREVIEW_TEMPLATE_STYLE_PREFIX . substr( md5( wp_normalize_path( $style_path ) . '|' . $style_version ), 0, 12 );
+                wp_register_style(
+                    $handle,
+                    plugins_url( $style_file, $style['file'] ),
+                    array(),
+                    $style_version
+                );
+                $dependencies[] = $handle;
+            }
         }
 
         $this->append_preview_style_dependencies( $dependencies );
@@ -583,10 +602,14 @@ class BeRocket_AAPF_Gutenberg {
                 continue;
             }
 
-            $options[] = array(
+            $option = array(
                 'label' => sprintf( '%1$s (ID: %2$d)', get_the_title( $post_id ), $post_id ),
-                'value' => (int) $post_id,
+                'value' => 'br_filters_group' === $post_type ? braapf_get_group_slug( $post_id ) : (int) $post_id,
             );
+            if ( 'br_filters_group' === $post_type ) {
+                $option['legacyValue'] = (int) $post_id;
+            }
+            $options[] = $option;
         }
 
         $cached_options[ $cache_context_key ] = $options;
@@ -1021,11 +1044,16 @@ class BeRocket_AAPF_Gutenberg {
         $blocks = array(
             array(
                 'name'             => 'berocket/single-filter',
+                'attribute'        => 'filterId',
+                'referenceType'    => 'id',
                 'selectionMessage' => __( 'Select a filter to preview it here.', 'BeRocket_AJAX_domain' ),
                 'options'          => array(),
             ),
             array(
                 'name'             => 'berocket/filter-group',
+                'attribute'        => 'groupSlug',
+                'fallbackAttribute'=> 'groupId',
+                'referenceType'    => 'slug',
                 'selectionMessage' => __( 'Select a filter group to preview it here.', 'BeRocket_AJAX_domain' ),
                 'options'          => array(),
             ),
@@ -1113,6 +1141,7 @@ class BeRocket_AAPF_Gutenberg {
      */
     protected function get_post_options_cache_context_key( $post_type ) {
         $context = array(
+            'reference_schema'   => 'br_filters_group' === $post_type ? 2 : 1,
             'locale'             => function_exists( 'determine_locale' ) ? determine_locale() : get_locale(),
             'wpml_language'      => apply_filters( 'wpml_current_language', null ),
             'wpm_language'       => function_exists( 'wpm_get_language' ) ? wpm_get_language() : '',
@@ -1146,3 +1175,5 @@ class BeRocket_AAPF_Gutenberg {
 }
 
 new BeRocket_AAPF_Gutenberg();
+
+require_once __DIR__ . '/builders/wordpress/class-wordpress-products.php';

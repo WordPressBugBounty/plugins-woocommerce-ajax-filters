@@ -66,3 +66,20 @@ if( ! class_exists('BeRocket_AAPF_Elemets_Style_sfa_inline') ) {
     }
     new BeRocket_AAPF_Elemets_Style_sfa_inline();
 }
+if ( ! class_exists('BeRocket_AAPF_Elemets_Style_sfa_outline') ) {
+    class BeRocket_AAPF_Elemets_Style_sfa_outline extends BeRocket_AAPF_Elemets_Style_sfa_default {
+        function __construct() {
+            parent::__construct();
+            $this->data['slug'] = 'sfa_outline';
+            $this->data['name'] = esc_html__('Outline', 'BeRocket_AJAX_domain');
+            $this->data['image'] = plugin_dir_url(__FILE__) . 'images/selected_filters_area-outline.png';
+            $this->data['style_file'] = 'css/selected_filters_outline.css';
+            $this->data['sort_pos'] = 700;
+        }
+        function template_element_full($template, $berocket_query_var_title) {
+            $template['template']['attributes']['class']['outline'] = 'bapf_sfa_outline';
+            return $template;
+        }
+    }
+    new BeRocket_AAPF_Elemets_Style_sfa_outline();
+}

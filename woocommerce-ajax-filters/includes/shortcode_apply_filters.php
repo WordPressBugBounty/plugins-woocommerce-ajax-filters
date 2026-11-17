@@ -66,7 +66,7 @@ if( ! class_exists('BeRocket_AAPF_shortcode_apply_filters') ) {
         }
         public function add_not_apply_filter() {
             add_filter('berocket_aapf_wcshortcode_is_filtering', array($this, 'not_apply_filter_to_shortcode'));
-            add_filter('pre_get_posts', array($this, 'not_apply_filter_to_query'));
+            add_filter('pre_get_posts', array($this, 'not_apply_filter_to_query'), 2);
         }
         public function remove_all() {
             remove_filter('berocket_aapf_wcshortcode_is_filtering', array($this, 'apply_filter_to_shortcode'));

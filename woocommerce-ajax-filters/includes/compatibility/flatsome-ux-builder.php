@@ -70,8 +70,10 @@ if( ! class_exists('BeRocket_AAPF_compat_flatsome_ux_builder') ) {
         }
         function init() {
             if( ! empty($_REQUEST['tag']) && ('ux_products' == $_REQUEST['tag'] || 'ux_products_list' == $_REQUEST['tag'])
-            && ! empty($_REQUEST['atts']) && is_array($_REQUEST['atts']) && isset($_REQUEST['atts']['brfilter']) ) {
-                $bapf_apply = empty($_REQUEST['atts']['aapf_apply']) ? '' : $_REQUEST['atts']['aapf_apply'];
+            && ! empty($_REQUEST['atts']) && is_array($_REQUEST['atts'])
+            && isset($_REQUEST['atts']['brfilter']) && is_string($_REQUEST['atts']['brfilter']) ) {
+                $bapf_apply = isset($_REQUEST['atts']['aapf_apply']) && is_string($_REQUEST['atts']['aapf_apply'])
+                    ? $_REQUEST['atts']['aapf_apply'] : '';
                 bapf_set_filter_field_ajax($_REQUEST['atts']['brfilter']);
                 $this->ux_builder_parameter_apply($bapf_apply);
             }
@@ -98,4 +100,3 @@ if( ! class_exists('BeRocket_AAPF_compat_flatsome_ux_builder') ) {
     }
     new BeRocket_AAPF_compat_flatsome_ux_builder();
 }
-        

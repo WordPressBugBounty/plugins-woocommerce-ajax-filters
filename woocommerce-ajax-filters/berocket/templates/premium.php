@@ -13,16 +13,19 @@ $banner_key = array_rand( $banner );
 $meta_data = 'utm_source=plugin&utm_medium=settings&utm_campaign=upgrade&utm_content=sidebar_' . $banner_key .
              '&utm_term='.($this->info['plugin_sku'] ?? $this->info['plugin_name']);
 
-$dplugin_link = 'https://berocket.com/' . $this->cc->values['premium_slug'] . '?' . $meta_data;
-$plugin_data = berocket_admin_notices_rate_stars::get_plugin_data($this->info['id']);
-if( $plugin_data != FALSE ) {
-    $dplugin_link = $plugin_data['url'];
-    $dplugin_link = $dplugin_link . ( strpos($dplugin_link, '?') === FALSE ? '?' : '&' ) . $meta_data;
+$dplugin_link = '';
+if ( ! empty( $this->cc->values['premium_slug'] ) ) {
+    $dplugin_link = 'https://berocket.com/' . $this->cc->values['premium_slug'] . '?' . $meta_data;
+    $plugin_data = berocket_admin_notices_rate_stars::get_plugin_data($this->info['id']);
+    if( $plugin_data != FALSE ) {
+        $dplugin_link = $plugin_data['url'];
+        $dplugin_link = $dplugin_link . ( strpos($dplugin_link, '?') === FALSE ? '?' : '&' ) . $meta_data;
+    }
 }
 $dplugin_lic = br_get_value_from_array($this->cc->info, 'lic_id');
 if ( isset($this->plugin_version_capability) && $this->plugin_version_capability <= 5 ) {
     echo apply_filters('berocket_rate_plugin_window', '', br_get_value_from_array($this->cc->info, 'id'));
-    if ( ! empty( $feature_list ) && count( $feature_list ) > 0 ) { ?>
+    if ( ! empty( $dplugin_link ) && ! empty( $feature_list ) && count( $feature_list ) > 0 ) { ?>
         <div class="paid_features">
             <?php
             $feature_text = '';

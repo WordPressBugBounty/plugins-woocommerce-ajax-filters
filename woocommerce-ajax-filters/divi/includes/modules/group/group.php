@@ -19,7 +19,8 @@ class ET_Builder_Module_br_filters_group extends ET_Builder_Module {
 		$this->main_css_element = '%%order_class%%';
 
         $this->fields_defaults = array(
-            'group_id' => array('0'),
+            'group_id' => array(''),
+            'group_slug' => array('0'),
             'display_inline' => array('off'),
             'display_inline_count' => array(''),
             'min_filter_width_inline' => array('25'),
@@ -62,17 +63,21 @@ class ET_Builder_Module_br_filters_group extends ET_Builder_Module {
         $filter_list = array('0' => __('Build In Divi', 'BeRocket_AJAX_domain'));
         if ( is_array($posts) && count($posts) ) {
             foreach($posts as $post_id) {
-                $filter_list[$post_id] = get_the_title($post_id) . ' (ID:' . $post_id . ')';
+                $filter_list[braapf_get_group_slug( $post_id )] = get_the_title($post_id);
             }
         } else {
             $filter_list = array('0' => __('--Please create group first--', 'BeRocket_AJAX_domain'));
         }
         $fields = array(
-            'group_id' => array(
+            'group_slug' => array(
                 'label'           => esc_html__( 'Group', 'BeRocket_AJAX_domain' ),
                 'type'            => 'select',
                 'options'         => $filter_list,
-            )
+            ),
+            'group_id' => array(
+                'label'           => esc_html__( 'Legacy Group ID', 'BeRocket_AJAX_domain' ),
+                'type'            => 'hidden',
+            ),
         );
 
         return apply_filters('ET_Builder_Module_br_filters_group_fields', $fields);
@@ -99,7 +104,12 @@ class ET_Builder_Module_br_filters_group extends ET_Builder_Module {
             }
         }
         $args = array();
-        if( empty($atts['group_id']) ) {
+        $group_slug = isset( $atts['group_slug'] ) ? (string) $atts['group_slug'] : '';
+        $legacy_group_id = isset( $atts['group_id'] ) ? (string) $atts['group_id'] : '';
+        $group_reference = '0' === $group_slug && '' !== $legacy_group_id && '0' !== $legacy_group_id
+            ? $legacy_group_id
+            : ( '' !== $group_slug ? $group_slug : $legacy_group_id );
+        if( '' === $group_reference || '0' === $group_reference ) {
             $options = array(
                 'display_inline',
                 'display_inline_count',
@@ -112,7 +122,10 @@ class ET_Builder_Module_br_filters_group extends ET_Builder_Module {
                 $args[$option] = (empty($atts[$option]) ? '' : $atts[$option]);
             }
         } else {
-            $args['group_id'] = $atts['group_id'];
+            $args['group_slug'] = $group_reference;
+            if ( '' !== $legacy_group_id ) {
+                $args['group_id'] = $legacy_group_id;
+            }
         }
         $args['filters'] = $correct_filters;
         add_filter('BeRocket_AAPF_template_full_content', array($this, 'header_replace'), 4000, 1);
